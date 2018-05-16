@@ -11,7 +11,7 @@ This project was built using Laravel for the backend api and Vue.js together wit
 ## Creators:
 - _Linus van der Putten (Digital Designer)_
 - _William Buller (Digital Designer)_
-- _Maximilian Heijbel Realm(Web Developer)_
+- _Maximilian Heijbel Realm(Digital Designer)_
 - _Albert Norberg (Web Developer)_
 ---
 _YRGO, GÖTEBORG 2018_
