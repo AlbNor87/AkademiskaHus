@@ -31,18 +31,19 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        \Log::info($request->all());
+        // \Log::info($request->all());
+        \Log::info($request->except('image'));
 
-        // $post = $request->isMethod('put') ? Post::findOrFail
-        // ($request->post_id) : new Post;
+        $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post;
         
-        // $post->id = $request->input('post_id');
-        // $post->title = $request->input('title');
-        // $post->body = $request->input('body');
+        $post->id = $request->input('post_id');
+        $post->title = $request->input('title');
+        $post->body = $request->input('body');
+        $post->image = $request->input('image');
 
-        // if($post->save()){
-        //     return new PostResource($post);
-        // }
+        if($post->save()){
+            return new PostResource($post);
+        }
     }
 
     /**

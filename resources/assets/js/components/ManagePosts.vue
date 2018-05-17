@@ -3,7 +3,8 @@
     <div>
         
         <h2>Lägg till/Ändra post</h2>
-        <button @click="log(post)" class="btn btn-danger">Log</button>
+        <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
+        <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button>
         <form @submit.prevent="addPost" class="mb-3">
 
             <div class="form-group">
@@ -15,7 +16,7 @@
             </div>
 
             <div class="form-group">
-                <input type="file" class="form-control" @change="imageChanged">
+                <input type="file" class="form-control" v-if="uploadReady" @change="imageChanged">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Spara</button>
@@ -72,11 +73,12 @@
                     title: '',
                     body: '',
                     created_at: '',
-                    image: ''
+                    image: 'image'
                 },
                 post_id: '',
                 pagination: {},
-                edit: false  
+                edit: false,
+                uploadReady: true  
             }
         },
 
@@ -131,10 +133,9 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        this.post.title = '';
-                        this.post.body = '';
-                        alert('Post Tillagd');
+                        this.clearUpload();
                         this.fetchPosts();
+                        alert('Post Tillagd');
                     })
                     .catch(err => console.log(err));
                 } else {
@@ -148,10 +149,9 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        this.post.title = '';
-                        this.post.body = '';
-                        alert('Post Uppdaterad');
+                        this.clearUpload();
                         this.fetchPosts();
+                        alert('Post Uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }
@@ -173,11 +173,21 @@
                 fileReader.onload = (e) => {
                     this.post.image = e.target.result;
                 }
-
-
             },
             log(){
                 console.log(this.post);
+                console.log(this.uploadReady);
+            },
+            clearUpload(){
+                this.uploadReady = false;
+                this.$nextTick(() => {
+                this.uploadReady = true;
+                this.post.title = '';
+                this.post.body = '';
+                this.post.image = '';
+                this.post.id = '';
+            })
+                console.log(this.uploadReady);
             }
         }
     }

@@ -47340,6 +47340,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47541,6 +47559,72 @@ var render = function() {
           ]
         )
       ])
+    ]),
+    _vm._v(" "),
+    _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+      _c("ul", { staticClass: "pagination justify-content-center" }, [
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: [{ disabled: !_vm.pagination.prev_page_url }]
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "page-link",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    _vm.fetchPosts(_vm.pagination.prev_page_url)
+                  }
+                }
+              },
+              [_vm._v("❮❮")]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c("li", { staticClass: "page-item disabled" }, [
+          _c(
+            "a",
+            { staticClass: "page-link text-dark", attrs: { href: "#" } },
+            [
+              _vm._v(
+                "Sida " +
+                  _vm._s(_vm.pagination.current_page) +
+                  " av " +
+                  _vm._s(_vm.pagination.last_page) +
+                  " "
+              )
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "li",
+          {
+            staticClass: "page-item",
+            class: [{ disabled: !_vm.pagination.next_page_url }]
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "page-link",
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    _vm.fetchPosts(_vm.pagination.next_page_url)
+                  }
+                }
+              },
+              [_vm._v("❯❯")]
+            )
+          ]
+        )
+      ])
     ])
   ])
 }
@@ -47671,6 +47755,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47681,11 +47766,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 title: '',
                 body: '',
                 created_at: '',
-                image: ''
+                image: 'image'
             },
             post_id: '',
             pagination: {},
-            edit: false
+            edit: false,
+            uploadReady: true
         };
     },
     created: function created() {
@@ -47748,10 +47834,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    _this3.post.title = '';
-                    _this3.post.body = '';
-                    alert('Post Tillagd');
+                    _this3.clearUpload();
                     _this3.fetchPosts();
+                    alert('Post Tillagd');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -47766,10 +47851,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    _this3.post.title = '';
-                    _this3.post.body = '';
-                    alert('Post Uppdaterad');
+                    _this3.clearUpload();
                     _this3.fetchPosts();
+                    alert('Post Uppdaterad');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -47797,6 +47881,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         log: function log() {
             console.log(this.post);
+            console.log(this.uploadReady);
+        },
+        clearUpload: function clearUpload() {
+            var _this5 = this;
+
+            this.uploadReady = false;
+            this.$nextTick(function () {
+                _this5.uploadReady = true;
+                _this5.post.title = '';
+                _this5.post.body = '';
+                _this5.post.image = '';
+                _this5.post.id = '';
+            });
+            console.log(this.uploadReady);
         }
     }
 });
@@ -47817,7 +47915,7 @@ var render = function() {
       _c(
         "button",
         {
-          staticClass: "btn btn-danger",
+          staticClass: "btn btn-danger mb-2",
           on: {
             click: function($event) {
               _vm.log(_vm.post)
@@ -47825,6 +47923,19 @@ var render = function() {
           }
         },
         [_vm._v("Log")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger mb-2",
+          on: {
+            click: function($event) {
+              _vm.clearUpload()
+            }
+          }
+        },
+        [_vm._v("Clear")]
       ),
       _vm._v(" "),
       _c(
@@ -47888,11 +47999,13 @@ var render = function() {
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "form-group" }, [
-            _c("input", {
-              staticClass: "form-control",
-              attrs: { type: "file" },
-              on: { change: _vm.imageChanged }
-            })
+            _vm.uploadReady
+              ? _c("input", {
+                  staticClass: "form-control",
+                  attrs: { type: "file" },
+                  on: { change: _vm.imageChanged }
+                })
+              : _vm._e()
           ]),
           _vm._v(" "),
           _c(
