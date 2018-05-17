@@ -47671,12 +47671,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -47686,7 +47680,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 id: '',
                 title: '',
                 body: '',
-                created_at: ''
+                created_at: '',
+                image: ''
             },
             post_id: '',
             pagination: {},
@@ -47786,6 +47781,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.post.post_id = post.id;
             this.post.title = post.title;
             this.post.body = post.body;
+        },
+        imageChanged: function imageChanged(e) {
+            var _this4 = this;
+
+            console.log(e.target.files[0]);
+
+            var fileReader = new FileReader();
+
+            fileReader.readAsDataURL(e.target.files[0]);
+
+            fileReader.onload = function (e) {
+                _this4.post.image = e.target.result;
+            };
+        },
+        log: function log() {
+            console.log(this.post);
         }
     }
 });
@@ -47802,6 +47813,19 @@ var render = function() {
     "div",
     [
       _c("h2", [_vm._v("Lägg till/Ändra post")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-danger",
+          on: {
+            click: function($event) {
+              _vm.log(_vm.post)
+            }
+          }
+        },
+        [_vm._v("Log")]
+      ),
       _vm._v(" "),
       _c(
         "form",
@@ -47863,7 +47887,13 @@ var render = function() {
             })
           ]),
           _vm._v(" "),
-          _vm._m(0),
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              staticClass: "form-control",
+              attrs: { type: "file" },
+              on: { change: _vm.imageChanged }
+            })
+          ]),
           _vm._v(" "),
           _c(
             "button",
@@ -47983,19 +48013,7 @@ var render = function() {
     2
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "file", placeholder: "Titel" }
-      })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {

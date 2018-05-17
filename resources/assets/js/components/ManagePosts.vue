@@ -3,25 +3,19 @@
     <div>
         
         <h2>Lägg till/Ändra post</h2>
-        
+        <button @click="log(post)" class="btn btn-danger">Log</button>
         <form @submit.prevent="addPost" class="mb-3">
 
             <div class="form-group">
-                
                 <input type="text" class="form-control" placeholder="Titel" v-model="post.title">
-           
             </div>
 
             <div class="form-group">
-                
                 <textarea class="form-control" placeholder="Innehåll" v-model="post.body"></textarea>
-           
             </div>
 
             <div class="form-group">
-                
-                <input type="file" class="form-control" placeholder="Titel">
-           
+                <input type="file" class="form-control" @change="imageChanged">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Spara</button>
@@ -77,7 +71,8 @@
                     id: '',
                     title: '',
                     body: '',
-                    created_at: ''
+                    created_at: '',
+                    image: ''
                 },
                 post_id: '',
                 pagination: {},
@@ -167,6 +162,22 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
+            },
+            imageChanged(e){
+                console.log(e.target.files[0]);
+                
+                const fileReader = new FileReader();
+
+                fileReader.readAsDataURL(e.target.files[0]);
+
+                fileReader.onload = (e) => {
+                    this.post.image = e.target.result;
+                }
+
+
+            },
+            log(){
+                console.log(this.post);
             }
         }
     }
