@@ -17,12 +17,7 @@ class PagesController extends Controller
      */
     public function index(): View
     {
-        $user = User::with('posts')->first();
-
-        return view('index', [
-            'name' => $user->name,
-            'posts' => $user->posts,
-        ]);
+        return view('index');
     }
 
     public function login(): View

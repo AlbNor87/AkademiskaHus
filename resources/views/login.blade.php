@@ -2,22 +2,30 @@
 
 @section('content')
     <div class="row">
-        <div class="col">
-            <h1 class="mt-5">Login</h1>
+        <div class="col mt-5">
+            <h1>Logga in</h1>
 
-            <form action="{{url('login')}}" method="POST">
-                @csrf
-                <div>
+            @if ($errors->any())
+                <div class="alert alert-danger" role="alert">
+                    {{ $errors->first() }}
+                </div><!-- /alert -->
+            @endif
+
+            <form action="{{ url('login') }}" method="post">
+                {{ csrf_field() }}
+
+                <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" name"email">
-                </div>
-                <div>
-                    <label for="email">Password</label>  
-                    <input type="password" name"password">
-                </div>
-                <button type="submit">Login</button>
-            </form>
+                    <input class="form-control" type="email" name="email" placeholder="användare@akademiskahus.se">
+                </div><!-- /form-group -->
 
+                <div class="form-group">
+                    <label for="email">Lösenord</label>
+                    <input class="form-control" type="password" name="password">
+                </div><!-- /form-group -->
+
+                <button class="btn btn-primary" type="submit">Logga in</button>
+            </form><!-- / -->
         </div><!-- /col -->
     </div><!-- /row -->
 @stop
