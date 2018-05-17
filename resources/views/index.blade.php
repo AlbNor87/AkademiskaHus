@@ -4,17 +4,22 @@
 
     @if (Auth::check())
 
-        <h1>Välkommen {{ Auth::user()->name }}, du är nu inloggad!</h1>
+        <h2 class="text-center">Välkommen {{ Auth::user()->name }}, du är nu inloggad!</h2>
         
         <div id="app">
             <div class="container">
-                <posts></posts>
+                <manageposts></manageposts>
             </div>
         </div>
 
     @else
 
-    <h1>Welcome! You are not logged in...</h1>
+    <h2 class="text-center">Välkommen!</h2>
+    <div id="app">
+        <div class="container">
+            <posts></posts>
+        </div>
+    </div>
         
     @endif
 

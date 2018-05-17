@@ -11,17 +11,13 @@
         <title>Akademiska Hus</title>
     </head>
     <body>
-        @include('partials.navigation')
+        @include('partials.nav-header')
 
         <main class="container">
             @yield('content')
         </main><!-- /container -->
 
-        {{-- <div id="app">
-            <div class="container">
-                <posts></posts>
-            </div>
-        </div> --}}
+        @include('partials.nav-footer')
 
         <script src="{{ asset('js/app.js')}}"></script>
 

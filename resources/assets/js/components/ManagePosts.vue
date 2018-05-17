@@ -1,39 +1,68 @@
 <template>
+
     <div>
         
-        <div>
+        <h2>Lägg till/Ändra post</h2>
+        
+        <form @submit.prevent="addPost" class="mb-3">
 
-            <div class="card card-body mb-2" v-for="post in posts" v-bind:key="post.id">
-
-                <h3>{{ post.title }}</h3>
-
-                <p>{{ post.body }}</p>
-
-                <hr>
-
-                <p class="mb-0">{{ post.created_at }}</p>
-
+            <div class="form-group">
+                
+                <input type="text" class="form-control" placeholder="Titel" v-model="post.title">
+           
             </div>
 
-        </div>
+            <div class="form-group">
+                
+                <textarea class="form-control" placeholder="Innehåll" v-model="post.body"></textarea>
+           
+            </div>
+
+            <div class="form-group">
+                
+                <input type="file" class="form-control" placeholder="Titel">
+           
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Spara</button>
+ 
+        </form>
 
         <nav aria-label="Page navigation">
+
             <ul class="pagination justify-content-center">
 
-                    <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
-                    </li>
+                <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
+                </li>
 
-                    <li class="page-item disabled">
-                        <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
-                    </li>
+                 <li class="page-item disabled">
+                     <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
+                 </li>
 
-                    <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
-                    </li>
+                <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
+                </li>
 
             </ul>
+
         </nav>
+
+        <div class="card card-body mb-2" v-for="post in posts" v-bind:key="post.id">
+
+            <h3>{{ post.title }}</h3>
+
+            <p>{{ post.body }}</p>
+
+            <hr>
+
+            <p>{{ post.created_at }}</p>
+            
+            <button @click="editPost(post)" class="btn btn-warning mb-2">Ändra</button>
+
+            <button @click="deletePost(post.id)" class="btn btn-danger">Ta Bort</button>
+
+        </div>
 
     </div>
 
@@ -63,7 +92,7 @@
         methods: {
             fetchPosts(page_url) {
                 let vm = this;
-                page_url = page_url || '/api/posts'
+                page_url = page_url || '/api/posts '
                 fetch(page_url)
                 .then(res => res.json())
                 .then(res => {

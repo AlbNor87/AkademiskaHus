@@ -14,13 +14,14 @@ class Post extends JsonResource
      */
     public function toArray($request)
     {
-        // return parent::toArray($request);
+        return parent::toArray($request);
 
-        return [
-            'id' => $this ->id,
-            'title' => $this->title,
-            'body' => $this->body
-        ];
+        // return [
+        //     'id' => $this ->id,
+        //     'title' => $this->title,
+        //     'body' => $this->body,
+        //     'created_at' => $this->created_at
+        // ];
     }
 
     public function with($request) {

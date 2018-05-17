@@ -3,7 +3,9 @@
 @section('content')
     <div class="row">
         <div class="col mt-5">
-            <h1>Logga in</h1>
+            <h2>Logga in</h2>
+
+            <div id="app"></div>
 
             @if ($errors->any())
                 <div class="alert alert-danger" role="alert">
