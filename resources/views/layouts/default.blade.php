@@ -8,12 +8,13 @@
         <script>window.Laravel = { csrfToken: '{{ csrf_token() }}' }</script>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="{{ asset('css/app.css')}}">
         <title>Akademiska Hus</title>
     </head>
     <body>
         @include('partials.nav-header')
 
-        <main class="container">
+        <main class="container justify-content-center">
             @yield('content')
         </main><!-- /container -->
 

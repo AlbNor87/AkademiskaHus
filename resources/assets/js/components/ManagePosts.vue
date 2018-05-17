@@ -1,10 +1,10 @@
 <template>
 
-    <div>
+    <div class="akaPostFeedContainer mt-4">
         
-        <h2>Lägg till/Ändra post</h2>
-        <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
-        <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button>
+        <h2 id="top">Lägg till/Ändra post</h2>
+        <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
+        <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button> -->
         <form @submit.prevent="addPost" class="mb-3">
 
             <div class="form-group">
@@ -16,7 +16,7 @@
             </div>
 
             <div class="form-group">
-                <input type="file" class="form-control" v-if="uploadReady" @change="imageChanged">
+                <input type="file" accept=".jpg,.png" data-max-size="32154" class="form-control" v-if="uploadReady" @change="imageChanged">
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Spara</button>
@@ -43,20 +43,24 @@
 
         </nav>
 
-        <div class="card card-body mb-2" v-for="post in posts" v-bind:key="post.id">
+        <div class="mb-4 akaPost" v-for="post in posts" v-bind:key="post.id">
+
+            <img v-if="post.image" class="post-image" :src="'http://akademiskahus.test/images/' + post.image" alt="image">
+
 
             <h3>{{ post.title }}</h3>
-
+            
             <p>{{ post.body }}</p>
 
-            <hr>
+            <hr class="akaTinyMargin">
 
-            <p>{{ post.created_at }}</p>
+            <p class="akaTime akaTinyMargin">{{ post.created_at }}</p>
             
-            <button @click="editPost(post)" class="btn btn-warning mb-2">Ändra</button>
+            <div class="akaButtonContainer">
+            <button @click="editPost(post)" class="btn btn-warning akaButton akaBorderBottomLeftRadius">Ändra</button>
 
-            <button @click="deletePost(post.id)" class="btn btn-danger">Ta Bort</button>
-
+            <button @click="deletePost(post.id)" class="btn btn-danger akaButton akaBorderBottomRightRadius">Ta Bort</button>
+            </div>
         </div>
 
     </div>
@@ -162,6 +166,7 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
+                document.getElementById('top').scrollIntoView();
             },
             imageChanged(e){
                 console.log(e.target.files[0]);
@@ -192,4 +197,56 @@
         }
     }
 </script>
+
+<style>
+
+.post-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.akaPost {
+    background-color: #E0F5FF;
+    border-radius: 10px;
+}
+
+.akaPost h3, p {
+    padding-left: 1rem;
+}
+
+.akaTime {
+    font-size: 0.75rem;
+}
+
+.akaTinyMargin {
+    margin: 0.3rem;
+}
+
+.akaButton {
+    width: 50%;
+    border-radius: 0;
+}
+
+.akaButtonContainer {
+ display: flex;
+}
+
+.akaPostFeedContainer {
+    max-width: 800px;
+    margin: auto;
+    padding-bottom: 100px;
+}
+
+.akaBorderBottomLeftRadius {
+    border-bottom-left-radius: 10px;
+}
+
+.akaBorderBottomRightRadius {
+    border-bottom-right-radius: 10px;
+}
+
+</style>
 

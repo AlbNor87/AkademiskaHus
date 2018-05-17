@@ -1,3 +1,5 @@
+<div class="akaNavPlaceholder"></div>
+
 <nav class="navbar bg-light fixed-bottom">
     <a class="navbar-brand" href="{{url('/')}}">Akademiska Hus</a> 
 
@@ -13,4 +15,4 @@
             @endif
         </ul><!-- /navbar-nav -->
 
-  </nav>
+</nav>

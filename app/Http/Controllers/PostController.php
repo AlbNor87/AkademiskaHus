@@ -32,14 +32,32 @@ class PostController extends Controller
     public function store(Request $request)
     {
         // \Log::info($request->all());
-        \Log::info($request->except('image'));
+        // \Log::info($request->except('image'));
+
+        // Before storing the image it needs some special treatment...
+        $exploded = explode(',', $request->input('image'));
+
+        $decoded = base64_decode($exploded[1]);
+
+        if(str_contains($exploded[0], 'jpeg')) {
+            $extension = 'jpg';
+        } else {
+            $extension = 'png';
+        }
+
+        $fileName = str_random().'.'.$extension;
+
+        $path = public_path().'/images/'.$fileName;
+
+        file_put_contents($path, $decoded);
 
         $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post;
         
         $post->id = $request->input('post_id');
         $post->title = $request->input('title');
         $post->body = $request->input('body');
-        $post->image = $request->input('image');
+        $post->image = $fileName;
+        
 
         if($post->save()){
             return new PostResource($post);
