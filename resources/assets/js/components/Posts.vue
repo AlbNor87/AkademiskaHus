@@ -1,56 +1,47 @@
 <template>
-    <div>
-        
-        <div>
 
-            <div class="card card-body mb-2" v-for="post in posts" v-bind:key="post.id">
+    <div class="akaPostFeedContainer mt-4">
 
+        <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
+
+            <img v-if="post.image" class="card-img-top akaPostImage" :src="'http://akademiskahus.test/images/' + post.image" alt="image">
+
+            <div class="card-body akaNoBottomMargin">
                 <h3>{{ post.title }}</h3>
-
+                
                 <p>{{ post.body }}</p>
 
                 <hr>
 
-                <p class="mb-0">{{ post.created_at }}</p>
+                <p class="akaTime">{{ post.created_at }}</p>
+            </div> 
+            <div class="akaButtonContainer">
+                <button @click="editPost(post)" class="btn btn-warning akaButton akaBorderBottomLeftRadius">Ändra</button>
 
+                <button @click="deletePost(post.id)" class="btn btn-danger akaButton akaBorderBottomRightRadius">Ta Bort</button>
             </div>
-
+            
         </div>
 
-         <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-center">
-
-                    <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
-                    </li>
-
-                    <li class="page-item disabled">
-                        <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
-                    </li>
-
-                    <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
-                    </li>
-
-            </ul>
-        </nav>
-
+        <!-- Pagnation navbar -->
         <nav aria-label="Page navigation">
+
             <ul class="pagination justify-content-center">
 
-                    <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
-                    </li>
+                <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
+                </li>
 
-                    <li class="page-item disabled">
-                        <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
-                    </li>
+                 <li class="page-item disabled">
+                     <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
+                 </li>
 
-                    <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
-                        <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
-                    </li>
+                <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
+                </li>
 
             </ul>
+
         </nav>
 
     </div>
@@ -66,11 +57,14 @@
                     id: '',
                     title: '',
                     body: '',
-                    created_at: ''
+                    created_at: '',
+                    image: ''
                 },
                 post_id: '',
                 pagination: {},
-                edit: false  
+                edit: false,
+                uploadReady: true,
+                env: process.env.baseUrl  
             }
         },
 
@@ -81,7 +75,7 @@
         methods: {
             fetchPosts(page_url) {
                 let vm = this;
-                page_url = page_url || '/api/posts'
+                page_url = page_url || '/api/posts '
                 fetch(page_url)
                 .then(res => res.json())
                 .then(res => {
@@ -101,7 +95,7 @@
                 this.pagination = pagination;
             },
             deletePost(id) {
-                if(confirm('Är du säker?')) {
+                if(confirm('Är du säker på att du vill ta bort posten?')) {
                     fetch(`api/post/${id}`, {
                         method: 'delete'
                     })
@@ -125,10 +119,9 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        this.post.title = '';
-                        this.post.body = '';
-                        alert('Post Tillagd');
+                        this.clearUpload();
                         this.fetchPosts();
+                        alert('Post Tillagd');
                     })
                     .catch(err => console.log(err));
                 } else {
@@ -142,10 +135,9 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        this.post.title = '';
-                        this.post.body = '';
-                        alert('Post Uppdaterad');
+                        this.clearUpload();
                         this.fetchPosts();
+                        alert('Post Uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }
@@ -156,8 +148,34 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
+                document.getElementById('top').scrollIntoView();
+            },
+            imageChanged(e){
+                console.log(e.target.files[0]);
+                
+                const fileReader = new FileReader();
+
+                fileReader.readAsDataURL(e.target.files[0]);
+
+                fileReader.onload = (e) => {
+                    this.post.image = e.target.result;
+                }
+            },
+            log(){
+                console.log(this.post);
+                console.log(this.uploadReady);
+            },
+            clearUpload(){
+                this.uploadReady = false;
+                this.$nextTick(() => {
+                this.uploadReady = true;
+                this.post.title = '';
+                this.post.body = '';
+                this.post.image = '';
+                this.post.id = '';
+            })
+                console.log(this.uploadReady);
             }
         }
     }
 </script>
-

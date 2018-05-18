@@ -1,6 +1,7 @@
 <div class="akaNavPlaceholder"></div>
 
-<nav class="navbar bg-light fixed-bottom">
+<nav class="navbar fixed-bottom akaNavBottom">
+    
     <a class="navbar-brand" href="{{url('/')}}">Akademiska Hus</a> 
 
         <ul class="navbar-nav justify-content-end">

@@ -1,0 +1,43 @@
+.akaPostImage {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+}
+
+.akaPost {
+    background-color: $akaLightBlue;
+    border-radius: 7px;
+}
+
+.akaTime {
+    font-size: 0.75rem;
+}
+
+.akaButton {
+    background-color: $akaBlue;
+    width: 50%;
+    border-radius: 0;
+    margin-top: -1.25rem;
+}
+
+.akaButtonContainer {
+ display: flex;
+}
+
+.akaBorderBottomLeftRadius {
+    border-bottom-left-radius: 7px;
+}
+
+.akaBorderBottomRightRadius {
+    border-bottom-right-radius: 7px;
+}
+
+.akaBgBlue {
+    background-color: $akaBlue;
+}
+
+.akaMarginTinyLeft {
+    margin-left: 1px;
+}

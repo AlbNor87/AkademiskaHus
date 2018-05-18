@@ -1,0 +1,18 @@
+.akaNavPlaceholder {
+    height: 56px;
+    width: 100%;
+    opacity: 0;
+}
+
+.akaNavBottom, .akaNavTop {
+    background-color: $akaWhite;
+}
+
+.akaNavBottom {
+    border-top: 1px solid $akaGrey;
+}
+
+.akaNavTop {
+    border-bottom: 1px solid $akaGrey;
+    
+}

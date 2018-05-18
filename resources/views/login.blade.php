@@ -1,6 +1,7 @@
 @extends('layouts.default')
 
 @section('content')
+<div class="akaContainer">
     <div class="row">
         <div class="col mt-5">
             <h2>Logga in</h2>
@@ -26,8 +27,9 @@
                     <input class="form-control" type="password" name="password">
                 </div><!-- /form-group -->
 
-                <button class="btn btn-primary" type="submit">Logga in</button>
+                <button class="btn btn-block akaBgBlue text-white" type="submit">Logga in</button>
             </form><!-- / -->
         </div><!-- /col -->
     </div><!-- /row -->
+</div><!-- /akaContainer -->
 @stop

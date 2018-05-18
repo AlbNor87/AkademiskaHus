@@ -1,14 +1,14 @@
 <template>
 
-    <div class="akaPostFeedContainer mt-4">
+    <div class="akaContainer mt-4">
         
-        <h2 id="top">Lägg till/Ändra post</h2>
+        <h2>Lägg till/Ändra post</h2>
         <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
         <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button> -->
         <form @submit.prevent="addPost" class="mb-3">
 
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Titel" v-model="post.title">
+                <input type="text" class="form-control" placeholder="Titel" v-model="post.title" id="postTitle">
             </div>
 
             <div class="form-group">
@@ -16,13 +16,15 @@
             </div>
 
             <div class="form-group">
+
                 <input type="file" accept=".jpg,.png" data-max-size="32154" class="form-control" v-if="uploadReady" @change="imageChanged">
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block">Spara</button>
+            <button type="submit" class="btn btn-block akaBgBlue text-white">Spara</button>
  
         </form>
 
+        <!-- Pagnation navbar -->
         <nav aria-label="Page navigation">
 
             <ul class="pagination justify-content-center">
@@ -43,25 +45,47 @@
 
         </nav>
 
-        <div class="mb-4 akaPost" v-for="post in posts" v-bind:key="post.id">
+        <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
 
-            <img v-if="post.image" class="post-image" :src="'http://akademiskahus.test/images/' + post.image" alt="image">
+            <img v-if="post.image" class="card-img-top akaPostImage" :src="'http://akademiskahus.test/images/' + post.image" alt="image">
 
+            <div class="card-body akaNoBottomMargin">
+                <h3>{{ post.title }}</h3>
+                
+                <p>{{ post.body }}</p>
 
-            <h3>{{ post.title }}</h3>
-            
-            <p>{{ post.body }}</p>
+                <hr>
 
-            <hr class="akaTinyMargin">
-
-            <p class="akaTime akaTinyMargin">{{ post.created_at }}</p>
-            
+                <p class="akaTime">{{ post.created_at }}</p>
+            </div> 
             <div class="akaButtonContainer">
-            <button @click="editPost(post)" class="btn btn-warning akaButton akaBorderBottomLeftRadius">Ändra</button>
+                <button @click="editPost(post)" class="btn akaButton akaBorderBottomLeftRadius text-white">Ändra</button>
 
-            <button @click="deletePost(post.id)" class="btn btn-danger akaButton akaBorderBottomRightRadius">Ta Bort</button>
+                <button @click="deletePost(post.id)" class="btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft text-white">Ta Bort</button>
             </div>
+            
         </div>
+
+        <!-- Pagnation navbar -->
+        <nav aria-label="Page navigation">
+
+            <ul class="pagination justify-content-center">
+
+                <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
+                </li>
+
+                 <li class="page-item disabled">
+                     <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
+                 </li>
+
+                <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
+                </li>
+
+            </ul>
+
+        </nav>
 
     </div>
 
@@ -77,12 +101,12 @@
                     title: '',
                     body: '',
                     created_at: '',
-                    image: 'image'
+                    image: ''
                 },
                 post_id: '',
                 pagination: {},
                 edit: false,
-                uploadReady: true  
+                uploadReady: true 
             }
         },
 
@@ -113,7 +137,7 @@
                 this.pagination = pagination;
             },
             deletePost(id) {
-                if(confirm('Är du säker?')) {
+                if(confirm('Är du säker på att du vill ta bort posten?')) {
                     fetch(`api/post/${id}`, {
                         method: 'delete'
                     })
@@ -166,7 +190,8 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
-                document.getElementById('top').scrollIntoView();
+                // document.getElementById('top').scrollIntoView();
+                document.getElementById('postTitle').focus();
             },
             imageChanged(e){
                 console.log(e.target.files[0]);
@@ -182,6 +207,8 @@
             log(){
                 console.log(this.post);
                 console.log(this.uploadReady);
+                console.log(process.env);
+                
             },
             clearUpload(){
                 this.uploadReady = false;
@@ -197,56 +224,4 @@
         }
     }
 </script>
-
-<style>
-
-.post-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-}
-
-.akaPost {
-    background-color: #E0F5FF;
-    border-radius: 10px;
-}
-
-.akaPost h3, p {
-    padding-left: 1rem;
-}
-
-.akaTime {
-    font-size: 0.75rem;
-}
-
-.akaTinyMargin {
-    margin: 0.3rem;
-}
-
-.akaButton {
-    width: 50%;
-    border-radius: 0;
-}
-
-.akaButtonContainer {
- display: flex;
-}
-
-.akaPostFeedContainer {
-    max-width: 800px;
-    margin: auto;
-    padding-bottom: 100px;
-}
-
-.akaBorderBottomLeftRadius {
-    border-bottom-left-radius: 10px;
-}
-
-.akaBorderBottomRightRadius {
-    border-bottom-right-radius: 10px;
-}
-
-</style>
 

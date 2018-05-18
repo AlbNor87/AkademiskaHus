@@ -35,21 +35,30 @@ class PostController extends Controller
         // \Log::info($request->except('image'));
 
         // Before storing the image it needs some special treatment...
-        $exploded = explode(',', $request->input('image'));
 
-        $decoded = base64_decode($exploded[1]);
+        $image = $request->input('image');
 
-        if(str_contains($exploded[0], 'jpeg')) {
-            $extension = 'jpg';
+        if($image !== NULL && $image !== '') {
+        
+            $exploded = explode(',', $image);
+
+            $decoded = base64_decode($exploded[1]);
+
+            if(str_contains($exploded[0], 'jpeg')) {
+                $extension = 'jpg';
+            } else {
+                $extension = 'png';
+            }
+
+            $fileName = str_random().'.'.$extension;
+
+            $path = public_path().'/images/'.$fileName;
+
+            file_put_contents($path, $decoded);
+
         } else {
-            $extension = 'png';
+            $fileName = 'akaDefaultImage.jpg';
         }
-
-        $fileName = str_random().'.'.$extension;
-
-        $path = public_path().'/images/'.$fileName;
-
-        file_put_contents($path, $decoded);
 
         $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post;
         

@@ -1,0 +1,28 @@
+body {
+    background: $akaWhite;
+    color: $akaBlue;
+}
+
+a:link {
+    color: $akaBlue;
+}
+
+/* visited link */
+a:visited {
+    color: $akaBlue;
+}
+
+/* mouse over link */
+a:hover {
+    color: black;
+}
+
+/* selected link */
+a:active {
+    color: $akaLightBlue;
+}
+
+.akaContainer {
+    max-width: 800px;
+    margin: auto;
+}
