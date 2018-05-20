@@ -14,7 +14,7 @@
     <body>
         @include('partials.nav-header')
 
-        <main class="container justify-content-center">
+        <main class="container justify-content-center mt-4">
             @yield('content')
         </main><!-- /container -->
 

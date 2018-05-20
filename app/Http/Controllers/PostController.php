@@ -52,7 +52,7 @@ class PostController extends Controller
 
             $fileName = str_random().'.'.$extension;
 
-            $path = public_path().'/images/'.$fileName;
+            $path = public_path().'/uploads/'.$fileName;
 
             file_put_contents($path, $decoded);
 

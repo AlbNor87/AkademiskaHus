@@ -17,4 +17,5 @@ Route::get('/', 'PagesController@index');
 Route::get('login', 'PagesController@login')->middleware('guest');
 Route::post('login', 'AuthController@login');
 Route::get('logout', 'AuthController@logout');
+Route::get('omoss', 'PagesController@omoss');
 Route::get('posts/{id}', 'PostsController@show');

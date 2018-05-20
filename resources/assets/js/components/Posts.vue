@@ -1,10 +1,10 @@
 <template>
 
-    <div class="akaPostFeedContainer mt-4">
+    <div class="akaContainer mt-4 mb-5">
 
         <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
 
-            <img v-if="post.image" class="card-img-top akaPostImage" :src="'http://akademiskahus.test/images/' + post.image" alt="image">
+            <img v-if="post.image" class="card-img-top akaPostImage" :src="'http://akademiskahus.test/uploads/' + post.image" alt="image">
 
             <div class="card-body akaNoBottomMargin">
                 <h3>{{ post.title }}</h3>
@@ -13,13 +13,8 @@
 
                 <hr>
 
-                <p class="akaTime">{{ post.created_at }}</p>
+                <p class="akaTime mb-0">{{ post.created_at }}</p>
             </div> 
-            <div class="akaButtonContainer">
-                <button @click="editPost(post)" class="btn btn-warning akaButton akaBorderBottomLeftRadius">Ändra</button>
-
-                <button @click="deletePost(post.id)" class="btn btn-danger akaButton akaBorderBottomRightRadius">Ta Bort</button>
-            </div>
             
         </div>
 
@@ -52,19 +47,20 @@
     export default {
         data() {
             return {
+                upload: '',
                 posts: [],
                 post: {
                     id: '',
                     title: '',
                     body: '',
                     created_at: '',
-                    image: ''
+                    image: '',
+                    imageName: ''
                 },
                 post_id: '',
                 pagination: {},
                 edit: false,
-                uploadReady: true,
-                env: process.env.baseUrl  
+                uploadReady: true 
             }
         },
 
@@ -148,10 +144,12 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
-                document.getElementById('top').scrollIntoView();
+                // document.getElementById('top').scrollIntoView();
+                document.getElementById('postTitle').focus();
             },
             imageChanged(e){
                 console.log(e.target.files[0]);
+                this.post.imageName = e.target.files[0].name;
                 
                 const fileReader = new FileReader();
 
@@ -160,10 +158,14 @@
                 fileReader.onload = (e) => {
                     this.post.image = e.target.result;
                 }
+
             },
             log(){
                 console.log(this.post);
-                console.log(this.uploadReady);
+                // console.log(this.uploadReady);
+                // console.log(process.env);
+                
+                
             },
             clearUpload(){
                 this.uploadReady = false;
@@ -172,10 +174,17 @@
                 this.post.title = '';
                 this.post.body = '';
                 this.post.image = '';
+                this.post.imageName = '';
                 this.post.id = '';
+                
             })
                 console.log(this.uploadReady);
             }
         }
     }
+    
+
+
+
 </script>
+

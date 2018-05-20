@@ -15,6 +15,7 @@ a:visited {
 /* mouse over link */
 a:hover {
     color: black;
+    text-decoration: none;
 }
 
 /* selected link */
@@ -25,4 +26,48 @@ a:active {
 .akaContainer {
     max-width: 800px;
     margin: auto;
+}
+
+input, textarea{
+    background-color: $akaLightBlue;
+    color: #FFF;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #495057;
+    background-color: rgb(225, 246, 255);
+    background-clip: padding-box;
+    border: 0px solid #ced4da;
+    border-radius: 0.25rem;
+    -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus
+input:-webkit-autofill {
+  background-color: $akaLightBlue;
+  -webkit-text-fill-color: #495057;
+  -webkit-box-shadow: 0 0 0px 1000px $akaLightBlue inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+p {
+    color: black;
+}
+
+.nopacity {
+    opacity: 0;
+}
+
+.akaBlueText {
+    color: $akaBlue;
 }

@@ -1,0 +1,35 @@
+input[type="file"] {
+    display: none;
+}
+
+.inputfile + label {
+    margin: 0;
+    padding: 7px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    color: white;
+    background-color: $akaBlue;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.inputfile + label svg {
+    margin-right: 13px;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    cursor: pointer;
+}
+
+.akaJustifyCenter {
+    justify-content: center;
+}
+
+.akaUploadCaption {
+    white-space: nowrap;
+    overflow: hidden;
+}

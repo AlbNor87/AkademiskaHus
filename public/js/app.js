@@ -13976,7 +13976,7 @@ module.exports = function normalizeComponent (
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(13);
-module.exports = __webpack_require__(51);
+module.exports = __webpack_require__(46);
 
 
 /***/ }),
@@ -13991,7 +13991,22 @@ Vue.component('posts', __webpack_require__(40));
 Vue.component('manageposts', __webpack_require__(43));
 
 var app = new Vue({
-    el: '#app'
+	el: '#app'
+});
+
+var inputs = document.querySelectorAll('.inputfile');
+Array.prototype.forEach.call(inputs, function (input) {
+	var label = input.nextElementSibling,
+	    labelVal = label.innerHTML;
+
+	input.addEventListener('change', function (e) {
+		console.log('jkkjkjj');
+
+		var fileName = '';
+		if (this.files && this.files.length > 1) fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);else fileName = e.target.value.split('\\').pop();
+
+		if (fileName) label.querySelector('span').innerHTML = fileName;else label.innerHTML = labelVal;
+	});
 });
 
 /***/ }),
@@ -47344,469 +47359,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            upload: '',
             posts: [],
             post: {
                 id: '',
                 title: '',
                 body: '',
                 created_at: '',
-                image: ''
-            },
-            post_id: '',
-            pagination: {},
-            edit: false,
-            uploadReady: true,
-            env: Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}).baseUrl
-        };
-    },
-    created: function created() {
-        this.fetchPosts();
-    },
-
-
-    methods: {
-        fetchPosts: function fetchPosts(page_url) {
-            var _this = this;
-
-            var vm = this;
-            page_url = page_url || '/api/posts ';
-            fetch(page_url).then(function (res) {
-                return res.json();
-            }).then(function (res) {
-                _this.posts = res.data;
-                vm.makePagination(res.meta, res.links);
-            }).catch(function (err) {
-                return console.log(e);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-
-            this.pagination = pagination;
-        },
-        deletePost: function deletePost(id) {
-            var _this2 = this;
-
-            if (confirm('Är du säker på att du vill ta bort posten?')) {
-                fetch('api/post/' + id, {
-                    method: 'delete'
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    alert('Post Borttagen');
-                    _this2.fetchPosts();
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        addPost: function addPost() {
-            var _this3 = this;
-
-            if (this.edit === false) {
-                // Add
-                fetch('api/post', {
-                    method: 'post',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Tillagd');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            } else {
-                // Update
-                fetch('api/post', {
-                    method: 'put',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Uppdaterad');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        editPost: function editPost(post) {
-            this.edit = true;
-            this.post.id = post.id;
-            this.post.post_id = post.id;
-            this.post.title = post.title;
-            this.post.body = post.body;
-            document.getElementById('top').scrollIntoView();
-        },
-        imageChanged: function imageChanged(e) {
-            var _this4 = this;
-
-            console.log(e.target.files[0]);
-
-            var fileReader = new FileReader();
-
-            fileReader.readAsDataURL(e.target.files[0]);
-
-            fileReader.onload = function (e) {
-                _this4.post.image = e.target.result;
-            };
-        },
-        log: function log() {
-            console.log(this.post);
-            console.log(this.uploadReady);
-        },
-        clearUpload: function clearUpload() {
-            var _this5 = this;
-
-            this.uploadReady = false;
-            this.$nextTick(function () {
-                _this5.uploadReady = true;
-                _this5.post.title = '';
-                _this5.post.body = '';
-                _this5.post.image = '';
-                _this5.post.id = '';
-            });
-            console.log(this.uploadReady);
-        }
-    }
-});
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "akaPostFeedContainer mt-4" },
-    [
-      _vm._l(_vm.posts, function(post) {
-        return _c(
-          "div",
-          { key: post.id, staticClass: "card mb-4 akaPost border-0" },
-          [
-            post.image
-              ? _c("img", {
-                  staticClass: "card-img-top akaPostImage",
-                  attrs: {
-                    src: "http://akademiskahus.test/images/" + post.image,
-                    alt: "image"
-                  }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
-              _c("h3", [_vm._v(_vm._s(post.title))]),
-              _vm._v(" "),
-              _c("p", [_vm._v(_vm._s(post.body))]),
-              _vm._v(" "),
-              _c("hr"),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaTime" }, [
-                _vm._v(_vm._s(post.created_at))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "akaButtonContainer" }, [
-              _c(
-                "button",
-                {
-                  staticClass:
-                    "btn btn-warning akaButton akaBorderBottomLeftRadius",
-                  on: {
-                    click: function($event) {
-                      _vm.editPost(post)
-                    }
-                  }
-                },
-                [_vm._v("Ändra")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass:
-                    "btn btn-danger akaButton akaBorderBottomRightRadius",
-                  on: {
-                    click: function($event) {
-                      _vm.deletePost(post.id)
-                    }
-                  }
-                },
-                [_vm._v("Ta Bort")]
-              )
-            ])
-          ]
-        )
-      }),
-      _vm._v(" "),
-      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
-        _c("ul", { staticClass: "pagination justify-content-center" }, [
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.prev_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchPosts(_vm.pagination.prev_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❮❮")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item disabled" }, [
-            _c(
-              "a",
-              { staticClass: "page-link text-dark", attrs: { href: "#" } },
-              [
-                _vm._v(
-                  "Sida " +
-                    _vm._s(_vm.pagination.current_page) +
-                    " av " +
-                    _vm._s(_vm.pagination.last_page) +
-                    " "
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.next_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchPosts(_vm.pagination.next_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❯❯")]
-              )
-            ]
-          )
-        ])
-      ])
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-4860c2cc", module.exports)
-  }
-}
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(11)
-/* script */
-var __vue_script__ = __webpack_require__(49)
-/* template */
-var __vue_template__ = __webpack_require__(50)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/ManagePosts.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-03739207", Component.options)
-  } else {
-    hotAPI.reload("data-v-03739207", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 44 */,
-/* 45 */,
-/* 46 */,
-/* 47 */,
-/* 48 */,
-/* 49 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            posts: [],
-            post: {
-                id: '',
-                title: '',
-                body: '',
-                created_at: '',
-                image: ''
+                image: '',
+                imageName: ''
             },
             post_id: '',
             pagination: {},
@@ -47912,6 +47477,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             var _this4 = this;
 
             console.log(e.target.files[0]);
+            this.post.imageName = e.target.files[0].name;
 
             var fileReader = new FileReader();
 
@@ -47923,8 +47489,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         log: function log() {
             console.log(this.post);
-            console.log(this.uploadReady);
-            console.log(Object({"MIX_PUSHER_APP_KEY":"","MIX_PUSHER_APP_CLUSTER":"mt1","NODE_ENV":"development"}));
+            // console.log(this.uploadReady);
+            // console.log(process.env);
+
         },
         clearUpload: function clearUpload() {
             var _this5 = this;
@@ -47935,6 +47502,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.post.title = '';
                 _this5.post.body = '';
                 _this5.post.image = '';
+                _this5.post.imageName = '';
                 _this5.post.id = '';
             });
             console.log(this.uploadReady);
@@ -47943,7 +47511,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 50 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -47952,7 +47520,444 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "akaContainer mt-4" },
+    { staticClass: "akaContainer mt-4 mb-5" },
+    [
+      _vm._l(_vm.posts, function(post) {
+        return _c(
+          "div",
+          { key: post.id, staticClass: "card mb-4 akaPost border-0" },
+          [
+            post.image
+              ? _c("img", {
+                  staticClass: "card-img-top akaPostImage",
+                  attrs: {
+                    src: "http://akademiskahus.test/uploads/" + post.image,
+                    alt: "image"
+                  }
+                })
+              : _vm._e(),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
+              _c("h3", [_vm._v(_vm._s(post.title))]),
+              _vm._v(" "),
+              _c("p", [_vm._v(_vm._s(post.body))]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime mb-0" }, [
+                _vm._v(_vm._s(post.created_at))
+              ])
+            ])
+          ]
+        )
+      }),
+      _vm._v(" "),
+      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+        _c("ul", { staticClass: "pagination justify-content-center" }, [
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.prev_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchPosts(_vm.pagination.prev_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❮❮")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              { staticClass: "page-link text-dark", attrs: { href: "#" } },
+              [
+                _vm._v(
+                  "Sida " +
+                    _vm._s(_vm.pagination.current_page) +
+                    " av " +
+                    _vm._s(_vm.pagination.last_page) +
+                    " "
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.next_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchPosts(_vm.pagination.next_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❯❯")]
+              )
+            ]
+          )
+        ])
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-4860c2cc", module.exports)
+  }
+}
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(11)
+/* script */
+var __vue_script__ = __webpack_require__(44)
+/* template */
+var __vue_template__ = __webpack_require__(45)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/ManagePosts.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-03739207", Component.options)
+  } else {
+    hotAPI.reload("data-v-03739207", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            upload: '',
+            posts: [],
+            post: {
+                id: '',
+                title: '',
+                body: '',
+                created_at: '',
+                image: '',
+                imageName: ''
+            },
+            post_id: '',
+            pagination: {},
+            edit: false,
+            uploadReady: true
+        };
+    },
+    created: function created() {
+        this.fetchPosts();
+    },
+
+
+    methods: {
+        fetchPosts: function fetchPosts(page_url) {
+            var _this = this;
+
+            var vm = this;
+            page_url = page_url || '/api/posts ';
+            fetch(page_url).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                _this.posts = res.data;
+                vm.makePagination(res.meta, res.links);
+            }).catch(function (err) {
+                return console.log(e);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
+        },
+        deletePost: function deletePost(id) {
+            var _this2 = this;
+
+            if (confirm('Är du säker på att du vill ta bort posten?')) {
+                fetch('api/post/' + id, {
+                    method: 'delete'
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    alert('Post Borttagen');
+                    _this2.fetchPosts();
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+        },
+        addPost: function addPost() {
+            var _this3 = this;
+
+            if (this.edit === false) {
+                // Add
+                fetch('api/post', {
+                    method: 'post',
+                    body: JSON.stringify(this.post),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchPosts();
+                    alert('Post Tillagd');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            } else {
+                // Update
+                fetch('api/post', {
+                    method: 'put',
+                    body: JSON.stringify(this.post),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchPosts();
+                    alert('Post Uppdaterad');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+        },
+        editPost: function editPost(post) {
+            this.edit = true;
+            this.post.id = post.id;
+            this.post.post_id = post.id;
+            this.post.title = post.title;
+            this.post.body = post.body;
+            // document.getElementById('top').scrollIntoView();
+            document.getElementById('postTitle').focus();
+        },
+        imageChanged: function imageChanged(e) {
+            var _this4 = this;
+
+            console.log(e.target.files[0]);
+            this.post.imageName = e.target.files[0].name;
+
+            var fileReader = new FileReader();
+
+            fileReader.readAsDataURL(e.target.files[0]);
+
+            fileReader.onload = function (e) {
+                _this4.post.image = e.target.result;
+            };
+        },
+        log: function log() {
+            console.log(this.post);
+            // console.log(this.uploadReady);
+            // console.log(process.env);
+
+        },
+        clearUpload: function clearUpload() {
+            var _this5 = this;
+
+            this.uploadReady = false;
+            this.$nextTick(function () {
+                _this5.uploadReady = true;
+                _this5.post.title = '';
+                _this5.post.body = '';
+                _this5.post.image = '';
+                _this5.post.imageName = '';
+                _this5.post.id = '';
+            });
+            console.log(this.uploadReady);
+        }
+    }
+});
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "akaContainer mt-4 mb-5" },
     [
       _c("h2", [_vm._v("Lägg till/Ändra post")]),
       _vm._v(" "),
@@ -48022,12 +48027,81 @@ var render = function() {
                   staticClass: "form-control",
                   attrs: {
                     type: "file",
+                    id: "file-upload",
                     accept: ".jpg,.png",
                     "data-max-size": "32154"
                   },
                   on: { change: _vm.imageChanged }
                 })
-              : _vm._e()
+              : _vm._e(),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "inputfile inputfile-1",
+              attrs: {
+                type: "file",
+                name: "file-1[]",
+                id: "file-upload",
+                "data-multiple-caption": "{count} files selected",
+                multiple: ""
+              }
+            }),
+            _vm._v(" "),
+            _c("label", { attrs: { for: "file-upload" } }, [
+              !_vm.post.image
+                ? _c("span", { staticClass: "akaJustifyCenter" }, [
+                    _c(
+                      "svg",
+                      {
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          width: "20",
+                          fill: "white",
+                          height: "17",
+                          viewBox: "0 0 20 17"
+                        }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v("\n                            Ladda Upp Bild")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.post.image
+                ? _c("span", { staticClass: "akaUploadCaption" }, [
+                    _c(
+                      "svg",
+                      {
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          width: "20",
+                          fill: "white",
+                          height: "17",
+                          viewBox: "0 0 20 17"
+                        }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.post.imageName)
+                    )
+                  ])
+                : _vm._e()
+            ])
           ]),
           _vm._v(" "),
           _c(
@@ -48116,7 +48190,7 @@ var render = function() {
               ? _c("img", {
                   staticClass: "card-img-top akaPostImage",
                   attrs: {
-                    src: "http://akademiskahus.test/images/" + post.image,
+                    src: "http://akademiskahus.test/uploads/" + post.image,
                     alt: "image"
                   }
                 })
@@ -48129,7 +48203,7 @@ var render = function() {
               _vm._v(" "),
               _c("hr"),
               _vm._v(" "),
-              _c("p", { staticClass: "akaTime" }, [
+              _c("p", { staticClass: "akaTime mb-0" }, [
                 _vm._v(_vm._s(post.created_at))
               ])
             ]),
@@ -48247,7 +48321,7 @@ if (false) {
 }
 
 /***/ }),
-/* 51 */
+/* 46 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

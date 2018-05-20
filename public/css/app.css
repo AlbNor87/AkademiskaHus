@@ -10430,6 +10430,7 @@ a:visited {
 
 a:hover {
   color: black;
+  text-decoration: none;
 }
 
 /* selected link */
@@ -10441,6 +10442,51 @@ a:active {
 .akaContainer {
   max-width: 800px;
   margin: auto;
+}
+
+input,
+textarea {
+  background-color: #E0F5FF;
+  color: #FFF;
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #495057;
+  background-color: #e1f6ff;
+  background-clip: padding-box;
+  border: 0px solid #ced4da;
+  border-radius: 0.25rem;
+  -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus input:-webkit-autofill {
+  background-color: #E0F5FF;
+  -webkit-text-fill-color: #495057;
+  -webkit-box-shadow: 0 0 0px 1000px #E0F5FF inset;
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+p {
+  color: black;
+}
+
+.nopacity {
+  opacity: 0;
+}
+
+.akaBlueText {
+  color: #00AAFF;
 }
 
 .akaPostImage {
@@ -10507,5 +10553,81 @@ a:active {
 
 .akaNavTop {
   border-bottom: 1px solid #BFBFBF;
+}
+
+.akaBubble {
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+}
+
+.akaPink {
+  background: #E50F63;
+}
+
+.akaGreen {
+  background: #00A64F;
+}
+
+.akaWhite {
+  background: #FFFFFF;
+  border: 1px solid black;
+}
+
+.akaBubbleContainer {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.inputfile + label {
+  margin: 0;
+  padding: 7px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-radius: 7px;
+  color: white;
+  background-color: #00AAFF;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.inputfile + label svg {
+  margin-right: 13px;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+  cursor: pointer;
+}
+
+.akaJustifyCenter {
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.akaUploadCaption {
+  white-space: nowrap;
+  overflow: hidden;
 }
 
