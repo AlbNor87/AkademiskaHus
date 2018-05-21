@@ -7,7 +7,6 @@
         {{-- <h2 class="text-center">Välkommen {{ Auth::user()->name }}, du är nu inloggad!</h2> --}}
         
         <div id="app" class="justify-content-center">
-            
                 <manageposts></manageposts>
             
         </div>
@@ -16,7 +15,7 @@
 
     <h2 class="text-center">Välkommen!</h2>
     <div id="app">
-        
+            
             <posts></posts>
         
     </div>

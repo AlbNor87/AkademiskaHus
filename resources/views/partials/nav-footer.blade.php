@@ -2,23 +2,55 @@
 
 <nav class="navbar fixed-bottom akaNavBottom">
     
-    <a class="navbar-brand nopacity" href="{{url('/')}}">Akademiska Hus</a> 
+    {{-- @if (Auth::check()) --}}
+{{-- 
+    <div class="akaBubbleContainer">
 
-        <ul class="navbar-nav justify-content-end">
-            @if (Auth::check())
-                <li class="nav-item">
-                    <a class="nav-link nopacity" href="{{ url('logout') }}">Logga ut</a>
-                </li><!-- /nav-item -->
-            @else
-                <li class="nav-item {{ request()->path() === 'login' ? 'active' : '' }}">
-                    <a class="nav-link nopacity" href="{{ url('login') }}">Logga in</a>
-                </li><!-- /nav-item -->
-            @endif
-        </ul><!-- /navbar-nav -->
+                <a href="/errorReport">
+                    <div class="akaBubble akaFel">
+                        <p>Felanmälan</p>
+                    </div>
+                </a>
+    
+                <a href="/">
+                    <div class="akaBubble akaHem">              
+                        <p>Hem</p>
+                    </div>
+                </a>
+    
+                <a href="/ideas">
+                    <div class="akaBubble akaIde">
+                        <p>Idélådan</p>
+                    </div>
+                </a>
+    
+            </div> --}}
         
+    {{-- @else --}}
+
         <div class="akaBubbleContainer">
-            <div class="akaBubble akaPink"></div>
-            <div class="akaBubble akaGreen"></div>
-            <div class="akaBubble akaWhite"></div>
+
+                <a href="/errorReport">
+                        <div class="akaBubble akaFel {{ request()->path() === 'errorReport' || request()->path() === 'malfunction' ? 'active' : '' }}">
+                        
+                        <p>Felanmälan</p>
+                        </div>
+                </a>
+
+                <a href="/">
+                        <div class="akaBubble akaHem {{ request()->path() === '/' ? 'active' : '' }}">
+                        <p>Hem</p>
+                        </div>
+                </a>
+
+                <a href="/ideas">
+                        <div class="akaBubble akaIde {{ request()->path() === 'ideas' ? 'active' : '' }}">
+                        <p>Idélådan</p>
+                        </div>
+                </a>
+
         </div>
+        
+    {{-- @endif --}}
+        
 </nav>

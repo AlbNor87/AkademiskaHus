@@ -25,8 +25,23 @@ class PagesController extends Controller
         return view('login');
     }
 
-    public function omoss(): View
+    public function help(): View
     {
-        return view('omoss');
+        return view('help');
+    }
+
+    public function errorReport(): View
+    {
+        return view('errorReport');
+    }
+    
+    public function malfunction(): View
+    {
+        return view('malfunction');
+    }
+
+    public function ideas(): View
+    {
+        return view('ideas');
     }
 }

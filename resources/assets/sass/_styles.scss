@@ -1,24 +1,26 @@
+:root {
+    font-family: 'Scene';
+}
+
 body {
     background: $akaWhite;
     color: $akaBlue;
+    font-family: 'Scene';
 }
 
 a:link {
     color: $akaBlue;
 }
 
-/* visited link */
 a:visited {
     color: $akaBlue;
 }
 
-/* mouse over link */
 a:hover {
     color: black;
     text-decoration: none;
 }
 
-/* selected link */
 a:active {
     color: $akaLightBlue;
 }
@@ -70,4 +72,16 @@ p {
 
 .akaBlueText {
     color: $akaBlue;
+}
+
+@font-face {
+    font-family: 'Scene';
+    font-weight: 300;
+    src: url('/fonts/SceneAH-Light.otf') format('opentype'), url('/fonts/SceneProLight.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Scene';
+    font-weight: 500;
+    src: url('/fonts/SceneAH-Medium.otf') format('opentype'), url('/fonts/SceneProMedium.woff') format('woff');
 }

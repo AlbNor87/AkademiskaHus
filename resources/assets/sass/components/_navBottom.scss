@@ -1,29 +1,94 @@
+.akaNavBottom {
+    border-top: 1px solid $akaGrey;
+}
+
 .akaBubble {
+    position: relative;
     width: 50px;
 	height: 50px;
 	-moz-border-radius: 50px;
 	-webkit-border-radius: 50px;
-	border-radius: 50px;
+    border-radius: 50px;
 }
 
-.akaPink {
+.akaFel,
+.akaHem,
+.akaIde {
+    transition: all .4s;
+}
+
+.akaFel {
     background: $akaPink;
+    background-image: url(/images/triangleWhite.svg);
+    background-repeat: no-repeat;
+    background-position: 50% 42%;
 }
 
-.akaGreen {
+.akaHem {
     background: $akaGreen;
+    background-image: url(/images/houseWhite.svg);
+    background-repeat: no-repeat;
+    background-position: 50% 45%;
 }
 
-.akaWhite {
-    background: $akaWhite;
-    border: 1px solid black;
+.akaIde {
+    background: $akaBlue;
+    background-image: url(/images/bulbWhite.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.akaFel p,
+.akaHem p,
+.akaIde p {
+    position: absolute;
+    left: 50%;
+    top: 132%;
+    transform: translate(-50%, -50%);
+}
+
+.akaFel:hover, .akaFel.active:hover {
+    background-color: white;
+    background-image: url(/images/trianglePink.svg);
+    box-shadow: 0px 0px 18px $akaPink;
+}
+.akaHem:hover, .akaHem.active:hover {
+    background-color: white;
+    background-image: url(/images/houseGreen.svg);
+    box-shadow: 0px 0px 18px $akaGreen;
+}
+.akaIde:hover, .akaIde.active:hover{
+    background-color: white;
+    background-image: url(/images/bulbYellow.svg);
+    box-shadow: 0px 0px 18px $akaBlue;
+}
+
+.akaFel.active {
+    background-color: white;
+    box-shadow: 0px 0px 0px 1px $akaPink;
+    background-image: url(/images/trianglePink.svg);
+}
+
+.akaHem.active {
+    background-color: white;
+    box-shadow: 0px 0px 0px 1px $akaGreen;
+    background-image: url(/images/houseGreen.svg);
+}
+
+.akaIde.active {
+    background-color: white;
+    box-shadow: 0px 0px 0px 1px $akaBlue;
+    background-image: url(/images/bulbYellow.svg);
 }
 
 .akaBubbleContainer {
+    max-width: 800px;
+    margin: auto;
     width: 100%;
     display: flex;
     justify-content: space-around;
     position: absolute;
     left: 50%;
+    top: 0;
     transform: translate(-50%, -50%);
 }

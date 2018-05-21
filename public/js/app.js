@@ -13991,22 +13991,7 @@ Vue.component('posts', __webpack_require__(40));
 Vue.component('manageposts', __webpack_require__(43));
 
 var app = new Vue({
-	el: '#app'
-});
-
-var inputs = document.querySelectorAll('.inputfile');
-Array.prototype.forEach.call(inputs, function (input) {
-	var label = input.nextElementSibling,
-	    labelVal = label.innerHTML;
-
-	input.addEventListener('change', function (e) {
-		console.log('jkkjkjj');
-
-		var fileName = '';
-		if (this.files && this.files.length > 1) fileName = (this.getAttribute('data-multiple-caption') || '').replace('{count}', this.files.length);else fileName = e.target.value.split('\\').pop();
-
-		if (fileName) label.querySelector('span').innerHTML = fileName;else label.innerHTML = labelVal;
-	});
+    el: '#app'
 });
 
 /***/ }),
@@ -47775,27 +47760,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -48029,7 +47993,7 @@ var render = function() {
                     type: "file",
                     id: "file-upload",
                     accept: ".jpg,.png",
-                    "data-max-size": "32154"
+                    size: "32154"
                   },
                   on: { change: _vm.imageChanged }
                 })
@@ -48115,72 +48079,6 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
-      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
-        _c("ul", { staticClass: "pagination justify-content-center" }, [
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.prev_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchPosts(_vm.pagination.prev_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❮❮")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item disabled" }, [
-            _c(
-              "a",
-              { staticClass: "page-link text-dark", attrs: { href: "#" } },
-              [
-                _vm._v(
-                  "Sida " +
-                    _vm._s(_vm.pagination.current_page) +
-                    " av " +
-                    _vm._s(_vm.pagination.last_page) +
-                    " "
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.next_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchPosts(_vm.pagination.next_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❯❯")]
-              )
-            ]
-          )
-        ])
-      ]),
-      _vm._v(" "),
       _vm._l(_vm.posts, function(post) {
         return _c(
           "div",
@@ -48189,10 +48087,7 @@ var render = function() {
             post.image
               ? _c("img", {
                   staticClass: "card-img-top akaPostImage",
-                  attrs: {
-                    src: "http://akademiskahus.test/uploads/" + post.image,
-                    alt: "image"
-                  }
+                  attrs: { src: "/uploads/" + post.image, alt: "image" }
                 })
               : _vm._e(),
             _vm._v(" "),
@@ -48203,7 +48098,7 @@ var render = function() {
               _vm._v(" "),
               _c("hr"),
               _vm._v(" "),
-              _c("p", { staticClass: "akaTime mb-0" }, [
+              _c("p", { staticClass: "akaTime" }, [
                 _vm._v(_vm._s(post.created_at))
               ])
             ]),
