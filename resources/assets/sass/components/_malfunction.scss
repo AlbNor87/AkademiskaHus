@@ -1,0 +1,64 @@
+.akaMalfunction {
+    color: $akaOrange;
+
+    :focus {
+        outline-color: $akaOrange;
+        outline-style: auto;
+        outline-width: 5px;
+    }
+
+    h5 {
+        font-size: 18px;
+    }
+
+    .form-control {
+        padding: 0.375rem 0.5rem;
+        height: 40px;
+        border: 1.2px solid $akaOrange;
+    }
+    
+    .form-group {
+        textarea {
+            height: 338px;
+        }
+    }
+
+    .inputfile + label {
+        margin: 0;
+        padding: 7px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 7px;
+        color: white;
+        background-color: $akaOrange;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    
+}
+
+.akaTextProp {
+    font-size: 0.75rem;
+    color: $akaGrey;
+}
+
+.akaFormControl {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.5rem;
+    height: 40px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #495057;
+    background-color: rgb(255, 255, 255);
+    background-clip: padding-box;
+    border: 1.2px solid $akaOrange;
+    border-radius: 7px;
+    -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    
+}

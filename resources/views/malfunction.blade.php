@@ -6,12 +6,14 @@
         <div class="col mt-2">
             
             @if (Auth::check())
-            <h3>Driftstörning</h3>
+            <div id="app" class="justify-content-center">
+                <malfunction></malfunction>
+            </div>
 
             @else
 
             <h3>Driftstörning</h3>
-                
+            
             @endif
 
             <div id="app"></div>

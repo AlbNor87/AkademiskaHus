@@ -6,15 +6,21 @@
         <div class="col mt-2">
             
             @if (Auth::check())
-            <h3>Felanmälan</h3>
+            
+            <div id="app" class="justify-content-center">
+                <errorreport></errorreport>
+            </div>
 
             @else
 
-            <h3>Felanmälan</h3>
+            <h2 class="text-center mt-3 akaPink">Felanmälan</h2>
+            <div id="app" class="justify-content-center">
+                <errorreport></errorreport>
+            </div>
                 
             @endif
 
-            <div id="app"></div>
+            
         </div><!-- /col -->
     </div><!-- /row -->
 </div><!-- /akaContainer -->

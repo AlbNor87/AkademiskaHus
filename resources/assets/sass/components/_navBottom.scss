@@ -50,35 +50,35 @@
 .akaFel:hover, .akaFel.active:hover {
     background-color: white;
     background-image: url(/images/trianglePink.svg);
-    box-shadow: 0px 0px 18px $akaPink;
+    box-shadow: 0px 0px 18px $akaGrey;
 }
 .akaHem:hover, .akaHem.active:hover {
     background-color: white;
     background-image: url(/images/houseGreen.svg);
-    box-shadow: 0px 0px 18px $akaGreen;
+    box-shadow: 0px 0px 18px $akaGrey;
 }
 .akaIde:hover, .akaIde.active:hover{
     background-color: white;
-    background-image: url(/images/bulbYellow.svg);
-    box-shadow: 0px 0px 18px $akaBlue;
+    background-image: url(/images/bulbBlue.svg);
+    box-shadow: 0px 0px 18px $akaGrey;
 }
 
 .akaFel.active {
     background-color: white;
-    box-shadow: 0px 0px 0px 1px $akaPink;
+    box-shadow: 0px 0px 0px 1px $akaGrey;
     background-image: url(/images/trianglePink.svg);
 }
 
 .akaHem.active {
     background-color: white;
-    box-shadow: 0px 0px 0px 1px $akaGreen;
+    box-shadow: 0px 0px 0px 1px $akaGrey;
     background-image: url(/images/houseGreen.svg);
 }
 
 .akaIde.active {
     background-color: white;
-    box-shadow: 0px 0px 0px 1px $akaBlue;
-    background-image: url(/images/bulbYellow.svg);
+    box-shadow: 0px 0px 0px 1px $akaGrey;
+    background-image: url(/images/bulbBlue.svg);
 }
 
 .akaBubbleContainer {

@@ -13,7 +13,7 @@
 
     @else
 
-    <h2 class="text-center">Välkommen!</h2>
+    <h2 class="text-center mt-4">Välkommen!</h2>
     <div id="app">
             
             <posts></posts>

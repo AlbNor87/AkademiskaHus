@@ -1,28 +1,38 @@
 <template>
+    <div class="akaContainer mb-5 akaErrorReport">
 
-    <div class="akaContainer mt-4 mb-5">
-        
-        <h2>Lägg till/Ändra post</h2>
-        <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
-        <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button> -->
-        <form @submit.prevent="addPost" class="mb-5">
+        <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
+        <googlemap></googlemap>
 
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Titel" v-model="post.title" id="postTitle">
+         <form class="mb-3 akaMt2rem">
+
+            <div class="form-group akaMt2rem">
+                <h5>Ämne/Kategori (typ av fel)*</h5>
+                <input type="text" class="akaFormControl" placeholder="Titel" id="postTitle" required>
             </div>
 
-            <div class="form-group">
-                <textarea class="form-control" placeholder="Innehåll" v-model="post.body"></textarea>
+            <div class="form-group akaMt2rem">
+                <h5>Problembeskrivning*</h5>
+                <textarea class="akaFormControl" placeholder="Max 500 tecken" maxlength="500" required></textarea>
             </div>
+            
 
-            <div class="form-group">
+            <div class="form-group akaMt2rem">
+                <h5>Kompletterande bild <span class="akaTextProp">(valfritt)</span></h5>
+                <h5>(jpg, png, max 4 MB)</h5>
 
-                <input type="file" id="file-upload" accept=".jpg,.png" size="32154" class="form-control" v-if="uploadReady" @change="imageChanged">
-
+                <input type="file" id="file-upload" accept=".jpg,.png" size="32154" class="form-control" v-if="uploadReady" @change="imageChanged" hidden>
                 <input type="file" name="file-1[]" id="file-upload" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-				<label for="file-upload">
 
-                        
+				<label for="file-upload">
+            
+                        <!-- <span class="akaJustifyCenter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="white" height="17" viewBox="0 0 20 17">
+                            <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
+                            </svg>
+                            Ladda Upp Bild
+                        </span> -->
+
                         <span v-if="!post.image" class="akaJustifyCenter">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="white" height="17" viewBox="0 0 20 17">
                             <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
@@ -34,59 +44,38 @@
                             <path d="M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"/>
                         </svg>
                             {{post.imageName}}</span>
-                   
+                        
                 </label>
 
             </div>
 
-            <button type="submit" class="btn btn-block akaBgBlue text-white akaBorderRadius">Spara</button>
+            
+            <div class="form-group akaMt2rem">
+                <h5>Jag heter <span class="akaTextProp">(valfritt)</span></h5>
+                <input type="text" class="akaFormControl" placeholder="Förnamn">
+                <input type="text" class="akaFormControl mt-3 akaBorderRadius" placeholder="Efternamn">
+            </div>
+
+            
+            <div class="form-group akaMt2rem">
+                <h5>Telefonnummer <span class="akaTextProp">(valfritt)</span></h5>
+                <input type="text" class="akaFormControl" placeholder="Telefonnummer">
+            </div>
+
+            <div class="form-group akaMt2rem">
+            <h5>E-post <span class="akaTextProp">(valfritt)</span></h5>
+                <input type="text" class="akaFormControl" placeholder="exempel@epost.se">
+            </div>
+
+            <div class="form-group akaMt2rem akaFlexRow">
+            <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem" >Jag vill ha återkoppling på ärendet</h5>
+            </div>
+
+            <button type="submit" class="btn btn-block akaBgPink text-white akaBorderRadius">Skicka</button>
  
         </form>
 
-        <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
-
-            <img v-if="post.image" class="card-img-top akaPostImage" :src="'/uploads/' + post.image" alt="image">
-
-            <div class="card-body akaNoBottomMargin">
-                <h3>{{ post.title }}</h3>
-                
-                <p>{{ post.body }}</p>
-
-                <hr>
-
-                <p class="akaTime">{{ post.created_at }}</p>
-            </div> 
-            <div class="akaButtonContainer">
-                <button @click="editPost(post)" class="btn akaButton akaBorderBottomLeftRadius text-white">Ändra</button>
-
-                <button @click="deletePost(post.id)" class="btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft text-white">Ta Bort</button>
-            </div>
-            
-        </div>
-
-        <!-- Pagnation navbar -->
-        <nav aria-label="Page navigation">
-
-            <ul class="pagination justify-content-center">
-
-                <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
-                    <a class="page-link" href="#" @click="fetchPosts(pagination.prev_page_url)">❮❮</a>
-                </li>
-
-                 <li class="page-item disabled">
-                     <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
-                 </li>
-
-                <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
-                    <a class="page-link" href="#" @click="fetchPosts(pagination.next_page_url)">❯❯</a>
-                </li>
-
-            </ul>
-
-        </nav>
-
     </div>
-
 </template>
 
 <script>
@@ -230,4 +219,3 @@
     }
     
 </script>
-

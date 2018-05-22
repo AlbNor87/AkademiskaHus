@@ -9,11 +9,11 @@
 
             @if (Auth::check())
                 
-            <h3>Idelådan (inloggad)</h3>
+            <h2 class="text-center mt-3">Idelådan (inloggad)</h2>
 
             @else
 
-            <h3>Idelådan (ej inloggad)</h3>
+            <h2 class="text-center mt-3">Idelådan (ej inloggad)</h2>
                 
             @endif
          

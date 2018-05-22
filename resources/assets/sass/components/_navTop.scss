@@ -11,7 +11,8 @@
 }
 
 .akaNavTop {
-    border-bottom: 1px solid $akaGrey;  
+    border-bottom: 1px solid $akaGrey;
+    
 }
 
 .akaNavbarContainer {
@@ -20,4 +21,12 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+a.akaNavTopLink {
+    padding-right: 5px;
+    padding-top: 5px;
+    font-size: 16px;
+    color: $akaGrey;
 }
