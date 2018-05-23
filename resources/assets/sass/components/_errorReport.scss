@@ -1,10 +1,11 @@
 .akaErrorReport {
     color: $akaPink;
 
-    :focus {
-        outline-color: $akaPink;
-        outline-style: auto;
-        outline-width: 5px;
+    :focus {        
+        border-color: $akaPink;
+        outline: 0;
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(229, 15, 101, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(229, 15, 101, 0.25);
     }
 
     h5 {
@@ -60,5 +61,5 @@
     transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    
 }
+

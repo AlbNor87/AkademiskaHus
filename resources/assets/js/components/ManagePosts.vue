@@ -2,7 +2,7 @@
 
     <div class="akaContainer mt-4 mb-5">
         
-        <h2>Lägg till/Ändra post</h2>
+        <h2 class="akaGreen">Lägg till/Ändra post</h2>
         <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
         <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button> -->
         <form @submit.prevent="addPost" class="mb-5">
@@ -39,7 +39,7 @@
 
             </div>
 
-            <button type="submit" class="btn btn-block akaBgBlue text-white akaBorderRadius">Spara</button>
+            <button type="submit" class="btn btn-block akaBgGreen text-white akaBorderRadius">Spara</button>
  
         </form>
 
@@ -48,9 +48,9 @@
             <img v-if="post.image" class="card-img-top akaPostImage" :src="'/uploads/' + post.image" alt="image">
 
             <div class="card-body akaNoBottomMargin">
-                <h3>{{ post.title }}</h3>
+                <h3 class="akaPostTitle">{{ post.title }}</h3>
                 
-                <p>{{ post.body }}</p>
+                <p class="akaPostText">{{ post.body }}</p>
 
                 <hr>
 

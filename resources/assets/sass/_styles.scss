@@ -4,7 +4,6 @@
 
 body {
     background: $akaWhite;
-    color: $akaBlue;
     font-family: 'Scene';
     font-size: 16px;
 }
@@ -15,11 +14,11 @@ p {
 }
 
 a:link {
-    color: $akaBlue;
+    color: $akaGreen;
 }
 
 a:visited {
-    color: $akaBlue;
+    color: $akaGreen;
 }
 
 a:hover {
@@ -28,7 +27,7 @@ a:hover {
 }
 
 a:active {
-    color: $akaLightBlue;
+    color: $akaLightGreen;
 }
 
 .akaContainer {
@@ -38,14 +37,8 @@ a:active {
 
 input, 
 textarea {
-    background-color: $akaLightBlue;
+    background-color: $akaLightGreen;
     color: #FFF;
-}
-
-:focus {
-    outline-color: green;
-    outline-style: auto;
-    outline-width: 5px;
 }
 
 .form-control {
@@ -55,9 +48,9 @@ textarea {
     font-size: 0.9rem;
     line-height: 1.6;
     color: $akaGrey;
-    background-color: rgb(225, 246, 255);
+    background-color: white;
     background-clip: padding-box;
-    border: 0px solid #ced4da;
+    border: 1.2px solid $akaGreen;
     border-radius: 0.25rem;
     -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
     transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
@@ -65,13 +58,26 @@ textarea {
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
+.form-group, .akaContainer {           
+    
+    :focus {
+        border-color: $akaGreen;
+        outline: 0;
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(123, 182, 62, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(123, 182, 62, 0.25);
+    }
+
+}
+
+
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus
 input:-webkit-autofill {
-  background-color: $akaLightBlue;
+  background-color: $akaLightGreen;
   -webkit-text-fill-color: #495057;
-  -webkit-box-shadow: 0 0 0px 1000px $akaLightBlue inset;
+  -webkit-box-shadow: 0 0 0px 1000px $akaLightGreen inset;
   transition: background-color 5000s ease-in-out 0s;
 }
 
@@ -79,8 +85,8 @@ input:-webkit-autofill {
     opacity: 0;
 }
 
-.akaBlueText {
-    color: $akaBlue;
+.akaGreenText {
+    color: $akaGreen;
 }
 
 @font-face {
@@ -95,16 +101,29 @@ input:-webkit-autofill {
     src: url('/fonts/SceneAH-Medium.otf') format('opentype'), url('/fonts/SceneProMedium.woff') format('woff');
 }
 
+.btn {
+    font-size: 16px;
+    background-color: $akaGreen;
+}
+
 .akaBorderRadius {
     border-radius: 7px;
+}
+
+.akaBgGreen {
+    background-color: $akaGreen;
+}
+
+.akaBgPink {
+    background-color: $akaPink;
 }
 
 .akaBgBlue {
     background-color: $akaBlue;
 }
 
-.akaBgPink {
-    background-color: $akaPink;
+.akaBgOrange {
+    background-color: $akaOrange;
 }
 
 .akaMt2rem {
@@ -139,10 +158,11 @@ input:-webkit-autofill {
     color: $akaGrey;
 }
 
-.btn {
-    font-size: 16px;
-}
-
 .akaPink {
     color: $akaPink;
 }
+
+.akaGreen {
+    color: $akaGreen;
+}
+

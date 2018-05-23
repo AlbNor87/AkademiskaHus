@@ -1,7 +1,7 @@
 <template>
     <div class="akaRelative">
-        
-        <label class="akaMapInput" @keyup.enter="addMarker">
+              
+        <label class="akaMapInput" v-bind:class="this.colorTheme" @keyup.enter="addMarker">
         <button @click="fetchLocation"></button>    
             <gmap-autocomplete
             @place_changed="setPlace" placeholder="Ange adress eller plats">
@@ -27,6 +27,7 @@
 
 <script>
 export default {
+  props: ['colorTheme'],
   name: "GoogleMap",
   data() {
     return {
@@ -35,7 +36,7 @@ export default {
         markers: [],
         places: [],
         options: {disableDefaultUI: true, zoomControl:true},
-        currentPlace: null
+        currentPlace: null,
     };
   },
 

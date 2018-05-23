@@ -27,7 +27,7 @@
                     <input class="form-control" type="password" name="password">
                 </div><!-- /form-group -->
 
-                <button class="btn btn-block akaBgBlue text-white" type="submit">Logga in</button>
+                <button class="btn btn-block text-white" type="submit">Logga in</button>
             </form><!-- / -->
         </div><!-- /col -->
     </div><!-- /row -->

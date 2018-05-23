@@ -37,7 +37,24 @@
         outline: none;
     }
 
+}
 
+.akaMapInput.akaOrange {
+    button {
+        background-color: $akaOrange;
+    }
+    input { 
+        border: 1.2px $akaOrange solid;   
+    }
+}
+
+.akaMapInput.akaBlue {
+    button {
+        background-color: $akaBlue;
+    }
+    input { 
+        border: 1.2px $akaBlue solid;   
+    }
 }
 
 .akaRelative {

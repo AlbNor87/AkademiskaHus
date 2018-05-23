@@ -8,19 +8,18 @@
             @if (Auth::check())
             
             <div id="app" class="justify-content-center">
-                <errorreport></errorreport>
+                <errorreport :auth="true" ></errorreport>
             </div>
 
             @else
 
             <h2 class="text-center mt-3 akaPink">Felanmälan</h2>
             <div id="app" class="justify-content-center">
-                <errorreport></errorreport>
+                <errorreport :auth="false" ></errorreport>
             </div>
                 
             @endif
 
-            
         </div><!-- /col -->
     </div><!-- /row -->
 </div><!-- /akaContainer -->

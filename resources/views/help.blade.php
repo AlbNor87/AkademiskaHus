@@ -14,7 +14,7 @@
                 {{-- <form action="" class="mb-3">
                         {{ csrf_field() }} --}}
         
-                        <button class="btn btn-block akaBgBlue text-white mb-3" type="submit">Logga ut</button>
+                        <button class="btn btn-block text-white mb-3" type="submit">Logga ut</button>
                         
                 {{-- </form><!-- / --> --}}
                 </a>
@@ -43,7 +43,7 @@
                     <input class="form-control" type="password" name="password" placeholder="Lösenord">
                 </div><!-- /form-group -->
 
-                <button class="btn btn-block akaBgBlue text-white" type="submit">Logga in</button>
+                <button class="btn btn-block text-white" type="submit">Logga in</button>
                 
             </form><!-- / -->
 

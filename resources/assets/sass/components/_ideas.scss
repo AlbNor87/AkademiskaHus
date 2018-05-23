@@ -1,11 +1,11 @@
-.akaMalfunction {
-    color: $akaOrange;
+.akaIdeas {
+    color: $akaBlue;
 
     :focus {
-        border-color: $akaOrange;
+        border-color: $akaBlue;
         outline: 0;
-        -webkit-box-shadow: 0 0 0 0.2rem rgba(247, 146, 30, 0.25);
-        box-shadow: 0 0 0 0.2rem rgba(247, 146, 30, 0.25);
+        -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 146, 187, 0.25);
+        box-shadow: 0 0 0 0.2rem rgba(0, 146, 187, 0.25);
     }
 
     h5 {
@@ -15,24 +15,18 @@
     .form-control {
         padding: 0.375rem 0.5rem;
         height: 40px;
-        border: 1.2px solid $akaOrange;
-    }
-
-    .form-group.akaShort {
-        textarea {
-            height: 80px;
-        }
+        border: 1.2px solid $akaBlue;
     }
     
     .form-group {
         textarea {
             height: 338px;
-            border: 1.2px solid $akaOrange;
+            border: 1.2px solid $akaBlue;
         }
     }
 
     input {
-        border: 1.2px solid $akaOrange;
+        border: 1.2px solid $akaBlue;
     }
 
     .inputfile + label {
@@ -43,7 +37,7 @@
         align-items: center;
         border-radius: 7px;
         color: white;
-        background-color: $akaOrange;
+        background-color: $akaBlue;
         cursor: pointer;
         overflow: hidden;
         white-space: nowrap;
@@ -56,6 +50,6 @@
     color: $akaGrey;
 }
 
-.akaFormControl.akaOrange {
-    border: 1.2px solid $akaOrange;
+.akaFormControl.akaBlue {
+    border: 1.2px solid $akaBlue;
 }

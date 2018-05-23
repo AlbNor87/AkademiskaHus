@@ -7,13 +7,7 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 Vue.use(VueGoogleMaps, {
   load: {
     key: 'AIzaSyDS-75H9sxSJoM2H7W7Eb8RvHAzyDnhAn0',
-    libraries: 'places', // This is required if you use the Autocomplete plugin
-    // OR: libraries: 'places,drawing'
-    // OR: libraries: 'places,drawing,visualization'
-    // (as you require)
- 
-    //// If you want to set the version, you can do so:
-    // v: '3.26',
+    libraries: 'places', 
   },
  
   //// If you intend to programmatically custom event listener code
@@ -32,9 +26,10 @@ Vue.use(VueGoogleMaps, {
 
 Vue.component('posts', require('./components/posts.vue'));
 Vue.component('manageposts', require('./components/ManagePosts.vue'));
+Vue.component('googlemap', require('./components/GoogleMap.vue'));
 Vue.component('errorreport', require('./components/ErrorReport.vue'));
 Vue.component('malfunction', require('./components/Malfunction.vue'));
-Vue.component('googlemap', require('./components/GoogleMap.vue'));
+Vue.component('ideas', require('./components/Ideas.vue'));
 
 const app = new Vue({
     el: '#app'

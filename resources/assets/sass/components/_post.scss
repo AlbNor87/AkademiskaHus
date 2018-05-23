@@ -7,16 +7,16 @@
 }
 
 .akaPost {
-    background-color: $akaLightBlue;
+    background-color: $akaLightGreen;
     border-radius: 7px;
 }
 
 .akaTime {
     font-size: 0.75rem;
+    font-weight: 300;
 }
 
 .akaButton {
-    background-color: $akaBlue;
     width: 50%;
     border-radius: 0;
     margin-top: -1.25rem;
@@ -36,4 +36,13 @@
 
 .akaMarginTinyLeft {
     margin-left: 1px;
+}
+
+.akaPostText {
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.akaPostTitle {
+    font-size: 18px;
 }

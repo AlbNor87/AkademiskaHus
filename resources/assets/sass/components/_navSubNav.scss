@@ -8,11 +8,10 @@
 
 a.akaNavLink {
     font-size: 20px;
-    color: $akaDarkBlue;
-    opacity: 0.5;
+    color: $akaGrey;
 }
 
 a.akaNavLink.active {
-    opacity: 1;
+    color: black;
     text-decoration: underline;
 }

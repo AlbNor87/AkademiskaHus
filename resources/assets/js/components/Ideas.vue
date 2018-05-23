@@ -1,26 +1,26 @@
 <template>
-    <div class="akaContainer mb-5 akaErrorReport">
+    <div class="akaContainer mb-5 akaIdeas">
 
         <!-- <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
         <googlemap></googlemap> -->
 
-        <form class="mb-3 akaMt2rem" id="errorReport">
+        <form class="mb-3 akaMt2rem" id="ideas">
 
             <div class="form-group akaMt2rem">
-                <h5>Ämne/Kategori (typ av fel)*</h5>
-                <input type="text" class="akaFormControl" placeholder="Titel" id="postTitle" required>
+                <h5>Ämne/Kategori*</h5>
+                <input type="text" class="akaFormControl akaBlue" placeholder="Idé-titel" id="postTitle" required>
             </div>
 
         </form>
 
         <div class="form-group akaMt2rem">
         <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap></googlemap>
+        <googlemap colorTheme="akaBlue"></googlemap>
         </div>
 
-        <form class="mb-3 akaMt2rem" id="errorReport">
+        <form class="mb-3 akaMt2rem" id="ideas">
             <div class="form-group akaMt2rem">
-                <h5>Problembeskrivning*</h5>
+                <h5>Idébeskrivning*</h5>
                 <textarea class="akaFormControl" placeholder="Max 500 tecken" maxlength="500" required></textarea>
             </div>
             
@@ -72,7 +72,7 @@
             <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem" >Jag vill ha återkoppling på ärendet</h5>
             </div>
 
-            <button form="errorReport" type="submit" class="btn btn-block akaBgPink text-white akaBorderRadius">Skicka</button>
+            <button form="ideas" type="submit" class="btn btn-block akaBgBlue text-white akaBorderRadius">Skicka</button>
  
         </form>
 
