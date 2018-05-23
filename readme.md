@@ -6,7 +6,7 @@
 Design a website or application for Akademiska Hus.
 
 ## About the project
-This project was built using Laravel for the backend api and Vue.js together with Bootstrap 4 for the front end.
+This project was built using Laravel and Vue.js together with Bootstrap 4.
 
 ## Creators:
 - _Linus van der Putten (Digital Designer)_
