@@ -1,29 +1,22 @@
 <template>
     <div class="akaContainer mb-5 akaErrorReport">
 
-        <!-- <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap></googlemap> -->
+        <div class="form-group">
+            <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
+            <googlemap :location="location" :lng="lng" :lat="lat"></googlemap>
+        </div>
 
-        <form class="mb-3 akaMt2rem" id="errorReport">
+        <form class="mb-3 akaMt2rem">
 
             <div class="form-group akaMt2rem">
                 <h5>Ämne/Kategori (typ av fel)*</h5>
-                <input type="text" class="akaFormControl" placeholder="Titel" id="postTitle" required>
+                <input type="text" class="akaFormControl" placeholder="Titel" required>
             </div>
 
-        </form>
-
-        <div class="form-group akaMt2rem">
-        <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap></googlemap>
-        </div>
-
-        <form class="mb-3 akaMt2rem" id="errorReport">
             <div class="form-group akaMt2rem">
                 <h5>Problembeskrivning*</h5>
                 <textarea class="akaFormControl" placeholder="Max 500 tecken" maxlength="500" required></textarea>
             </div>
-            
 
             <div class="form-group akaMt2rem">
                 <h5>Kompletterande bild <span class="akaTextProp">(valfritt)</span></h5>
@@ -50,13 +43,11 @@
 
             </div>
 
-            
             <div  v-if="!this.auth" class="form-group akaMt2rem">
                 <h5>Jag heter <span class="akaTextProp">(valfritt)</span></h5>
                 <input type="text" class="akaFormControl" placeholder="Förnamn">
                 <input type="text" class="akaFormControl mt-3 akaBorderRadius" placeholder="Efternamn">
             </div>
-
             
             <div v-if="!this.auth" class="form-group akaMt2rem">
                 <h5>Telefonnummer <span class="akaTextProp">(valfritt)</span></h5>
@@ -72,7 +63,7 @@
             <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem" >Jag vill ha återkoppling på ärendet</h5>
             </div>
 
-            <button form="errorReport" type="submit" class="btn btn-block akaBgPink text-white akaBorderRadius">Skicka</button>
+           <button type="submit" class="btn btn-block akaBgPink text-white akaBorderRadius">Skicka</button>
  
         </form>
 
@@ -97,7 +88,11 @@
                 post_id: '',
                 pagination: {},
                 edit: false,
-                uploadReady: true 
+                uploadReady: true,
+                // Default location to Yrgo, Lärdomsgatan. Just for now...
+                location: 'Lärdomsgatan, Gothenburg, Sweden',
+                lat: 57.705982,
+                lng: 11.936401
             }
         },
 

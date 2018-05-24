@@ -15,7 +15,7 @@
 
         <div class="form-group akaMt2rem">
         <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap colorTheme="akaBlue"></googlemap>
+        <googlemap colorTheme="akaBlue" :location="location" :lng="lng" :lat="lat"></googlemap>
         </div>
 
         <form class="mb-3 akaMt2rem" id="ideas">
@@ -97,7 +97,11 @@
                 post_id: '',
                 pagination: {},
                 edit: false,
-                uploadReady: true 
+                uploadReady: true,
+                // Default location to Yrgo, Lärdomsgatan. Just for now...
+                location: 'Lärdomsgatan, Gothenburg, Sweden',
+                lat: 57.705982,
+                lng: 11.936401
             }
         },
 

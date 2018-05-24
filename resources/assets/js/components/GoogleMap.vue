@@ -27,12 +27,11 @@
 
 <script>
 export default {
-  props: ['colorTheme'],
+  props: ['colorTheme', 'location', 'lng', 'lat'],
   name: "GoogleMap",
   data() {
     return {
-        // Default to Yrgo, Lärdomsgatan. Just for now...
-        center: { lat:57.705982, lng:11.936401 },
+        center: { lat:this.lat, lng:this.lng },
         markers: [],
         places: [],
         options: {disableDefaultUI: true, zoomControl:true},
@@ -59,7 +58,8 @@ export default {
         this.markers.push({ position: marker });
         this.places.push(this.currentPlace);
         this.center = marker;
-        this.currentPlace = null;
+        this.$emit('locationSelected', this.center, this.currentPlace);
+        this.currentPlace = null; 
       }
     },
     geolocate: function() {

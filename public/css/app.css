@@ -10448,12 +10448,6 @@ a:active {
   margin: auto;
 }
 
-input,
-textarea {
-  background-color: #f0ffe2;
-  color: #FFF;
-}
-
 .form-control {
   display: block;
   width: 100%;
@@ -10482,9 +10476,9 @@ textarea {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus input:-webkit-autofill {
-  background-color: #f0ffe2;
+  background-color: white;
   -webkit-text-fill-color: #495057;
-  -webkit-box-shadow: 0 0 0px 1000px #f0ffe2 inset;
+  -webkit-box-shadow: 0 0 0px 1000px white inset;
   -webkit-transition: background-color 5000s ease-in-out 0s;
   transition: background-color 5000s ease-in-out 0s;
 }
@@ -10602,6 +10596,10 @@ input:-webkit-autofill:focus input:-webkit-autofill {
   color: #7BB63E;
 }
 
+.page-link:hover {
+  color: #7BB63E;
+}
+
 .akaPostImage {
   width: 100%;
   height: 200px;
@@ -10614,6 +10612,7 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 .akaPost {
   background-color: #f0ffe2;
   border-radius: 7px;
+  border: 1px solid #7BB63E;
 }
 
 .akaTime {
@@ -11065,6 +11064,17 @@ input[type="file"] {
 
 .akaFormControl.akaOrange {
   border: 1.2px solid #F7911E;
+}
+
+.akaMalfunctionCard {
+  background-color: #fff3e6;
+  border-radius: 7px;
+  border: 1px solid #F7911E;
+}
+
+.akaMalfunctionCard h3,
+.akaMalfunctionCard h4 {
+  color: black;
 }
 
 .akaIdeas {

@@ -1,33 +1,55 @@
 <template>
     <div class="akaContainer mb-5 akaMalfunction">
 
-         <form class="mb-3 mt-3" id="malfunction">
+        <div class="form-group">
+            <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
+            <googlemap v-if="this.renderMap" colorTheme="akaOrange" :location="malfunction.location" :lng="malfunction.lng" :lat="malfunction.lat" @locationSelected="setLocation"></googlemap>
+        </div>
 
-            <div class="form-group">
+        <form @submit.prevent="addMalfunction" class="mb-3 mt-3">
+
+            <div class="form-group akaMt2rem">
                 <h5>Rubrik till driftstörning*</h5>
-                <input type="text" class="akaFormControl akaOrange" placeholder="Titel" id="postTitle" required>
+                <input type="text" class="akaFormControl akaOrange" placeholder="Titel" id="MalfunctionTitle" v-model="malfunction.title" required>
             </div>
 
             <div class="form-group akaMt2rem akaShort">
                 <h5>Sammanfattning* <span class="akaTextProp">(Underrubrik i notifikation)</span></h5>
-                <textarea class="akaFormControl" placeholder="Max 150 tecken" maxlength="150" required></textarea>
+                <textarea class="akaFormControl" placeholder="Max 150 tecken" maxlength="150" v-model="malfunction.summary" required></textarea>
             </div>
-        </form>
-
-        <div class="form-group akaMt2rem">
-        <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap colorTheme="akaOrange"></googlemap>
-        </div>
-
-        <form class="mb-3 akaMt2rem" id="malfunction">   
+    
             <div class="form-group akaMt2rem">
                 <h5>Fullständig information</h5>
-                <textarea class="akaFormControl" placeholder="Beskrivning av driftstörning" required></textarea>
+                <textarea class="akaFormControl" placeholder="Beskrivning av driftstörning" v-model="malfunction.body" required></textarea>
             </div>
 
-            <button form="malfunction" type="submit" class="btn btn-block akaBgOrange text-white akaBorderRadius">Skicka</button>
+            <button type="submit" class="btn btn-block akaBgOrange text-white akaBorderRadius">Spara</button>
  
         </form>
+
+        <div class="card mb-4 akaMalfunctionCard" v-for="malfunction in malfunctions" v-bind:key="malfunction.id">
+
+            <div class="card-body akaNoBottomMargin">
+                <h3 class="akaPostTitle">{{ malfunction.title }}</h3>
+                
+                <h4 class="akaPostText">{{ malfunction.summary }}</h4>
+
+                <hr>
+
+                <p class="akaPostText">{{ malfunction.body }}</p>
+
+                <hr>
+
+                <p class="akaTime">{{ malfunction.created_at }}</p>
+                <p class="akaTime">{{ malfunction.location }}</p>
+            </div> 
+            <div class="akaButtonContainer">
+                <button @click="editMalfunction(malfunction)" class="btn akaButton akaBorderBottomLeftRadius akaBgOrange text-white">Ändra</button>
+
+                <button @click="deleteMalfunction(malfunction.id)" class="btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft akaBgOrange text-white">Ta Bort</button>
+            </div>
+            
+        </div>
 
     </div>
 </template>
@@ -36,35 +58,36 @@
     export default {
         data() {
             return {
-                upload: '',
-                posts: [],
-                post: {
+                malfunctions: [],
+                malfunction: {
                     id: '',
                     title: '',
                     body: '',
+                    summary: '',
                     created_at: '',
-                    image: '',
-                    imageName: ''
+                    location: 'Lärdomsgatan, Gothenburg, Sweden',
+                    lat: 57.705982,
+                    lng: 11.936401
                 },
-                post_id: '',
+                malfunction_id: '',
                 pagination: {},
                 edit: false,
-                uploadReady: true 
+                renderMap: true
             }
         },
 
         created() {
-            this.fetchPosts();
+            this.fetchMalfunctions();
         },
 
         methods: {
-            fetchPosts(page_url) {
+            fetchMalfunctions(page_url) {
                 let vm = this;
-                page_url = page_url || '/api/posts '
+                page_url = page_url || '/api/malfunctions '
                 fetch(page_url)
                 .then(res => res.json())
                 .then(res => {
-                    this.posts = res.data;
+                    this.malfunctions = res.data;
                     vm.makePagination(res.meta, res.links);
                 })
                 .catch(err => console.log(e)); 
@@ -79,25 +102,25 @@
 
                 this.pagination = pagination;
             },
-            deletePost(id) {
-                if(confirm('Är du säker på att du vill ta bort posten?')) {
-                    fetch(`api/post/${id}`, {
+            deleteMalfunction(id) {
+                if(confirm('Är du säker på att du vill ta bort driftstörningen?')) {
+                    fetch(`api/malfunction/${id}`, {
                         method: 'delete'
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Post Borttagen');
-                        this.fetchPosts();
+                        alert('Malfunction Borttagen');
+                        this.fetchMalfunctions();
                     })
                     .catch(err => console.log(err));
                 }
             },
-            addPost() {
+            addMalfunction() {
                 if(this.edit === false) {
                     // Add
-                    fetch('api/post', {
+                    fetch('api/malfunction', {
                         method: 'post',
-                        body: JSON.stringify(this.post),
+                        body: JSON.stringify(this.malfunction),
                         headers: {
                             'content-type': 'application/json'
                         }
@@ -105,15 +128,15 @@
                     .then(res => res.json())
                     .then(data => {
                         this.clearUpload();
-                        this.fetchPosts();
-                        alert('Post Tillagd');
+                        this.fetchMalfunctions();
+                        alert('Driftstörning Tillagd');
                     })
                     .catch(err => console.log(err));
                 } else {
                     // Update
-                    fetch('api/post', {
+                    fetch('api/malfunction', {
                         method: 'put',
-                        body: JSON.stringify(this.post),
+                        body: JSON.stringify(this.malfunction),
                         headers: {
                             'content-type': 'application/json'
                         }
@@ -121,53 +144,45 @@
                     .then(res => res.json())
                     .then(data => {
                         this.clearUpload();
-                        this.fetchPosts();
-                        alert('Post Uppdaterad');
+                        this.fetchMalfunctions();
+                        alert('Driftstörning Uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }
+                // Reload...
+                this.renderMap = false;
+                var self = this;
+                setTimeout(function(){
+                self.renderMap = true;
+                }, 300);
             },
-            editPost(post) {
+            editMalfunction(malfunction) {
                 this.edit = true;
-                this.post.id = post.id;
-                this.post.post_id = post.id;
-                this.post.title = post.title;
-                this.post.body = post.body;
-                // document.getElementById('top').scrollIntoView();
-                document.getElementById('postTitle').focus();
-            },
-            imageChanged(e){
-                console.log(e.target.files[0]);
-                this.post.imageName = e.target.files[0].name;
-                
-                const fileReader = new FileReader();
-
-                fileReader.readAsDataURL(e.target.files[0]);
-
-                fileReader.onload = (e) => {
-                    this.post.image = e.target.result;
-                }
-
+                this.malfunction.id = malfunction.id;
+                this.malfunction.malfunction_id = malfunction.id;
+                this.malfunction.title = malfunction.title;
+                this.malfunction.summary = malfunction.summary;
+                this.malfunction.body = malfunction.body;
+                this.malfunction.location = malfunction.location;
+                document.getElementById('MalfunctionTitle').focus();
             },
             log(){
-                console.log(this.post);
-                // console.log(this.uploadReady);
-                // console.log(process.env);
-                
-                
+                console.log(this.malfunction);
             },
             clearUpload(){
-                this.uploadReady = false;
                 this.$nextTick(() => {
-                this.uploadReady = true;
-                this.post.title = '';
-                this.post.body = '';
-                this.post.image = '';
-                this.post.imageName = '';
-                this.post.id = '';
-                
-            })
-                console.log(this.uploadReady);
+                this.malfunction.body = '';
+                this.malfunction.title = '';
+                this.malfunction.summary = '';
+                this.malfunction.id = '';    
+            })},
+            setLocation (position, place) {
+                this.malfunction.lat = position.lat;
+                this.malfunction.lng = position.lng;
+                this.malfunction.location = place.formatted_address;
+                console.log(position.lat) // someValue
+                console.log(position.lng) // someValue
+                console.log(place.formatted_address) // someValue
             }
         }
     }

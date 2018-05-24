@@ -43,7 +43,7 @@
  
         </form>
 
-        <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
+        <div class="card mb-4 akaPost" v-for="post in posts" v-bind:key="post.id">
 
             <img v-if="post.image" class="card-img-top akaPostImage" :src="'/uploads/' + post.image" alt="image">
 
@@ -190,7 +190,6 @@
                 this.post.post_id = post.id;
                 this.post.title = post.title;
                 this.post.body = post.body;
-                // document.getElementById('top').scrollIntoView();
                 document.getElementById('postTitle').focus();
             },
             imageChanged(e){
@@ -224,7 +223,7 @@
                 this.post.id = '';
                 
             })
-                console.log(this.uploadReady);
+
             }
         }
     }

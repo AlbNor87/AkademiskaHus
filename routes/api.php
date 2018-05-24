@@ -31,3 +31,19 @@ Route::put('post', 'PostController@store');
 
 // Delete 
 Route::delete('post/{id}', 'PostController@destroy');
+
+
+// List malfunctions
+Route::get('malfunctions', 'MalfunctionController@index');
+
+// List single malfunction
+Route::get('malfunction/{id}', 'MalfunctionController@show');
+
+// Create malfunction
+Route::post('malfunction', 'MalfunctionController@store');
+
+// Update malfunction
+Route::put('malfunction', 'MalfunctionController@store');
+
+// Delete malfunction
+Route::delete('malfunction/{id}', 'MalfunctionController@destroy');

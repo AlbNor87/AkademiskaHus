@@ -375,6 +375,115 @@ module.exports = {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -556,115 +665,6 @@ function mappedPropsToVueProps(mappedProps) {
     return acc;
   }, {});
 }
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
 
 /***/ }),
 /* 3 */
@@ -14985,7 +14985,7 @@ exports.default = function (input) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(24);
-module.exports = __webpack_require__(96);
+module.exports = __webpack_require__(99);
 
 
 /***/ }),
@@ -15023,10 +15023,10 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_0_vue2_google_maps__, {
 
 Vue.component('posts', __webpack_require__(81));
 Vue.component('manageposts', __webpack_require__(84));
-Vue.component('googlemap', __webpack_require__(93));
-Vue.component('errorreport', __webpack_require__(87));
-Vue.component('malfunction', __webpack_require__(90));
-Vue.component('ideas', __webpack_require__(100));
+Vue.component('googlemap', __webpack_require__(87));
+Vue.component('errorreport', __webpack_require__(90));
+Vue.component('malfunction', __webpack_require__(93));
+Vue.component('ideas', __webpack_require__(96));
 
 var app = new Vue({
   el: '#app'
@@ -48350,7 +48350,7 @@ var _mapElementMixin = __webpack_require__(18);
 
 var _mapElementMixin2 = _interopRequireDefault(_mapElementMixin);
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48440,7 +48440,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48586,7 +48586,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48679,7 +48679,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48820,7 +48820,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48872,7 +48872,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -48913,7 +48913,7 @@ exports.default = (0, _mapElementFactory2.default)({
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(58)
 /* template */
@@ -48988,7 +48988,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 var _mapElementFactory2 = _interopRequireDefault(_mapElementFactory);
 
@@ -49106,7 +49106,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(62)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(65)
 /* template */
@@ -49275,7 +49275,7 @@ var _WatchPrimitiveProperties = __webpack_require__(8);
 
 var _WatchPrimitiveProperties2 = _interopRequireDefault(_WatchPrimitiveProperties);
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49475,7 +49475,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(69)
 }
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(71)
 /* template */
@@ -49608,7 +49608,7 @@ var _WatchPrimitiveProperties = __webpack_require__(8);
 
 var _WatchPrimitiveProperties2 = _interopRequireDefault(_WatchPrimitiveProperties);
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -49781,7 +49781,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(75)
 /* template */
@@ -49970,7 +49970,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(78)
 /* template */
@@ -50049,7 +50049,7 @@ var _simulateArrowDown2 = _interopRequireDefault(_simulateArrowDown);
 
 var _manager = __webpack_require__(4);
 
-var _mapElementFactory = __webpack_require__(1);
+var _mapElementFactory = __webpack_require__(2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50155,7 +50155,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(82)
 /* template */
@@ -50525,7 +50525,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(85)
 /* template */
@@ -50775,7 +50775,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.post.post_id = post.id;
             this.post.title = post.title;
             this.post.body = post.body;
-            // document.getElementById('top').scrollIntoView();
             document.getElementById('postTitle').focus();
         },
         imageChanged: function imageChanged(e) {
@@ -50810,7 +50809,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.post.imageName = '';
                 _this5.post.id = '';
             });
-            console.log(this.uploadReady);
         }
     }
 });
@@ -50985,64 +50983,60 @@ var render = function() {
       ),
       _vm._v(" "),
       _vm._l(_vm.posts, function(post) {
-        return _c(
-          "div",
-          { key: post.id, staticClass: "card mb-4 akaPost border-0" },
-          [
-            post.image
-              ? _c("img", {
-                  staticClass: "card-img-top akaPostImage",
-                  attrs: { src: "/uploads/" + post.image, alt: "image" }
-                })
-              : _vm._e(),
-            _vm._v(" "),
-            _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
-              _c("h3", { staticClass: "akaPostTitle" }, [
-                _vm._v(_vm._s(post.title))
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaPostText" }, [
-                _vm._v(_vm._s(post.body))
-              ]),
-              _vm._v(" "),
-              _c("hr"),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaTime" }, [
-                _vm._v(_vm._s(post.created_at))
-              ])
+        return _c("div", { key: post.id, staticClass: "card mb-4 akaPost" }, [
+          post.image
+            ? _c("img", {
+                staticClass: "card-img-top akaPostImage",
+                attrs: { src: "/uploads/" + post.image, alt: "image" }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
+            _c("h3", { staticClass: "akaPostTitle" }, [
+              _vm._v(_vm._s(post.title))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "akaButtonContainer" }, [
-              _c(
-                "button",
-                {
-                  staticClass:
-                    "btn akaButton akaBorderBottomLeftRadius text-white",
-                  on: {
-                    click: function($event) {
-                      _vm.editPost(post)
-                    }
-                  }
-                },
-                [_vm._v("Ändra")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass:
-                    "btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft text-white",
-                  on: {
-                    click: function($event) {
-                      _vm.deletePost(post.id)
-                    }
-                  }
-                },
-                [_vm._v("Ta Bort")]
-              )
+            _c("p", { staticClass: "akaPostText" }, [
+              _vm._v(_vm._s(post.body))
+            ]),
+            _vm._v(" "),
+            _c("hr"),
+            _vm._v(" "),
+            _c("p", { staticClass: "akaTime" }, [
+              _vm._v(_vm._s(post.created_at))
             ])
-          ]
-        )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "akaButtonContainer" }, [
+            _c(
+              "button",
+              {
+                staticClass:
+                  "btn akaButton akaBorderBottomLeftRadius text-white",
+                on: {
+                  click: function($event) {
+                    _vm.editPost(post)
+                  }
+                }
+              },
+              [_vm._v("Ändra")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass:
+                  "btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft text-white",
+                on: {
+                  click: function($event) {
+                    _vm.deletePost(post.id)
+                  }
+                }
+              },
+              [_vm._v("Ta Bort")]
+            )
+          ])
+        ])
       }),
       _vm._v(" "),
       _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
@@ -51129,11 +51123,224 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(88)
 /* template */
 var __vue_template__ = __webpack_require__(89)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/GoogleMap.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-e7586288", Component.options)
+  } else {
+    hotAPI.reload("data-v-e7586288", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 88 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['colorTheme', 'location', 'lng', 'lat'],
+  name: "GoogleMap",
+  data: function data() {
+    return {
+      center: { lat: this.lat, lng: this.lng },
+      markers: [],
+      places: [],
+      options: { disableDefaultUI: true, zoomControl: true },
+      currentPlace: null
+    };
+  },
+  mounted: function mounted() {
+    this.geolocate();
+    this.disableDefaultUI = "true";
+  },
+
+
+  methods: {
+    // Receives a place object via the autocomplete component
+    setPlace: function setPlace(place) {
+      this.currentPlace = place;
+    },
+    addMarker: function addMarker() {
+      if (this.currentPlace) {
+        var marker = {
+          lat: this.currentPlace.geometry.location.lat(),
+          lng: this.currentPlace.geometry.location.lng()
+        };
+        this.markers.push({ position: marker });
+        this.places.push(this.currentPlace);
+        this.center = marker;
+        this.$emit('locationSelected', this.center, this.currentPlace);
+        this.currentPlace = null;
+      }
+    },
+
+    geolocate: function geolocate() {
+      var _this = this;
+
+      navigator.geolocation.getCurrentPosition(function (position) {
+        _this.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+      });
+    },
+    fetchLocation: function fetchLocation() {
+      var _this2 = this;
+
+      navigator.geolocation.getCurrentPosition(function (position) {
+        _this2.center = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 89 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "akaRelative" },
+    [
+      _c(
+        "label",
+        {
+          staticClass: "akaMapInput",
+          class: this.colorTheme,
+          on: {
+            keyup: function($event) {
+              if (
+                !("button" in $event) &&
+                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+              ) {
+                return null
+              }
+              return _vm.addMarker($event)
+            }
+          }
+        },
+        [
+          _c("button", { on: { click: _vm.fetchLocation } }),
+          _vm._v(" "),
+          _c("gmap-autocomplete", {
+            attrs: { placeholder: "Ange adress eller plats" },
+            on: { place_changed: _vm.setPlace }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "gmap-map",
+        {
+          staticClass: "akaGmap",
+          attrs: { options: _vm.options, center: _vm.center, zoom: 16 }
+        },
+        _vm._l(_vm.markers, function(m, index) {
+          return _c("gmap-marker", {
+            key: index,
+            attrs: { position: m.position },
+            on: {
+              click: function($event) {
+                _vm.center = m.position
+              }
+            }
+          })
+        })
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-e7586288", module.exports)
+  }
+}
+
+/***/ }),
+/* 90 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(91)
+/* template */
+var __vue_template__ = __webpack_require__(92)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -51172,20 +51379,11 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 88 */
+/* 91 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -51276,515 +51474,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             post_id: '',
             pagination: {},
             edit: false,
-            uploadReady: true
-        };
-    },
-    created: function created() {
-        this.fetchPosts();
-    },
-
-
-    methods: {
-        fetchPosts: function fetchPosts(page_url) {
-            var _this = this;
-
-            var vm = this;
-            page_url = page_url || '/api/posts ';
-            fetch(page_url).then(function (res) {
-                return res.json();
-            }).then(function (res) {
-                _this.posts = res.data;
-                vm.makePagination(res.meta, res.links);
-            }).catch(function (err) {
-                return console.log(e);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-
-            this.pagination = pagination;
-        },
-        deletePost: function deletePost(id) {
-            var _this2 = this;
-
-            if (confirm('Är du säker på att du vill ta bort posten?')) {
-                fetch('api/post/' + id, {
-                    method: 'delete'
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    alert('Post Borttagen');
-                    _this2.fetchPosts();
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        addPost: function addPost() {
-            var _this3 = this;
-
-            if (this.edit === false) {
-                // Add
-                fetch('api/post', {
-                    method: 'post',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Tillagd');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            } else {
-                // Update
-                fetch('api/post', {
-                    method: 'put',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Uppdaterad');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        editPost: function editPost(post) {
-            this.edit = true;
-            this.post.id = post.id;
-            this.post.post_id = post.id;
-            this.post.title = post.title;
-            this.post.body = post.body;
-            // document.getElementById('top').scrollIntoView();
-            document.getElementById('postTitle').focus();
-        },
-        imageChanged: function imageChanged(e) {
-            var _this4 = this;
-
-            console.log(e.target.files[0]);
-            this.post.imageName = e.target.files[0].name;
-
-            var fileReader = new FileReader();
-
-            fileReader.readAsDataURL(e.target.files[0]);
-
-            fileReader.onload = function (e) {
-                _this4.post.image = e.target.result;
-            };
-        },
-        log: function log() {
-            console.log(this.post);
-            // console.log(this.uploadReady);
-            // console.log(process.env);
-
-        },
-        clearUpload: function clearUpload() {
-            var _this5 = this;
-
-            this.uploadReady = false;
-            this.$nextTick(function () {
-                _this5.uploadReady = true;
-                _this5.post.title = '';
-                _this5.post.body = '';
-                _this5.post.image = '';
-                _this5.post.imageName = '';
-                _this5.post.id = '';
-            });
-            console.log(this.uploadReady);
-        }
-    }
-});
-
-/***/ }),
-/* 89 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "akaContainer mb-5 akaErrorReport" }, [
-    _vm._m(0),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "form-group akaMt2rem" },
-      [_vm._m(1), _vm._v(" "), _c("googlemap")],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "form",
-      { staticClass: "mb-3 akaMt2rem", attrs: { id: "errorReport" } },
-      [
-        _vm._m(2),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group akaMt2rem" }, [
-          _vm._m(3),
-          _vm._v(" "),
-          _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
-          _vm._v(" "),
-          _vm.uploadReady
-            ? _c("input", {
-                staticClass: "form-control",
-                attrs: {
-                  type: "file",
-                  id: "file-upload",
-                  accept: ".jpg,.png",
-                  size: "32154",
-                  hidden: ""
-                },
-                on: { change: _vm.imageChanged }
-              })
-            : _vm._e(),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "inputfile inputfile-1",
-            attrs: {
-              type: "file",
-              name: "file-1[]",
-              id: "file-upload",
-              "data-multiple-caption": "{count} files selected",
-              multiple: ""
-            }
-          }),
-          _vm._v(" "),
-          _c("label", { attrs: { for: "file-upload" } }, [
-            !_vm.post.image
-              ? _c("span", { staticClass: "akaJustifyCenter" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v("\n                            Ladda Upp Bild")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.post.image
-              ? _c("span", { staticClass: "akaUploadCaption" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v(
-                    "\n                            " +
-                      _vm._s(_vm.post.imageName)
-                  )
-                ])
-              : _vm._e()
-          ])
-        ]),
-        _vm._v(" "),
-        !this.auth
-          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(4),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "akaFormControl",
-                attrs: { type: "text", placeholder: "Förnamn" }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "akaFormControl mt-3 akaBorderRadius",
-                attrs: { type: "text", placeholder: "Efternamn" }
-              })
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        !this.auth
-          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(5),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "akaFormControl",
-                attrs: { type: "text", placeholder: "Telefonnummer" }
-              })
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        !this.auth
-          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(6),
-              _vm._v(" "),
-              _c("input", {
-                staticClass: "akaFormControl",
-                attrs: { type: "text", placeholder: "exempel@epost.se" }
-              })
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm._m(7),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-block akaBgPink text-white akaBorderRadius",
-            attrs: { form: "errorReport", type: "submit" }
-          },
-          [_vm._v("Skicka")]
-        )
-      ]
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "form",
-      { staticClass: "mb-3 akaMt2rem", attrs: { id: "errorReport" } },
-      [
-        _c("div", { staticClass: "form-group akaMt2rem" }, [
-          _c("h5", [_vm._v("Ämne/Kategori (typ av fel)*")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "akaFormControl",
-            attrs: {
-              type: "text",
-              placeholder: "Titel",
-              id: "postTitle",
-              required: ""
-            }
-          })
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Plats "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem" }, [
-      _c("h5", [_vm._v("Problembeskrivning*")]),
-      _vm._v(" "),
-      _c("textarea", {
-        staticClass: "akaFormControl",
-        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Kompletterande bild "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Jag heter "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Telefonnummer "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("E-post "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
-      _c("input", {
-        attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
-      }),
-      _c("h5", { staticClass: "akaMl1rem" }, [
-        _vm._v("Jag vill ha återkoppling på ärendet")
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-58ffd2f5", module.exports)
-  }
-}
-
-/***/ }),
-/* 90 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(2)
-/* script */
-var __vue_script__ = __webpack_require__(91)
-/* template */
-var __vue_template__ = __webpack_require__(92)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Malfunction.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-12acc66e", Component.options)
-  } else {
-    hotAPI.reload("data-v-12acc66e", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 91 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            upload: '',
-            posts: [],
-            post: {
-                id: '',
-                title: '',
-                body: '',
-                created_at: '',
-                image: '',
-                imageName: ''
-            },
-            post_id: '',
-            pagination: {},
-            edit: false,
-            uploadReady: true
+            uploadReady: true,
+            // Default location to Yrgo, Lärdomsgatan. Just for now...
+            location: 'Lärdomsgatan, Gothenburg, Sweden',
+            lat: 57.705982,
+            lng: 11.936401
         };
     },
     created: function created() {
@@ -51926,66 +51620,164 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "akaContainer mb-5 akaMalfunction" }, [
-    _vm._m(0),
-    _vm._v(" "),
+  return _c("div", { staticClass: "akaContainer mb-5 akaErrorReport" }, [
     _c(
       "div",
-      { staticClass: "form-group akaMt2rem" },
+      { staticClass: "form-group" },
       [
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
-        _c("googlemap", { attrs: { colorTheme: "akaOrange" } })
+        _c("googlemap", {
+          attrs: { location: _vm.location, lng: _vm.lng, lat: _vm.lat }
+        })
       ],
       1
     ),
     _vm._v(" "),
-    _vm._m(2)
+    _c("form", { staticClass: "mb-3 akaMt2rem" }, [
+      _vm._m(1),
+      _vm._v(" "),
+      _vm._m(2),
+      _vm._v(" "),
+      _c("div", { staticClass: "form-group akaMt2rem" }, [
+        _vm._m(3),
+        _vm._v(" "),
+        _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
+        _vm._v(" "),
+        _vm.uploadReady
+          ? _c("input", {
+              staticClass: "form-control",
+              attrs: {
+                type: "file",
+                id: "file-upload",
+                accept: ".jpg,.png",
+                size: "32154",
+                hidden: ""
+              },
+              on: { change: _vm.imageChanged }
+            })
+          : _vm._e(),
+        _vm._v(" "),
+        _c("input", {
+          staticClass: "inputfile inputfile-1",
+          attrs: {
+            type: "file",
+            name: "file-1[]",
+            id: "file-upload",
+            "data-multiple-caption": "{count} files selected",
+            multiple: ""
+          }
+        }),
+        _vm._v(" "),
+        _c("label", { attrs: { for: "file-upload" } }, [
+          !_vm.post.image
+            ? _c("span", { staticClass: "akaJustifyCenter" }, [
+                _c(
+                  "svg",
+                  {
+                    attrs: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: "20",
+                      fill: "white",
+                      height: "17",
+                      viewBox: "0 0 20 17"
+                    }
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d:
+                          "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                      }
+                    })
+                  ]
+                ),
+                _vm._v("\n                            Ladda Upp Bild")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.post.image
+            ? _c("span", { staticClass: "akaUploadCaption" }, [
+                _c(
+                  "svg",
+                  {
+                    attrs: {
+                      xmlns: "http://www.w3.org/2000/svg",
+                      width: "20",
+                      fill: "white",
+                      height: "17",
+                      viewBox: "0 0 20 17"
+                    }
+                  },
+                  [
+                    _c("path", {
+                      attrs: {
+                        d:
+                          "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                      }
+                    })
+                  ]
+                ),
+                _vm._v(
+                  "\n                            " + _vm._s(_vm.post.imageName)
+                )
+              ])
+            : _vm._e()
+        ])
+      ]),
+      _vm._v(" "),
+      !this.auth
+        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _vm._m(4),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "akaFormControl",
+              attrs: { type: "text", placeholder: "Förnamn" }
+            }),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "akaFormControl mt-3 akaBorderRadius",
+              attrs: { type: "text", placeholder: "Efternamn" }
+            })
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      !this.auth
+        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _vm._m(5),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "akaFormControl",
+              attrs: { type: "text", placeholder: "Telefonnummer" }
+            })
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      !this.auth
+        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _vm._m(6),
+            _vm._v(" "),
+            _c("input", {
+              staticClass: "akaFormControl",
+              attrs: { type: "text", placeholder: "exempel@epost.se" }
+            })
+          ])
+        : _vm._e(),
+      _vm._v(" "),
+      _vm._m(7),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-block akaBgPink text-white akaBorderRadius",
+          attrs: { type: "submit" }
+        },
+        [_vm._v("Skicka")]
+      )
+    ])
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "form",
-      { staticClass: "mb-3 mt-3", attrs: { id: "malfunction" } },
-      [
-        _c("div", { staticClass: "form-group" }, [
-          _c("h5", [_vm._v("Rubrik till driftstörning*")]),
-          _vm._v(" "),
-          _c("input", {
-            staticClass: "akaFormControl akaOrange",
-            attrs: {
-              type: "text",
-              placeholder: "Titel",
-              id: "postTitle",
-              required: ""
-            }
-          })
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group akaMt2rem akaShort" }, [
-          _c("h5", [
-            _vm._v("Sammanfattning* "),
-            _c("span", { staticClass: "akaTextProp" }, [
-              _vm._v("(Underrubrik i notifikation)")
-            ])
-          ]),
-          _vm._v(" "),
-          _c("textarea", {
-            staticClass: "akaFormControl",
-            attrs: {
-              placeholder: "Max 150 tecken",
-              maxlength: "150",
-              required: ""
-            }
-          })
-        ])
-      ]
-    )
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -51999,29 +51791,76 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "form",
-      { staticClass: "mb-3 akaMt2rem", attrs: { id: "malfunction" } },
-      [
-        _c("div", { staticClass: "form-group akaMt2rem" }, [
-          _c("h5", [_vm._v("Fullständig information")]),
-          _vm._v(" "),
-          _c("textarea", {
-            staticClass: "akaFormControl",
-            attrs: { placeholder: "Beskrivning av driftstörning", required: "" }
-          })
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-block akaBgOrange text-white akaBorderRadius",
-            attrs: { form: "malfunction", type: "submit" }
-          },
-          [_vm._v("Skicka")]
-        )
-      ]
-    )
+    return _c("div", { staticClass: "form-group akaMt2rem" }, [
+      _c("h5", [_vm._v("Ämne/Kategori (typ av fel)*")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "akaFormControl",
+        attrs: { type: "text", placeholder: "Titel", required: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group akaMt2rem" }, [
+      _c("h5", [_vm._v("Problembeskrivning*")]),
+      _vm._v(" "),
+      _c("textarea", {
+        staticClass: "akaFormControl",
+        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Kompletterande bild "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Jag heter "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Telefonnummer "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("E-post "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
+      _c("input", {
+        attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
+      }),
+      _c("h5", { staticClass: "akaMl1rem" }, [
+        _vm._v("Jag vill ha återkoppling på ärendet")
+      ])
+    ])
   }
 ]
 render._withStripped = true
@@ -52029,7 +51868,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-12acc66e", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-58ffd2f5", module.exports)
   }
 }
 
@@ -52038,7 +51877,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(94)
 /* template */
@@ -52059,7 +51898,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/GoogleMap.vue"
+Component.options.__file = "resources/assets/js/components/Malfunction.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52068,9 +51907,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-e7586288", Component.options)
+    hotAPI.createRecord("data-v-12acc66e", Component.options)
   } else {
-    hotAPI.reload("data-v-e7586288", Component.options)
+    hotAPI.reload("data-v-12acc66e", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52113,65 +51952,179 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['colorTheme'],
-  name: "GoogleMap",
-  data: function data() {
-    return {
-      // Default to Yrgo, Lärdomsgatan. Just for now...
-      center: { lat: 57.705982, lng: 11.936401 },
-      markers: [],
-      places: [],
-      options: { disableDefaultUI: true, zoomControl: true },
-      currentPlace: null
-    };
-  },
-  mounted: function mounted() {
-    this.geolocate();
-    this.disableDefaultUI = "true";
-  },
-
-
-  methods: {
-    // Receives a place object via the autocomplete component
-    setPlace: function setPlace(place) {
-      this.currentPlace = place;
-    },
-    addMarker: function addMarker() {
-      if (this.currentPlace) {
-        var marker = {
-          lat: this.currentPlace.geometry.location.lat(),
-          lng: this.currentPlace.geometry.location.lng()
+    data: function data() {
+        return {
+            malfunctions: [],
+            malfunction: {
+                id: '',
+                title: '',
+                body: '',
+                summary: '',
+                created_at: '',
+                location: 'Lärdomsgatan, Gothenburg, Sweden',
+                lat: 57.705982,
+                lng: 11.936401
+            },
+            malfunction_id: '',
+            pagination: {},
+            edit: false,
+            renderMap: true
         };
-        this.markers.push({ position: marker });
-        this.places.push(this.currentPlace);
-        this.center = marker;
-        this.currentPlace = null;
-      }
+    },
+    created: function created() {
+        this.fetchMalfunctions();
     },
 
-    geolocate: function geolocate() {
-      var _this = this;
 
-      navigator.geolocation.getCurrentPosition(function (position) {
-        _this.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-      });
-    },
-    fetchLocation: function fetchLocation() {
-      var _this2 = this;
+    methods: {
+        fetchMalfunctions: function fetchMalfunctions(page_url) {
+            var _this = this;
 
-      navigator.geolocation.getCurrentPosition(function (position) {
-        _this2.center = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-      });
+            var vm = this;
+            page_url = page_url || '/api/malfunctions ';
+            fetch(page_url).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                _this.malfunctions = res.data;
+                vm.makePagination(res.meta, res.links);
+            }).catch(function (err) {
+                return console.log(e);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
+        },
+        deleteMalfunction: function deleteMalfunction(id) {
+            var _this2 = this;
+
+            if (confirm('Är du säker på att du vill ta bort driftstörningen?')) {
+                fetch('api/malfunction/' + id, {
+                    method: 'delete'
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    alert('Malfunction Borttagen');
+                    _this2.fetchMalfunctions();
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+        },
+        addMalfunction: function addMalfunction() {
+            var _this3 = this;
+
+            if (this.edit === false) {
+                // Add
+                fetch('api/malfunction', {
+                    method: 'post',
+                    body: JSON.stringify(this.malfunction),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchMalfunctions();
+                    alert('Driftstörning Tillagd');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            } else {
+                // Update
+                fetch('api/malfunction', {
+                    method: 'put',
+                    body: JSON.stringify(this.malfunction),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchMalfunctions();
+                    alert('Driftstörning Uppdaterad');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+            // Reload...
+            this.renderMap = false;
+            var self = this;
+            setTimeout(function () {
+                self.renderMap = true;
+            }, 300);
+        },
+        editMalfunction: function editMalfunction(malfunction) {
+            this.edit = true;
+            this.malfunction.id = malfunction.id;
+            this.malfunction.malfunction_id = malfunction.id;
+            this.malfunction.title = malfunction.title;
+            this.malfunction.summary = malfunction.summary;
+            this.malfunction.body = malfunction.body;
+            this.malfunction.location = malfunction.location;
+            document.getElementById('MalfunctionTitle').focus();
+        },
+        log: function log() {
+            console.log(this.malfunction);
+        },
+        clearUpload: function clearUpload() {
+            var _this4 = this;
+
+            this.$nextTick(function () {
+                _this4.malfunction.body = '';
+                _this4.malfunction.title = '';
+                _this4.malfunction.summary = '';
+                _this4.malfunction.id = '';
+            });
+        },
+        setLocation: function setLocation(position, place) {
+            this.malfunction.lat = position.lat;
+            this.malfunction.lng = position.lng;
+            this.malfunction.location = place.formatted_address;
+            console.log(position.lat); // someValue
+            console.log(position.lng); // someValue
+            console.log(place.formatted_address); // someValue
+        }
     }
-  }
 });
 
 /***/ }),
@@ -52184,87 +52137,251 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "akaRelative" },
+    { staticClass: "akaContainer mb-5 akaMalfunction" },
     [
       _c(
-        "label",
-        {
-          staticClass: "akaMapInput",
-          class: this.colorTheme,
-          on: {
-            keyup: function($event) {
-              if (
-                !("button" in $event) &&
-                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-              ) {
-                return null
-              }
-              return _vm.addMarker($event)
-            }
-          }
-        },
+        "div",
+        { staticClass: "form-group" },
         [
-          _c("button", { on: { click: _vm.fetchLocation } }),
+          _vm._m(0),
           _vm._v(" "),
-          _c("gmap-autocomplete", {
-            attrs: { placeholder: "Ange adress eller plats" },
-            on: { place_changed: _vm.setPlace }
-          })
+          this.renderMap
+            ? _c("googlemap", {
+                attrs: {
+                  colorTheme: "akaOrange",
+                  location: _vm.malfunction.location,
+                  lng: _vm.malfunction.lng,
+                  lat: _vm.malfunction.lat
+                },
+                on: { locationSelected: _vm.setLocation }
+              })
+            : _vm._e()
         ],
         1
       ),
       _vm._v(" "),
       _c(
-        "gmap-map",
+        "form",
         {
-          staticClass: "akaGmap",
-          attrs: { options: _vm.options, center: _vm.center, zoom: 16 }
-        },
-        _vm._l(_vm.markers, function(m, index) {
-          return _c("gmap-marker", {
-            key: index,
-            attrs: { position: m.position },
-            on: {
-              click: function($event) {
-                _vm.center = m.position
-              }
+          staticClass: "mb-3 mt-3",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.addMalfunction($event)
             }
-          })
-        })
-      )
+          }
+        },
+        [
+          _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _c("h5", [_vm._v("Rubrik till driftstörning*")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.malfunction.title,
+                  expression: "malfunction.title"
+                }
+              ],
+              staticClass: "akaFormControl akaOrange",
+              attrs: {
+                type: "text",
+                placeholder: "Titel",
+                id: "MalfunctionTitle",
+                required: ""
+              },
+              domProps: { value: _vm.malfunction.title },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.malfunction, "title", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group akaMt2rem akaShort" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.malfunction.summary,
+                  expression: "malfunction.summary"
+                }
+              ],
+              staticClass: "akaFormControl",
+              attrs: {
+                placeholder: "Max 150 tecken",
+                maxlength: "150",
+                required: ""
+              },
+              domProps: { value: _vm.malfunction.summary },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.malfunction, "summary", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _c("h5", [_vm._v("Fullständig information")]),
+            _vm._v(" "),
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.malfunction.body,
+                  expression: "malfunction.body"
+                }
+              ],
+              staticClass: "akaFormControl",
+              attrs: {
+                placeholder: "Beskrivning av driftstörning",
+                required: ""
+              },
+              domProps: { value: _vm.malfunction.body },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.malfunction, "body", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass:
+                "btn btn-block akaBgOrange text-white akaBorderRadius",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Spara")]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.malfunctions, function(malfunction) {
+        return _c(
+          "div",
+          { key: malfunction.id, staticClass: "card mb-4 akaMalfunctionCard" },
+          [
+            _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
+              _c("h3", { staticClass: "akaPostTitle" }, [
+                _vm._v(_vm._s(malfunction.title))
+              ]),
+              _vm._v(" "),
+              _c("h4", { staticClass: "akaPostText" }, [
+                _vm._v(_vm._s(malfunction.summary))
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaPostText" }, [
+                _vm._v(_vm._s(malfunction.body))
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.created_at))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.location))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "akaButtonContainer" }, [
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "btn akaButton akaBorderBottomLeftRadius akaBgOrange text-white",
+                  on: {
+                    click: function($event) {
+                      _vm.editMalfunction(malfunction)
+                    }
+                  }
+                },
+                [_vm._v("Ändra")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass:
+                    "btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft akaBgOrange text-white",
+                  on: {
+                    click: function($event) {
+                      _vm.deleteMalfunction(malfunction.id)
+                    }
+                  }
+                },
+                [_vm._v("Ta Bort")]
+              )
+            ])
+          ]
+        )
+      })
     ],
-    1
+    2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Plats "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Sammanfattning* "),
+      _c("span", { staticClass: "akaTextProp" }, [
+        _vm._v("(Underrubrik i notifikation)")
+      ])
+    ])
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-e7586288", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-12acc66e", module.exports)
   }
 }
 
 /***/ }),
 /* 96 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 97 */,
-/* 98 */,
-/* 99 */,
-/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(2)
+var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(101)
+var __vue_script__ = __webpack_require__(97)
 /* template */
-var __vue_template__ = __webpack_require__(102)
+var __vue_template__ = __webpack_require__(98)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52303,7 +52420,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 101 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -52407,7 +52524,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             post_id: '',
             pagination: {},
             edit: false,
-            uploadReady: true
+            uploadReady: true,
+            // Default location to Yrgo, Lärdomsgatan. Just for now...
+            location: 'Lärdomsgatan, Gothenburg, Sweden',
+            lat: 57.705982,
+            lng: 11.936401
         };
     },
     created: function created() {
@@ -52542,7 +52663,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 102 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -52558,7 +52679,14 @@ var render = function() {
       [
         _vm._m(1),
         _vm._v(" "),
-        _c("googlemap", { attrs: { colorTheme: "akaBlue" } })
+        _c("googlemap", {
+          attrs: {
+            colorTheme: "akaBlue",
+            location: _vm.location,
+            lng: _vm.lng,
+            lat: _vm.lat
+          }
+        })
       ],
       1
     ),
@@ -52809,6 +52937,12 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-36439ab5", module.exports)
   }
 }
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
