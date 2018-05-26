@@ -2,9 +2,9 @@
 
     <div class="akaContainer mt-4 mb-5">
 
-        <div class="card mb-4 akaPost border-0" v-for="post in posts" v-bind:key="post.id">
+        <div class="card mb-4 akaPost" v-for="post in posts" v-bind:key="post.id">
 
-            <img v-if="post.image" class="card-img-top akaPostImage" :src="'http://akademiskahus.test/uploads/' + post.image" alt="image">
+            <img v-if="post.image" class="card-img-top akaPostImage" :src="'uploads/' + post.image" alt="image">
 
             <div class="card-body akaNoBottomMargin">
                 <h3>{{ post.title }}</h3>
@@ -78,7 +78,7 @@
                     this.posts = res.data;
                     vm.makePagination(res.meta, res.links);
                 })
-                .catch(err => console.log(e)); 
+                .catch(err => console.log(err)); 
             },
             makePagination(meta, links) {
                 let pagination = {

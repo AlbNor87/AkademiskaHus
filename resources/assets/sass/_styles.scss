@@ -11,6 +11,7 @@ body {
 p {
     color: black;
     font-size: 14px;
+    font-weight: 300;
 }
 
 a:link {
@@ -22,12 +23,12 @@ a:visited {
 }
 
 a:hover {
-    color: black;
+    color: $akaDarkGreen;
     text-decoration: none;
 }
 
 a:active {
-    color: $akaLightGreen;
+    color: black;
 }
 
 .akaContainer {
@@ -106,12 +107,24 @@ input:-webkit-autofill {
     background-color: $akaGreen;
 }
 
-.akaBgPink {
-    background-color: $akaPink;
+.akaBgGreen:hover {
+    background-color: $akaDarkGreen;
 }
 
 .akaBgBlue {
     background-color: $akaBlue;
+}
+
+.akaBgBlue:hover {
+    background-color: $akaDarkBlue;
+}
+
+.akaBgPink {
+    background-color: $akaPink;
+}
+
+.akaBgPink:hover  {
+    background-color: $akaDarkPink;
 }
 
 .akaBgOrange {
@@ -158,6 +171,29 @@ input:-webkit-autofill {
     color: $akaGreen;
 }
 
+.akaOrange {
+    color: $akaOrange;
+}
+
 .page-link:hover {
     color: $akaGreen;
+}
+
+.akaFontWeightL {
+    font-weight: 300;
+}
+
+.akaFontWeightM {
+    font-weight: 500;
+}
+
+.akaTextProp {
+    font-size: 0.75rem;
+    color: $akaGrey;
+}
+
+.akaTiny {
+    font-size: 0.5rem;
+    font-weight: 300;
+    margin: 0;
 }

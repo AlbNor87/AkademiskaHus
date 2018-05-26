@@ -10424,6 +10424,7 @@ body {
 p {
   color: black;
   font-size: 14px;
+  font-weight: 300;
 }
 
 a:link {
@@ -10435,12 +10436,12 @@ a:visited {
 }
 
 a:hover {
-  color: black;
+  color: #649632;
   text-decoration: none;
 }
 
 a:active {
-  color: #f0ffe2;
+  color: black;
 }
 
 .akaContainer {
@@ -10516,12 +10517,24 @@ input:-webkit-autofill:focus input:-webkit-autofill {
   background-color: #7BB63E;
 }
 
+.akaBgGreen:hover {
+  background-color: #649632;
+}
+
+.akaBgBlue {
+  background-color: #3D92B7;
+}
+
+.akaBgBlue:hover {
+  background-color: #2b6a85;
+}
+
 .akaBgPink {
   background-color: #E50F63;
 }
 
-.akaBgBlue {
-  background-color: #0094BB;
+.akaBgPink:hover {
+  background-color: #af0c4d;
 }
 
 .akaBgOrange {
@@ -10596,8 +10609,31 @@ input:-webkit-autofill:focus input:-webkit-autofill {
   color: #7BB63E;
 }
 
+.akaOrange {
+  color: #F7911E;
+}
+
 .page-link:hover {
   color: #7BB63E;
+}
+
+.akaFontWeightL {
+  font-weight: 300;
+}
+
+.akaFontWeightM {
+  font-weight: 500;
+}
+
+.akaTextProp {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+.akaTiny {
+  font-size: 0.5rem;
+  font-weight: 300;
+  margin: 0;
 }
 
 .akaPostImage {
@@ -10610,7 +10646,7 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 }
 
 .akaPost {
-  background-color: #f0ffe2;
+  background-color: white;
   border-radius: 7px;
   border: 1px solid #7BB63E;
 }
@@ -10646,7 +10682,6 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 
 .akaPostText {
   font-size: 16px;
-  font-weight: 300;
 }
 
 .akaPostTitle {
@@ -10688,7 +10723,6 @@ a.akaNavTopLink {
   padding-right: 5px;
   padding-top: 5px;
   font-size: 16px;
-  color: #9e9e9e;
 }
 
 .akaSubNavContainer {
@@ -10745,7 +10779,7 @@ a.akaNavLink.active {
 }
 
 .akaIde {
-  background: #0094BB;
+  background: #3D92B7;
   background-image: url(/images/bulbWhite.svg);
   background-repeat: no-repeat;
   background-position: center;
@@ -10846,6 +10880,14 @@ input[type="file"] {
   white-space: nowrap;
 }
 
+.inputfile.akaBgPink + label {
+  background-color: #af0c4d;
+}
+
+.inputfile.akaBgOrange + label {
+  background-color: #be7016;
+}
+
 .inputfile + label svg {
   margin-right: 7px;
 }
@@ -10889,6 +10931,10 @@ input[type="file"] {
   cursor: pointer;
 }
 
+.akaMapInput button:hover {
+  background-color: #af0c4d;
+}
+
 .akaMapInput label {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -10914,16 +10960,24 @@ input[type="file"] {
   background-color: #F7911E;
 }
 
+.akaMapInput.akaOrange button:hover {
+  background-color: #be7016;
+}
+
 .akaMapInput.akaOrange input {
   border: 1.2px #F7911E solid;
 }
 
 .akaMapInput.akaBlue button {
-  background-color: #0094BB;
+  background-color: #3D92B7;
+}
+
+.akaMapInput.akaBlue button:hover {
+  background-color: #2b6a85;
 }
 
 .akaMapInput.akaBlue input {
-  border: 1.2px #0094BB solid;
+  border: 1.2px #3D92B7 solid;
 }
 
 .akaRelative {
@@ -10980,9 +11034,8 @@ input[type="file"] {
   white-space: nowrap;
 }
 
-.akaTextProp {
-  font-size: 0.75rem;
-  color: #9e9e9e;
+.akaErrorReport .akaBgPink:hover {
+  background-color: #af0c4d;
 }
 
 .akaFormControl {
@@ -11057,9 +11110,8 @@ input[type="file"] {
   white-space: nowrap;
 }
 
-.akaTextProp {
-  font-size: 0.75rem;
-  color: #9e9e9e;
+.akaMalfunction .akaBgOrange:hover {
+  background-color: #be7016;
 }
 
 .akaFormControl.akaOrange {
@@ -11067,22 +11119,73 @@ input[type="file"] {
 }
 
 .akaMalfunctionCard {
-  background-color: #fff3e6;
+  background-color: white;
   border-radius: 7px;
   border: 1px solid #F7911E;
 }
 
-.akaMalfunctionCard h3,
-.akaMalfunctionCard h4 {
+.akaMalfunctionCard h3 {
   color: black;
 }
 
+.akaMalfunctionNotification {
+  position: relative;
+  background-color: #E50F63;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+  color: white;
+  text-align: center;
+}
+
+.akaMalfunctionNotification h3 {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.akaMalfunctionNotification h4 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.akaMalfunctionNotification p {
+  color: white;
+}
+
+.akaMalfunctionNotification .card-body {
+  border-top: 1px solid #e97ba7;
+  padding: 10px;
+  padding-bottom: 0px;
+  margin: 0;
+}
+
+.akaMalfunctionNotification h4.akaFontWeightL {
+  font-weight: 300;
+}
+
+.akaWhiteCross {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 20px;
+  height: 20px;
+}
+
+.akaNotificationContainer {
+  margin-left: -15px;
+  margin-right: -15px;
+  background-color: #E50F63;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
+}
+
 .akaIdeas {
-  color: #0094BB;
+  color: #3D92B7;
 }
 
 .akaIdeas :focus {
-  border-color: #0094BB;
+  border-color: #3D92B7;
   outline: 0;
   -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 146, 187, 0.25);
   box-shadow: 0 0 0 0.2rem rgba(0, 146, 187, 0.25);
@@ -11095,16 +11198,16 @@ input[type="file"] {
 .akaIdeas .form-control {
   padding: 0.375rem 0.5rem;
   height: 40px;
-  border: 1.2px solid #0094BB;
+  border: 1.2px solid #3D92B7;
 }
 
 .akaIdeas .form-group textarea {
   height: 338px;
-  border: 1.2px solid #0094BB;
+  border: 1.2px solid #3D92B7;
 }
 
 .akaIdeas input {
-  border: 1.2px solid #0094BB;
+  border: 1.2px solid #3D92B7;
 }
 
 .akaIdeas .inputfile + label {
@@ -11121,18 +11224,17 @@ input[type="file"] {
           align-items: center;
   border-radius: 7px;
   color: white;
-  background-color: #0094BB;
+  background-color: #3D92B7;
   cursor: pointer;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.akaTextProp {
-  font-size: 0.75rem;
-  color: #9e9e9e;
+.akaIdeas .akaBgBlue:hover {
+  background-color: #2b6a85;
 }
 
 .akaFormControl.akaBlue {
-  border: 1.2px solid #0094BB;
+  border: 1.2px solid #3D92B7;
 }
 

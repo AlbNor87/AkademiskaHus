@@ -7,7 +7,7 @@
             
             @if (Auth::check())
             <div id="app" class="justify-content-center">
-                <malfunction></malfunction>
+                <managemalfunctions></managemalfunctions>
             </div>
 
             @else

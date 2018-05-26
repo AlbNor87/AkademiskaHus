@@ -42,12 +42,11 @@
         overflow: hidden;
         white-space: nowrap;
     }
-    
-}
 
-.akaTextProp {
-    font-size: 0.75rem;
-    color: $akaGrey;
+    .akaBgBlue:hover  {
+        background-color: $akaDarkBlue;
+    }
+    
 }
 
 .akaFormControl.akaBlue {

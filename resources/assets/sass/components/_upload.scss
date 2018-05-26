@@ -16,6 +16,18 @@ input[type="file"] {
     white-space: nowrap;
 }
 
+// .inputfile.akaBgGreen + label {
+//     background-color: $akaDarkGreen;
+// }
+
+.inputfile.akaBgPink + label {
+    background-color: $akaDarkPink;
+}
+
+.inputfile.akaBgOrange + label {
+    background-color: $akaDarkOrange;
+}
+
 .inputfile + label svg {
     margin-right: 7px;
 }

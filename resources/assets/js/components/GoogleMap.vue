@@ -2,7 +2,7 @@
     <div class="akaRelative">
               
         <label class="akaMapInput" v-bind:class="this.colorTheme" @keyup.enter="addMarker">
-        <button @click="fetchLocation"></button>    
+        <button class="btn" @click="fetchLocation"></button>    
             <gmap-autocomplete
             @place_changed="setPlace" placeholder="Ange adress eller plats">
             </gmap-autocomplete>

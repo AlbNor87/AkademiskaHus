@@ -18,6 +18,10 @@
         cursor: pointer;
     }
 
+    button:hover {
+        background-color: $akaDarkPink;
+    }
+
     label {
         display: flex;
     }
@@ -43,6 +47,9 @@
     button {
         background-color: $akaOrange;
     }
+    button:hover {
+        background-color: $akaDarkOrange;
+    }
     input { 
         border: 1.2px $akaOrange solid;   
     }
@@ -51,6 +58,9 @@
 .akaMapInput.akaBlue {
     button {
         background-color: $akaBlue;
+    }
+    button:hover {
+        background-color: $akaDarkBlue;
     }
     input { 
         border: 1.2px $akaBlue solid;   

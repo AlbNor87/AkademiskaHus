@@ -6,6 +6,12 @@
     
         <a class="navbar-brand" href="{{url('/')}}"><img src="/images/logo.svg" alt="logo"></a> 
 
+        @if (Auth::check())
+            
+            <p class="akaTime">{{Auth::user()->email}}</p>
+
+        @endif
+
         <a class="akaNavTopLink" href="{{ url('help') }}">Hjälp</a>
         
     </div>

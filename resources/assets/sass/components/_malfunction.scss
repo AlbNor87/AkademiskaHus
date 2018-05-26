@@ -48,12 +48,11 @@
         overflow: hidden;
         white-space: nowrap;
     }
-    
-}
 
-.akaTextProp {
-    font-size: 0.75rem;
-    color: $akaGrey;
+    .akaBgOrange:hover  {
+        background-color: $akaDarkOrange;
+    }
+    
 }
 
 .akaFormControl.akaOrange {
@@ -61,9 +60,9 @@
 }
 
 .akaMalfunctionCard {
-    background-color: $akaLightOrange;
+    background-color: $akaPostBg;
     border-radius: 7px;
     border: 1px solid $akaOrange;
 
-    h3, h4 { color: black;}
+    h3 { color: black;}
 }

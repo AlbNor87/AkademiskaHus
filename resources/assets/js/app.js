@@ -28,7 +28,8 @@ Vue.component('posts', require('./components/posts.vue'));
 Vue.component('manageposts', require('./components/ManagePosts.vue'));
 Vue.component('googlemap', require('./components/GoogleMap.vue'));
 Vue.component('errorreport', require('./components/ErrorReport.vue'));
-Vue.component('malfunction', require('./components/Malfunction.vue'));
+Vue.component('managemalfunctions', require('./components/ManageMalfunctions.vue'));
+Vue.component('malfunctions', require('./components/Malfunctions.vue'));
 Vue.component('ideas', require('./components/Ideas.vue'));
 
 const app = new Vue({

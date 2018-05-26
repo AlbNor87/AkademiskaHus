@@ -37,13 +37,14 @@
         overflow: hidden;
         white-space: nowrap;
     }
+
+    .akaBgPink:hover  {
+        background-color: $akaDarkPink;
+    }
     
 }
 
-.akaTextProp {
-    font-size: 0.75rem;
-    color: $akaGrey;
-}
+
 
 .akaFormControl {
     display: block;

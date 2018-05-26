@@ -1,15 +1,23 @@
-$akaBlue: #0094BB;
-$akaLightBlue: #E0F5FF;
+$akaBlue: #3D92B7;
+$akaDarkBlue: rgb(43, 106, 133);
+// $akaLightBlue: #E0F5FF;
 $akaWhite: #FFFFFF;
 $akaLightGrey: #BFBFBF;
 $akaGrey: #9e9e9e;
+
+$akaLightPink: rgb(233, 123, 167);
 $akaPink: #E50F63;
-$akaOldGreen: #00A64F;
-$akaGreen: #7BB63E;
+$akaDarkPink: rgb(175, 12, 77);
+
 $akaLightGreen: rgb(240, 255, 226);
-$akaDarkBlue: #1F304D;
-$akaOrange: #F7911E;
+$akaGreen: #7BB63E;
+$akaDarkGreen: rgb(100, 150, 50);
+
 $akaLightOrange: rgb(255, 243, 230);
+$akaOrange: #F7911E;
+$akaDarkOrange: rgb(190, 112, 22);
+
+$akaPostBg: rgb(255, 255, 255);
 
 // Typography
 $font-size-base: 0.9rem;

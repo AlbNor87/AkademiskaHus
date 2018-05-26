@@ -7,7 +7,7 @@
 }
 
 .akaPost {
-    background-color: $akaLightGreen;
+    background-color: $akaPostBg;
     border-radius: 7px;
     border: 1px solid $akaGreen;
 }
@@ -41,7 +41,6 @@
 
 .akaPostText {
     font-size: 16px;
-    font-weight: 300;
 }
 
 .akaPostTitle {

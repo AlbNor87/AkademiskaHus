@@ -22,10 +22,8 @@
                 <h5>Kompletterande bild <span class="akaTextProp">(valfritt)</span></h5>
                 <h5>(jpg, png, max 4 MB)</h5>
 
-                <input type="file" id="file-upload" accept=".jpg,.png" size="32154" class="form-control" v-if="uploadReady" @change="imageChanged" hidden>
-                <input type="file" name="file-1[]" id="file-upload" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-
-				<label for="file-upload">
+                <input type="file" name="file-1[]" id="file-upload" accept=".jpg,.png" size="32154" class="inputfile inputfile-1" v-if="uploadReady" @change="imageChanged" hidden>
+				<label for="file-upload" class="btn akaBgPink">
 
                         <span v-if="!post.image" class="akaJustifyCenter">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="white" height="17" viewBox="0 0 20 17">
@@ -110,7 +108,7 @@
                     this.posts = res.data;
                     vm.makePagination(res.meta, res.links);
                 })
-                .catch(err => console.log(e)); 
+                .catch(err => console.log(err)); 
             },
             makePagination(meta, links) {
                 let pagination = {

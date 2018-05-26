@@ -17,10 +17,8 @@
 
             <div class="form-group">
 
-                <input type="file" id="file-upload" accept=".jpg,.png" size="32154" class="form-control" v-if="uploadReady" @change="imageChanged">
-
-                <input type="file" name="file-1[]" id="file-upload" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-				<label for="file-upload">
+                <input type="file" name="file-1[]" id="file-upload" accept=".jpg,.png" size="32154" class="inputfile inputfile-1" v-if="uploadReady" @change="imageChanged" hidden>
+				<label for="file-upload" class="btn akaBgGreen">
 
                         
                         <span v-if="!post.image" class="akaJustifyCenter">
@@ -57,9 +55,9 @@
                 <p class="akaTime">{{ post.created_at }}</p>
             </div> 
             <div class="akaButtonContainer">
-                <button @click="editPost(post)" class="btn akaButton akaBorderBottomLeftRadius text-white">Ändra</button>
+                <button @click="editPost(post)" class="btn akaButton akaBgGreen akaBorderBottomLeftRadius text-white">Ändra</button>
 
-                <button @click="deletePost(post.id)" class="btn akaButton akaBorderBottomRightRadius akaMarginTinyLeft text-white">Ta Bort</button>
+                <button @click="deletePost(post.id)" class="btn akaButton akaBgGreen akaBorderBottomRightRadius akaMarginTinyLeft text-white">Ta Bort</button>
             </div>
             
         </div>
@@ -124,7 +122,7 @@
                     this.posts = res.data;
                     vm.makePagination(res.meta, res.links);
                 })
-                .catch(err => console.log(e)); 
+                .catch(err => console.log(err)); 
             },
             makePagination(meta, links) {
                 let pagination = {

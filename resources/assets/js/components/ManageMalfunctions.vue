@@ -6,7 +6,7 @@
             <googlemap v-if="this.renderMap" colorTheme="akaOrange" :location="malfunction.location" :lng="malfunction.lng" :lat="malfunction.lat" @locationSelected="setLocation"></googlemap>
         </div>
 
-        <form @submit.prevent="addMalfunction" class="mb-3 mt-3">
+        <form @submit.prevent="addMalfunction" class="mb-5 mt-3">
 
             <div class="form-group akaMt2rem">
                 <h5>Rubrik till driftstörning*</h5>
@@ -20,7 +20,7 @@
     
             <div class="form-group akaMt2rem">
                 <h5>Fullständig information</h5>
-                <textarea class="akaFormControl" placeholder="Beskrivning av driftstörning" v-model="malfunction.body" required></textarea>
+                <textarea class="akaFormControl" placeholder="Beskrivning av driftstörning" v-model="malfunction.body"></textarea>
             </div>
 
             <button type="submit" class="btn btn-block akaBgOrange text-white akaBorderRadius">Spara</button>
@@ -32,7 +32,7 @@
             <div class="card-body akaNoBottomMargin">
                 <h3 class="akaPostTitle">{{ malfunction.title }}</h3>
                 
-                <h4 class="akaPostText">{{ malfunction.summary }}</h4>
+                <h4 class="akaPostText akaOrange akaFontWeightM">{{ malfunction.summary }}</h4>
 
                 <hr>
 
@@ -90,7 +90,7 @@
                     this.malfunctions = res.data;
                     vm.makePagination(res.meta, res.links);
                 })
-                .catch(err => console.log(e)); 
+                .catch(err => console.log(err)); 
             },
             makePagination(meta, links) {
                 let pagination = {
@@ -109,7 +109,7 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Malfunction Borttagen');
+                        alert('Driftstörning Borttagen');
                         this.fetchMalfunctions();
                     })
                     .catch(err => console.log(err));
