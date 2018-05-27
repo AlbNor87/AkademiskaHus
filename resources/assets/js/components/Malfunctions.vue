@@ -3,19 +3,20 @@
         <div class="akaNotificationContainer">
             <div class="akaMalfunctionNotification border-0" v-for="malfunction in malfunctions" v-bind:key="malfunction.id">
                                 
-                <div class="card-body" v-if="this.show">
+                <div class="card-body" v-if="!malfunction.dissmissed">
 
-                    <img class="akaWhiteCross" src="images/crossWhite.svg" alt="">
+                    <img class="akaWhiteCross" src="images/crossWhite.svg" alt="dissmiss" @click="dissmiss(malfunction.id)">
 
                     <h3>{{ malfunction.title }}</h3>
                     
                     <h4>{{ malfunction.summary }}</h4>
-                    <h4 class="akaFontWeightL">Läs mer <a href="">här.</a></h4>
+                    <h4 class="akaFontWeightL akaNoBottomMargin">Läs mer <a href="">här</a>.</h4>
                     <!-- <p class="akaTiny">{{ malfunction.created_at }}<br>{{ malfunction.location }}</p> -->
                 </div> 
                 
             </div>
         </div>
+        <button @click="log(malfunction)" class="btn btn-danger mb-2">Log</button>
     </div>
 </template>
 
@@ -33,12 +34,10 @@
                     location: 'Lärdomsgatan, Gothenburg, Sweden',
                     lat: 57.705982,
                     lng: 11.936401,
-                    show: true
+                    dissmissed: false
                 },
                 malfunction_id: '',
-                pagination: {},
-                edit: false,
-                renderMap: true
+                dissmissedMalfunctions: [28, 27]
             }
         },
 
@@ -48,107 +47,92 @@
 
         methods: {
             fetchMalfunctions(page_url) {
-                let vm = this;
                 page_url = page_url || '/api/malfunctions '
                 fetch(page_url)
                 .then(res => res.json())
                 .then(res => {
                     this.malfunctions = res.data;
-                    vm.makePagination(res.meta, res.links);
                 })
                 .catch(err => console.log(err)); 
             },
-            makePagination(meta, links) {
-                let pagination = {
-                    current_page: meta.current_page,
-                    last_page: meta.last_page,
-                    next_page_url: links.next,
-                    prev_page_url: links.prev
+            getCookie(cname){
+                var name = cname + "=";
+                    var decodedCookie = decodeURIComponent(document.cookie);
+                    var ca = decodedCookie.split(';');
+                    for(var i = 0; i <ca.length; i++) {
+                        var c = ca[i];
+                        while (c.charAt(0) == ' ') {
+                            c = c.substring(1);
+                        }
+                        if (c.indexOf(name) == 0) {
+                            return c.substring(name.length, c.length);
+                        }
+                    }
+                    return null;
+            },
+            setCookie(cname, cvalue, exdays) {
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays*24*60*60*1000));
+                var expires = "expires="+ d.toUTCString();
+                document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+            },
+            dissmiss(id){
+                // console.log(id);
+                
+                const dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+                const array = [id];
+
+                if (dissmissedCookie == null || '') {
+                    console.log('Cookie does not exist... Created!');
+                    const json = JSON.stringify(array);
+                    this.setCookie("dissmissedMalfunctions", json);
+                } else {
+
+                    const dissmissedMalfunctions = JSON.parse(dissmissedCookie);
+
+                    dissmissedMalfunctions.push(id);
+                    const json = JSON.stringify(dissmissedMalfunctions);
+                    this.setCookie("dissmissedMalfunctions", json);
+
+                    console.log(dissmissedMalfunctions);
+
                 }
 
-                this.pagination = pagination;
-            },
-            deleteMalfunction(id) {
-                if(confirm('Är du säker på att du vill ta bort driftstörningen?')) {
-                    fetch(`api/malfunction/${id}`, {
-                        method: 'delete'
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert('Driftstörning Borttagen');
-                        this.fetchMalfunctions();
-                    })
-                    .catch(err => console.log(err));
-                }
-            },
-            addMalfunction() {
-                if(this.edit === false) {
-                    // Add
-                    fetch('api/malfunction', {
-                        method: 'post',
-                        body: JSON.stringify(this.malfunction),
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        this.clearUpload();
-                        this.fetchMalfunctions();
-                        alert('Driftstörning Tillagd');
-                    })
-                    .catch(err => console.log(err));
-                } else {
-                    // Update
-                    fetch('api/malfunction', {
-                        method: 'put',
-                        body: JSON.stringify(this.malfunction),
-                        headers: {
-                            'content-type': 'application/json'
-                        }
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        this.clearUpload();
-                        this.fetchMalfunctions();
-                        alert('Driftstörning Uppdaterad');
-                    })
-                    .catch(err => console.log(err));
-                }
-                // Reload...
-                this.renderMap = false;
-                var self = this;
-                setTimeout(function(){
-                self.renderMap = true;
-                }, 300);
-            },
-            editMalfunction(malfunction) {
-                this.edit = true;
-                this.malfunction.id = malfunction.id;
-                this.malfunction.malfunction_id = malfunction.id;
-                this.malfunction.title = malfunction.title;
-                this.malfunction.summary = malfunction.summary;
-                this.malfunction.body = malfunction.body;
-                this.malfunction.location = malfunction.location;
-                document.getElementById('MalfunctionTitle').focus();
+                // Next step is to filter this.malfunctions thru the cookies and overwrite it with the new filtered array
+
+                // const myCookie = this.getCookie("dissmissedMalfunctions");
+
+                // this.setCookie("dissmissedMalfunctions", id)
+
+                // const myCookie = this.getCookie("dissmissedMalfunctions");
+                
+                // console.log(myCookie)
+                // console.log(this.malfunction);
             },
             log(){
-                console.log(this.malfunction);
+                // document.cookie = "username=John Doe";
+                // createCookie('name', 'albert');
+                // console.log(this.malfunction);
+                const test = this.malfunctions;
+                const dissmissed = [28, 29];
+
+                var filteredMalfunctions =
+                test.filter(malfunction => !dissmissed.includes(malfunction.id));
+                
+                console.log(test)
+                // console.log(arraj);
+                // console.log(dissmissed);
+                console.log(filteredMalfunctions);
+                
             },
-            clearUpload(){
-                this.$nextTick(() => {
-                this.malfunction.body = '';
-                this.malfunction.title = '';
-                this.malfunction.summary = '';
-                this.malfunction.id = '';    
-            })},
-            setLocation (position, place) {
-                this.malfunction.lat = position.lat;
-                this.malfunction.lng = position.lng;
-                this.malfunction.location = place.formatted_address;
-                console.log(position.lat) // someValue
-                console.log(position.lng) // someValue
-                console.log(place.formatted_address) // someValue
+        },
+        
+        computed: {
+            dissmissedMalfunctionsss(){
+                var arr = ['foo', 'bar', 'baz'];
+                var json_str = JSON.stringify(arr);
+                createCookie('mycookie', json_str);
+
             }
         }
     }

@@ -45,7 +45,7 @@
 
             <img v-if="post.image" class="card-img-top akaPostImage" :src="'/uploads/' + post.image" alt="image">
 
-            <div class="card-body akaNoBottomMargin">
+            <div class="card-body">
                 <h3 class="akaPostTitle">{{ post.title }}</h3>
                 
                 <p class="akaPostText">{{ post.body }}</p>

@@ -29,7 +29,7 @@
 
         <div class="card mb-4 akaMalfunctionCard" v-for="malfunction in malfunctions" v-bind:key="malfunction.id">
 
-            <div class="card-body akaNoBottomMargin">
+            <div class="card-body">
                 <h3 class="akaPostTitle">{{ malfunction.title }}</h3>
                 
                 <h4 class="akaPostText akaOrange akaFontWeightM">{{ malfunction.summary }}</h4>

@@ -50978,7 +50978,7 @@ var render = function() {
               })
             : _vm._e(),
           _vm._v(" "),
-          _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
+          _c("div", { staticClass: "card-body" }, [
             _c("h3", { staticClass: "akaPostTitle" }, [
               _vm._v(_vm._s(post.title))
             ]),
@@ -52820,7 +52820,7 @@ var render = function() {
           "div",
           { key: malfunction.id, staticClass: "card mb-4 akaMalfunctionCard" },
           [
-            _c("div", { staticClass: "card-body akaNoBottomMargin" }, [
+            _c("div", { staticClass: "card-body" }, [
               _c("h3", { staticClass: "akaPostTitle" }, [
                 _vm._v(_vm._s(malfunction.title))
               ]),
@@ -52989,6 +52989,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -53003,12 +53004,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 location: 'Lärdomsgatan, Gothenburg, Sweden',
                 lat: 57.705982,
                 lng: 11.936401,
-                show: true
+                dissmissed: false
             },
             malfunction_id: '',
-            pagination: {},
-            edit: false,
-            renderMap: true
+            dissmissedMalfunctions: [28, 27]
         };
     },
     created: function created() {
@@ -53020,118 +53019,91 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         fetchMalfunctions: function fetchMalfunctions(page_url) {
             var _this = this;
 
-            var vm = this;
             page_url = page_url || '/api/malfunctions ';
             fetch(page_url).then(function (res) {
                 return res.json();
             }).then(function (res) {
                 _this.malfunctions = res.data;
-                vm.makePagination(res.meta, res.links);
             }).catch(function (err) {
                 return console.log(err);
             });
         },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-
-            this.pagination = pagination;
-        },
-        deleteMalfunction: function deleteMalfunction(id) {
-            var _this2 = this;
-
-            if (confirm('Är du säker på att du vill ta bort driftstörningen?')) {
-                fetch('api/malfunction/' + id, {
-                    method: 'delete'
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    alert('Driftstörning Borttagen');
-                    _this2.fetchMalfunctions();
-                }).catch(function (err) {
-                    return console.log(err);
-                });
+        getCookie: function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
             }
+            return null;
         },
-        addMalfunction: function addMalfunction() {
-            var _this3 = this;
+        setCookie: function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        },
+        dissmiss: function dissmiss(id) {
+            // console.log(id);
 
-            if (this.edit === false) {
-                // Add
-                fetch('api/malfunction', {
-                    method: 'post',
-                    body: JSON.stringify(this.malfunction),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchMalfunctions();
-                    alert('Driftstörning Tillagd');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
+            var dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+            var array = [id];
+
+            if (dissmissedCookie == null || '') {
+                console.log('Cookie does not exist... Created!');
+                var json = JSON.stringify(array);
+                this.setCookie("dissmissedMalfunctions", json);
             } else {
-                // Update
-                fetch('api/malfunction', {
-                    method: 'put',
-                    body: JSON.stringify(this.malfunction),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchMalfunctions();
-                    alert('Driftstörning Uppdaterad');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
+
+                var dissmissedMalfunctions = JSON.parse(dissmissedCookie);
+
+                dissmissedMalfunctions.push(id);
+                var _json = JSON.stringify(dissmissedMalfunctions);
+                this.setCookie("dissmissedMalfunctions", _json);
+
+                console.log(dissmissedMalfunctions);
             }
-            // Reload...
-            this.renderMap = false;
-            var self = this;
-            setTimeout(function () {
-                self.renderMap = true;
-            }, 300);
-        },
-        editMalfunction: function editMalfunction(malfunction) {
-            this.edit = true;
-            this.malfunction.id = malfunction.id;
-            this.malfunction.malfunction_id = malfunction.id;
-            this.malfunction.title = malfunction.title;
-            this.malfunction.summary = malfunction.summary;
-            this.malfunction.body = malfunction.body;
-            this.malfunction.location = malfunction.location;
-            document.getElementById('MalfunctionTitle').focus();
+
+            // Next step is to filter this.malfunctions thru the cookies and overwrite it with the new filtered array
+
+            // const myCookie = this.getCookie("dissmissedMalfunctions");
+
+            // this.setCookie("dissmissedMalfunctions", id)
+
+            // const myCookie = this.getCookie("dissmissedMalfunctions");
+
+            // console.log(myCookie)
+            // console.log(this.malfunction);
         },
         log: function log() {
-            console.log(this.malfunction);
-        },
-        clearUpload: function clearUpload() {
-            var _this4 = this;
+            // document.cookie = "username=John Doe";
+            // createCookie('name', 'albert');
+            // console.log(this.malfunction);
+            var test = this.malfunctions;
+            var dissmissed = [28, 29];
 
-            this.$nextTick(function () {
-                _this4.malfunction.body = '';
-                _this4.malfunction.title = '';
-                _this4.malfunction.summary = '';
-                _this4.malfunction.id = '';
+            var filteredMalfunctions = test.filter(function (malfunction) {
+                return !dissmissed.includes(malfunction.id);
             });
-        },
-        setLocation: function setLocation(position, place) {
-            this.malfunction.lat = position.lat;
-            this.malfunction.lng = position.lng;
-            this.malfunction.location = place.formatted_address;
-            console.log(position.lat); // someValue
-            console.log(position.lng); // someValue
-            console.log(place.formatted_address); // someValue
+
+            console.log(test);
+            // console.log(arraj);
+            // console.log(dissmissed);
+            console.log(filteredMalfunctions);
+        }
+    },
+
+    computed: {
+        dissmissedMalfunctionsss: function dissmissedMalfunctionsss() {
+            var arr = ['foo', 'bar', 'baz'];
+            var json_str = JSON.stringify(arr);
+            createCookie('mycookie', json_str);
         }
     }
 });
@@ -53156,11 +53128,16 @@ var render = function() {
             staticClass: "akaMalfunctionNotification border-0"
           },
           [
-            this.show
+            !malfunction.dissmissed
               ? _c("div", { staticClass: "card-body" }, [
                   _c("img", {
                     staticClass: "akaWhiteCross",
-                    attrs: { src: "images/crossWhite.svg", alt: "" }
+                    attrs: { src: "images/crossWhite.svg", alt: "dissmiss" },
+                    on: {
+                      click: function($event) {
+                        _vm.dissmiss(malfunction.id)
+                      }
+                    }
                   }),
                   _vm._v(" "),
                   _c("h3", [_vm._v(_vm._s(malfunction.title))]),
@@ -53173,6 +53150,19 @@ var render = function() {
           ]
         )
       })
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-danger mb-2",
+        on: {
+          click: function($event) {
+            _vm.log(_vm.malfunction)
+          }
+        }
+      },
+      [_vm._v("Log")]
     )
   ])
 }
@@ -53181,9 +53171,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h4", { staticClass: "akaFontWeightL" }, [
+    return _c("h4", { staticClass: "akaFontWeightL akaNoBottomMargin" }, [
       _vm._v("Läs mer "),
-      _c("a", { attrs: { href: "" } }, [_vm._v("här.")])
+      _c("a", { attrs: { href: "" } }, [_vm._v("här")]),
+      _vm._v(".")
     ])
   }
 ]

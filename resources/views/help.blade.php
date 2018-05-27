@@ -2,7 +2,7 @@
 @extends('layouts.default')
 
 @section('content')
-<div class="akaContainer">
+<div class="akaContainer mb-4">
     <div class="row">
         <div class="col mt-2">
             
