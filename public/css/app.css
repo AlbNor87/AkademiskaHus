@@ -10423,7 +10423,7 @@ body {
 
 p {
   color: black;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 300;
 }
 
@@ -10436,7 +10436,7 @@ a:visited {
 }
 
 a:hover {
-  color: #649632;
+  color: #6da536;
   text-decoration: none;
 }
 
@@ -10518,7 +10518,7 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 }
 
 .akaBgGreen:hover {
-  background-color: #649632;
+  background-color: #6da536;
 }
 
 .akaBgBlue {
@@ -10686,6 +10686,10 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 
 .akaPostTitle {
   font-size: 18px;
+}
+
+.akaPostTextArea {
+  height: 120px;
 }
 
 .akaNavPlaceholder {
@@ -10885,7 +10889,7 @@ input[type="file"] {
 }
 
 .inputfile.akaBgOrange + label {
-  background-color: #be7016;
+  background-color: #d67e19;
 }
 
 .inputfile + label svg {
@@ -10961,7 +10965,7 @@ input[type="file"] {
 }
 
 .akaMapInput.akaOrange button:hover {
-  background-color: #be7016;
+  background-color: #d67e19;
 }
 
 .akaMapInput.akaOrange input {
@@ -11111,7 +11115,24 @@ input[type="file"] {
 }
 
 .akaMalfunction .akaBgOrange:hover {
-  background-color: #be7016;
+  background-color: #d67e19;
+}
+
+.akaMalfunction a:link {
+  color: #F7911E;
+}
+
+.akaMalfunction a:visited {
+  color: #F7911E;
+}
+
+.akaMalfunction a:hover {
+  color: #d67e19;
+  text-decoration: none;
+}
+
+.akaMalfunction a:active {
+  color: black;
 }
 
 .akaFormControl.akaOrange {
@@ -11158,7 +11179,8 @@ input[type="file"] {
 .akaMalfunctionNotification .card-body {
   border-top: 1px solid #e97ba7;
   padding: 10px;
-  padding-bottom: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   margin: 0;
 }
 

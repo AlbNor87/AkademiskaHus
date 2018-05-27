@@ -5,10 +5,10 @@
         <googlemap></googlemap> -->
         <div class="form-group">
             <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-            <googlemap colorTheme="akaBlue" :location="location" :lng="lng" :lat="lat"></googlemap>
+            <googlemap v-if="this.renderMap" colorTheme="akaBlue" :location="location" :lng="lng" :lat="lat"></googlemap>
         </div>
 
-        <form class="mb-3 akaMt2rem" id="ideas">
+        <form @submit.prevent="sendIdea" class="mb-3 akaMt2rem" id="ideas">
 
             <div class="form-group">
                 <h5>Ämne/Kategori*</h5>
@@ -47,23 +47,23 @@
             
             <div  v-if="!this.auth" class="form-group akaMt2rem">
                 <h5>Jag heter <span class="akaTextProp">(valfritt)</span></h5>
-                <input type="text" class="akaFormControl" placeholder="Förnamn">
-                <input type="text" class="akaFormControl mt-3 akaBorderRadius" placeholder="Efternamn">
+                <input type="text" class="akaFormControl" placeholder="Förnamn" v-model="post.firstName">
+                <input type="text" class="akaFormControl mt-3 akaBorderRadius" placeholder="Efternamn" v-model="post.lastName">
             </div>
 
             
             <div v-if="!this.auth" class="form-group akaMt2rem">
                 <h5>Telefonnummer <span class="akaTextProp">(valfritt)</span></h5>
-                <input type="text" class="akaFormControl" placeholder="Telefonnummer">
+                <input type="number" class="akaFormControl" placeholder="Telefonnummer" v-model="post.phone">
             </div>
 
             <div v-if="!this.auth" class="form-group akaMt2rem">
             <h5>E-post <span class="akaTextProp">(valfritt)</span></h5>
-                <input type="text" class="akaFormControl" placeholder="exempel@epost.se">
+                <input type="email" class="akaFormControl" placeholder="exempel@epost.se" v-model="post.email">
             </div>
 
-            <div class="form-group akaMt2rem akaFlexRow">
-            <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem" >Jag vill ha återkoppling på ärendet</h5>
+            <div class="form-group akaMt2rem akaFlexRow" v-if="!this.getBack">
+                <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
             </div>
 
             <button form="ideas" type="submit" class="btn btn-block akaBgBlue text-white akaBorderRadius">Skicka</button>
@@ -86,7 +86,11 @@
                     body: '',
                     created_at: '',
                     image: '',
-                    imageName: ''
+                    imageName: '',
+                    firstName: '',
+                    lastName: '',
+                    phone: '',
+                    email: '',
                 },
                 post_id: '',
                 pagination: {},
@@ -95,7 +99,9 @@
                 // Default location to Yrgo, Lärdomsgatan. Just for now...
                 location: 'Lärdomsgatan, Gothenburg, Sweden',
                 lat: 57.705982,
-                lng: 11.936401
+                lng: 11.936401,
+                renderMap: true,
+                getBack: false
             }
         },
 
@@ -193,14 +199,9 @@
                 fileReader.onload = (e) => {
                     this.post.image = e.target.result;
                 }
-
             },
             log(){
                 console.log(this.post);
-                // console.log(this.uploadReady);
-                // console.log(process.env);
-                
-                
             },
             clearUpload(){
                 this.uploadReady = false;
@@ -211,9 +212,27 @@
                 this.post.image = '';
                 this.post.imageName = '';
                 this.post.id = '';
+                this.post.firstName = '';
+                this.post.lastName = '';
+                this.post.phone = '';
+                this.post.email = '';
+
+                this.getBack = true;
+                var self = this;
+                setTimeout(function(){
+                self.getBack = false;
+                }, 300);
+
+                this.renderMap = false;
+                var self = this;
+                setTimeout(function(){
+                self.renderMap = true;
+                }, 300); 
                 
-            })
-                console.log(this.uploadReady);
+            })},
+            sendIdea() {
+                this.clearUpload();
+                alert('Vi har mottagit din idé, tack för ditt bidrag!');
             }
         }
     }

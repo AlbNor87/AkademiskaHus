@@ -11,12 +11,13 @@
             </div>
 
             @else
-
-            <h3>Driftstörning</h3>
+            <h2 class="text-center mt-3">Driftstörningar</h2>
+            <div id="app" class="justify-content-center">
+                <viewmalfunctions></viewmalfunctions>
+            </div>
             
             @endif
 
-            <div id="app"></div>
         </div><!-- /col -->
     </div><!-- /row -->
 </div><!-- /akaContainer -->

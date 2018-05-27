@@ -30,6 +30,7 @@ Vue.component('googlemap', require('./components/GoogleMap.vue'));
 Vue.component('errorreport', require('./components/ErrorReport.vue'));
 Vue.component('managemalfunctions', require('./components/ManageMalfunctions.vue'));
 Vue.component('malfunctions', require('./components/Malfunctions.vue'));
+Vue.component('viewmalfunctions', require('./components/ViewMalfunctions.vue'));
 Vue.component('ideas', require('./components/Ideas.vue'));
 
 const app = new Vue({

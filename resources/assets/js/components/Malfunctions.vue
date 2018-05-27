@@ -5,7 +5,7 @@
                                 
                 <div class="card-body" v-if="!malfunction.dissmissed">
 
-                    <img class="akaWhiteCross" src="images/crossWhite.svg" alt="dissmiss" @click="dissmiss(malfunction.id)">
+                    <img class="akaWhiteCross" src="images/crossWhite.svg" alt="dissmiss" title="Stäng" @click="dissmiss(malfunction.id)">
 
                     <h3>{{ malfunction.title }}</h3>
                     
@@ -16,7 +16,7 @@
                 
             </div>
         </div>
-        <button @click="log(malfunction)" class="btn btn-danger mb-2">Log</button>
+        <!-- <button @click="log(malfunction)" class="btn btn-danger mb-2">Log</button> -->
     </div>
 </template>
 
@@ -31,13 +31,12 @@
                     body: '',
                     summary: '',
                     created_at: '',
-                    location: 'Lärdomsgatan, Gothenburg, Sweden',
-                    lat: 57.705982,
-                    lng: 11.936401,
+                    location: '',
+                    lat: '',
+                    lng: '',
                     dissmissed: false
                 },
                 malfunction_id: '',
-                dissmissedMalfunctions: [28, 27]
             }
         },
 
@@ -52,8 +51,19 @@
                 .then(res => res.json())
                 .then(res => {
                     this.malfunctions = res.data;
+                    this.filterDissmissed();
                 })
                 .catch(err => console.log(err)); 
+            },
+            makePagination(meta, links) {
+                let pagination = {
+                    current_page: meta.current_page,
+                    last_page: meta.last_page,
+                    next_page_url: links.next,
+                    prev_page_url: links.prev
+                }
+
+                this.pagination = pagination;
             },
             getCookie(cname){
                 var name = cname + "=";
@@ -77,62 +87,51 @@
                 document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
             },
             dissmiss(id){
-                // console.log(id);
                 
-                const dissmissedCookie = this.getCookie("dissmissedMalfunctions");
-                const array = [id];
+                // Check if cookie exists
+                let dissmissedCookie = this.getCookie("dissmissedMalfunctions");
 
                 if (dissmissedCookie == null || '') {
-                    console.log('Cookie does not exist... Created!');
-                    const json = JSON.stringify(array);
-                    this.setCookie("dissmissedMalfunctions", json);
-                } else {
-
-                    const dissmissedMalfunctions = JSON.parse(dissmissedCookie);
-
-                    dissmissedMalfunctions.push(id);
-                    const json = JSON.stringify(dissmissedMalfunctions);
-                    this.setCookie("dissmissedMalfunctions", json);
-
-                    console.log(dissmissedMalfunctions);
-
-                }
-
-                // Next step is to filter this.malfunctions thru the cookies and overwrite it with the new filtered array
-
-                // const myCookie = this.getCookie("dissmissedMalfunctions");
-
-                // this.setCookie("dissmissedMalfunctions", id)
-
-                // const myCookie = this.getCookie("dissmissedMalfunctions");
+                    // If not create one with an empty array inside it
+                    this.setCookie("dissmissedMalfunctions", '[]');
+                } 
                 
-                // console.log(myCookie)
-                // console.log(this.malfunction);
+                // If cookie exist -> Get it
+                dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+                
+                // Turn into an array of dissmissed malfunctions
+                const dissmissedMalfunctions = JSON.parse(dissmissedCookie);
+                
+                // Push the newly dissmissed id into the array
+                dissmissedMalfunctions.push(id);
+
+                // Turn it back into json and update the cookie
+                const json = JSON.stringify(dissmissedMalfunctions);
+                this.setCookie("dissmissedMalfunctions", json);
+
+                // Remove the dissmissed item from view
+                this.filterDissmissed();
             },
-            log(){
-                // document.cookie = "username=John Doe";
-                // createCookie('name', 'albert');
-                // console.log(this.malfunction);
-                const test = this.malfunctions;
-                const dissmissed = [28, 29];
+            filterDissmissed(){
 
-                var filteredMalfunctions =
-                test.filter(malfunction => !dissmissed.includes(malfunction.id));
+                let dissmissedCookie = this.getCookie("dissmissedMalfunctions");
                 
-                console.log(test)
-                // console.log(arraj);
-                // console.log(dissmissed);
-                console.log(filteredMalfunctions);
-                
-            },
-        },
-        
-        computed: {
-            dissmissedMalfunctionsss(){
-                var arr = ['foo', 'bar', 'baz'];
-                var json_str = JSON.stringify(arr);
-                createCookie('mycookie', json_str);
+                // Check if cookie exists
+                if (dissmissedCookie == null || '') return;
 
+                // If cookie exist -> Get it
+                dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+                
+                // Turn into an array of dissmissed malfunctions
+                const dissmissedMalfunctions = JSON.parse(dissmissedCookie);
+
+                // Filter the malfunctions to be displayed
+                // If the malfunction's id exists in the dissmissed array -> filter it out
+                const allMalfunctions = this.malfunctions;
+                var filteredMalfunctions = allMalfunctions.filter(malfunction => !dissmissedMalfunctions.includes(malfunction.id));
+                
+                // Update the malfunctions to be displayed
+                this.malfunctions = filteredMalfunctions;
             }
         }
     }

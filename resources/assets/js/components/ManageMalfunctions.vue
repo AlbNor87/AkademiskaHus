@@ -51,6 +51,27 @@
             
         </div>
 
+        <!-- Pagnation navbar -->
+        <nav aria-label="Page navigation">
+
+            <ul class="pagination justify-content-center">
+
+                <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchMalfunctions(pagination.prev_page_url)">❮❮</a>
+                </li>
+
+                 <li class="page-item disabled">
+                     <a class="page-link text-dark" href="#">Sida {{ pagination.current_page }} av {{ pagination.last_page }} </a>
+                 </li>
+
+                <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="page-item">
+                    <a class="page-link" href="#" @click="fetchMalfunctions(pagination.next_page_url)">❯❯</a>
+                </li>
+
+            </ul>
+
+        </nav>
+
     </div>
 </template>
 
@@ -149,12 +170,6 @@
                     })
                     .catch(err => console.log(err));
                 }
-                // Reload...
-                this.renderMap = false;
-                var self = this;
-                setTimeout(function(){
-                self.renderMap = true;
-                }, 300);
             },
             editMalfunction(malfunction) {
                 this.edit = true;
@@ -174,7 +189,13 @@
                 this.malfunction.body = '';
                 this.malfunction.title = '';
                 this.malfunction.summary = '';
-                this.malfunction.id = '';    
+                this.malfunction.id = '';
+                // Reload map...
+                this.renderMap = false;
+                var self = this;
+                setTimeout(function(){
+                self.renderMap = true;
+                }, 300); 
             })},
             setLocation (position, place) {
                 this.malfunction.lat = position.lat;

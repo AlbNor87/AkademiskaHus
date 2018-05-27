@@ -53,6 +53,24 @@
         background-color: $akaDarkOrange;
     }
     
+    a:link {
+        color: $akaOrange;
+    }
+    
+    a:visited {
+        color: $akaOrange;
+    }
+    
+    a:hover {
+        color: $akaDarkOrange;
+        text-decoration: none;
+    }
+    
+    a:active {
+        color: black;
+    }
+
+    
 }
 
 .akaFormControl.akaOrange {

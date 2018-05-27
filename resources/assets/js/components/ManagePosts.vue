@@ -12,7 +12,7 @@
             </div>
 
             <div class="form-group">
-                <textarea class="form-control" placeholder="Innehåll" v-model="post.body"></textarea>
+                <textarea class="form-control akaPostTextArea" placeholder="Innehåll" v-model="post.body"></textarea>
             </div>
 
             <div class="form-group">

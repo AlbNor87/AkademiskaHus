@@ -14985,7 +14985,7 @@ exports.default = function (input) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(24);
-module.exports = __webpack_require__(99);
+module.exports = __webpack_require__(102);
 
 
 /***/ }),
@@ -15025,9 +15025,10 @@ Vue.component('posts', __webpack_require__(81));
 Vue.component('manageposts', __webpack_require__(84));
 Vue.component('googlemap', __webpack_require__(87));
 Vue.component('errorreport', __webpack_require__(90));
-Vue.component('managemalfunctions', __webpack_require__(103));
-Vue.component('malfunctions', __webpack_require__(106));
-Vue.component('ideas', __webpack_require__(96));
+Vue.component('managemalfunctions', __webpack_require__(93));
+Vue.component('malfunctions', __webpack_require__(96));
+Vue.component('viewmalfunctions', __webpack_require__(106));
+Vue.component('ideas', __webpack_require__(99));
 
 var app = new Vue({
   el: '#app'
@@ -50865,7 +50866,7 @@ var render = function() {
                   expression: "post.body"
                 }
               ],
-              staticClass: "form-control",
+              staticClass: "form-control akaPostTextArea",
               attrs: { placeholder: "Innehåll" },
               domProps: { value: _vm.post.body },
               on: {
@@ -51457,7 +51458,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 body: '',
                 created_at: '',
                 image: '',
-                imageName: ''
+                imageName: '',
+                firstName: '',
+                lastName: '',
+                phone: '',
+                email: ''
             },
             post_id: '',
             pagination: {},
@@ -51466,7 +51471,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             // Default location to Yrgo, Lärdomsgatan. Just for now...
             location: 'Lärdomsgatan, Gothenburg, Sweden',
             lat: 57.705982,
-            lng: 11.936401
+            lng: 11.936401,
+            renderMap: true,
+            getBack: false
         };
     },
     created: function created() {
@@ -51560,7 +51567,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.post.post_id = post.id;
             this.post.title = post.title;
             this.post.body = post.body;
-            // document.getElementById('top').scrollIntoView();
             document.getElementById('postTitle').focus();
         },
         imageChanged: function imageChanged(e) {
@@ -51594,8 +51600,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this5.post.image = '';
                 _this5.post.imageName = '';
                 _this5.post.id = '';
+                _this5.post.firstName = '';
+                _this5.post.lastName = '';
+                _this5.post.phone = '';
+                _this5.post.email = '';
+
+                _this5.getBack = true;
+                var self = _this5;
+                setTimeout(function () {
+                    self.getBack = false;
+                }, 300);
+
+                _this5.renderMap = false;
+                var self = _this5;
+                setTimeout(function () {
+                    self.renderMap = true;
+                }, 300);
             });
             console.log(this.uploadReady);
+        },
+        sendErrorReport: function sendErrorReport() {
+            this.clearUpload();
+            alert('Vi har mottagit din felanmälan, tack så mycket!');
         }
     }
 });
@@ -51608,157 +51634,307 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "akaContainer mb-5 akaErrorReport" }, [
-    _c(
-      "div",
-      { staticClass: "form-group" },
-      [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("googlemap", {
-          attrs: { location: _vm.location, lng: _vm.lng, lat: _vm.lat }
-        })
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("form", { staticClass: "mb-3 akaMt2rem" }, [
-      _vm._m(1),
-      _vm._v(" "),
-      _vm._m(2),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group akaMt2rem" }, [
-        _vm._m(3),
-        _vm._v(" "),
-        _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
-        _vm._v(" "),
-        _vm.uploadReady
-          ? _c("input", {
-              staticClass: "inputfile inputfile-1",
-              attrs: {
-                type: "file",
-                name: "file-1[]",
-                id: "file-upload",
-                accept: ".jpg,.png",
-                size: "32154",
-                hidden: ""
-              },
-              on: { change: _vm.imageChanged }
-            })
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "label",
-          { staticClass: "btn akaBgPink", attrs: { for: "file-upload" } },
-          [
-            !_vm.post.image
-              ? _c("span", { staticClass: "akaJustifyCenter" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v("\n                            Ladda Upp Bild")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.post.image
-              ? _c("span", { staticClass: "akaUploadCaption" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v(
-                    "\n                            " +
-                      _vm._s(_vm.post.imageName)
-                  )
-                ])
-              : _vm._e()
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(4),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "Förnamn" }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl mt-3 akaBorderRadius",
-              attrs: { type: "text", placeholder: "Efternamn" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(5),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "Telefonnummer" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(6),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "exempel@epost.se" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm._m(7),
+  return _c(
+    "div",
+    {
+      staticClass: "akaContainer mb-5 akaErrorReport",
+      attrs: { id: "topOfpage" }
+    },
+    [
+      _c(
+        "div",
+        { staticClass: "form-group" },
+        [
+          _vm._m(0),
+          _vm._v(" "),
+          this.renderMap
+            ? _c("googlemap", {
+                attrs: { location: _vm.location, lng: _vm.lng, lat: _vm.lat }
+              })
+            : _vm._e()
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
-        "button",
+        "form",
         {
-          staticClass: "btn btn-block akaBgPink text-white akaBorderRadius",
-          attrs: { type: "submit" }
+          staticClass: "mb-3 akaMt2rem",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.sendErrorReport($event)
+            }
+          }
         },
-        [_vm._v("Skicka")]
+        [
+          _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _c("h5", [_vm._v("Ämne/Kategori (typ av fel)*")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.post.title,
+                  expression: "post.title"
+                }
+              ],
+              staticClass: "akaFormControl",
+              attrs: { type: "text", placeholder: "Titel", required: "" },
+              domProps: { value: _vm.post.title },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.post, "title", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _c("h5", [_vm._v("Problembeskrivning*")]),
+            _vm._v(" "),
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.post.body,
+                  expression: "post.body"
+                }
+              ],
+              staticClass: "akaFormControl",
+              attrs: {
+                placeholder: "Max 500 tecken",
+                maxlength: "500",
+                required: ""
+              },
+              domProps: { value: _vm.post.body },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.post, "body", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group akaMt2rem" }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
+            _vm._v(" "),
+            _vm.uploadReady
+              ? _c("input", {
+                  staticClass: "inputfile inputfile-1",
+                  attrs: {
+                    type: "file",
+                    name: "file-1[]",
+                    id: "file-upload",
+                    accept: ".jpg,.png",
+                    size: "32154",
+                    hidden: ""
+                  },
+                  on: { change: _vm.imageChanged }
+                })
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "label",
+              { staticClass: "btn akaBgPink", attrs: { for: "file-upload" } },
+              [
+                !_vm.post.image
+                  ? _c("span", { staticClass: "akaJustifyCenter" }, [
+                      _c(
+                        "svg",
+                        {
+                          attrs: {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            width: "20",
+                            fill: "white",
+                            height: "17",
+                            viewBox: "0 0 20 17"
+                          }
+                        },
+                        [
+                          _c("path", {
+                            attrs: {
+                              d:
+                                "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v("\n                            Ladda Upp Bild")
+                    ])
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.post.image
+                  ? _c("span", { staticClass: "akaUploadCaption" }, [
+                      _c(
+                        "svg",
+                        {
+                          attrs: {
+                            xmlns: "http://www.w3.org/2000/svg",
+                            width: "20",
+                            fill: "white",
+                            height: "17",
+                            viewBox: "0 0 20 17"
+                          }
+                        },
+                        [
+                          _c("path", {
+                            attrs: {
+                              d:
+                                "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.post.imageName)
+                      )
+                    ])
+                  : _vm._e()
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          !this.auth
+            ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.post.firstName,
+                      expression: "post.firstName"
+                    }
+                  ],
+                  staticClass: "akaFormControl",
+                  attrs: { type: "text", placeholder: "Förnamn" },
+                  domProps: { value: _vm.post.firstName },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.post, "firstName", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.post.lastName,
+                      expression: "post.lastName"
+                    }
+                  ],
+                  staticClass: "akaFormControl mt-3 akaBorderRadius",
+                  attrs: { type: "text", placeholder: "Efternamn" },
+                  domProps: { value: _vm.post.lastName },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.post, "lastName", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !this.auth
+            ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.post.phone,
+                      expression: "post.phone"
+                    }
+                  ],
+                  staticClass: "akaFormControl",
+                  attrs: { type: "number", placeholder: "Telefonnummer" },
+                  domProps: { value: _vm.post.phone },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.post, "phone", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !this.auth
+            ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+                _vm._m(4),
+                _vm._v(" "),
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.post.email,
+                      expression: "post.email"
+                    }
+                  ],
+                  staticClass: "akaFormControl",
+                  attrs: { type: "email", placeholder: "exempel@epost.se" },
+                  domProps: { value: _vm.post.email },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.post, "email", $event.target.value)
+                    }
+                  }
+                })
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !this.getBack
+            ? _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
+                _c("input", {
+                  attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
+                }),
+                _c("h5", { staticClass: "akaMl1rem" }, [
+                  _vm._v("Jag vill ha återkoppling på ärendet")
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-block akaBgPink text-white akaBorderRadius",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Skicka")]
+          )
+        ]
       )
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
@@ -51768,32 +51944,6 @@ var staticRenderFns = [
     return _c("h5", [
       _vm._v("Plats "),
       _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem" }, [
-      _c("h5", [_vm._v("Ämne/Kategori (typ av fel)*")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "akaFormControl",
-        attrs: { type: "text", placeholder: "Titel", required: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem" }, [
-      _c("h5", [_vm._v("Problembeskrivning*")]),
-      _vm._v(" "),
-      _c("textarea", {
-        staticClass: "akaFormControl",
-        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
-      })
     ])
   },
   function() {
@@ -51830,19 +51980,6 @@ var staticRenderFns = [
     return _c("h5", [
       _vm._v("E-post "),
       _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
-      _c("input", {
-        attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
-      }),
-      _c("h5", { staticClass: "akaMl1rem" }, [
-        _vm._v("Jag vill ha återkoppling på ärendet")
-      ])
     ])
   }
 ]
@@ -51856,576 +51993,15 @@ if (false) {
 }
 
 /***/ }),
-/* 93 */,
-/* 94 */,
-/* 95 */,
-/* 96 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(97)
+var __vue_script__ = __webpack_require__(94)
 /* template */
-var __vue_template__ = __webpack_require__(98)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Ideas.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-36439ab5", Component.options)
-  } else {
-    hotAPI.reload("data-v-36439ab5", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 97 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['auth'],
-    data: function data() {
-        return {
-            upload: '',
-            posts: [],
-            post: {
-                id: '',
-                title: '',
-                body: '',
-                created_at: '',
-                image: '',
-                imageName: ''
-            },
-            post_id: '',
-            pagination: {},
-            edit: false,
-            uploadReady: true,
-            // Default location to Yrgo, Lärdomsgatan. Just for now...
-            location: 'Lärdomsgatan, Gothenburg, Sweden',
-            lat: 57.705982,
-            lng: 11.936401
-        };
-    },
-    created: function created() {
-        this.fetchPosts();
-    },
-
-
-    methods: {
-        fetchPosts: function fetchPosts(page_url) {
-            var _this = this;
-
-            var vm = this;
-            page_url = page_url || '/api/posts ';
-            fetch(page_url).then(function (res) {
-                return res.json();
-            }).then(function (res) {
-                _this.posts = res.data;
-                vm.makePagination(res.meta, res.links);
-            }).catch(function (err) {
-                return console.log(err);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-
-            this.pagination = pagination;
-        },
-        deletePost: function deletePost(id) {
-            var _this2 = this;
-
-            if (confirm('Är du säker på att du vill ta bort posten?')) {
-                fetch('api/post/' + id, {
-                    method: 'delete'
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    alert('Post Borttagen');
-                    _this2.fetchPosts();
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        addPost: function addPost() {
-            var _this3 = this;
-
-            if (this.edit === false) {
-                // Add
-                fetch('api/post', {
-                    method: 'post',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Tillagd');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            } else {
-                // Update
-                fetch('api/post', {
-                    method: 'put',
-                    body: JSON.stringify(this.post),
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                }).then(function (res) {
-                    return res.json();
-                }).then(function (data) {
-                    _this3.clearUpload();
-                    _this3.fetchPosts();
-                    alert('Post Uppdaterad');
-                }).catch(function (err) {
-                    return console.log(err);
-                });
-            }
-        },
-        editPost: function editPost(post) {
-            this.edit = true;
-            this.post.id = post.id;
-            this.post.post_id = post.id;
-            this.post.title = post.title;
-            this.post.body = post.body;
-            // document.getElementById('top').scrollIntoView();
-            document.getElementById('postTitle').focus();
-        },
-        imageChanged: function imageChanged(e) {
-            var _this4 = this;
-
-            console.log(e.target.files[0]);
-            this.post.imageName = e.target.files[0].name;
-
-            var fileReader = new FileReader();
-
-            fileReader.readAsDataURL(e.target.files[0]);
-
-            fileReader.onload = function (e) {
-                _this4.post.image = e.target.result;
-            };
-        },
-        log: function log() {
-            console.log(this.post);
-            // console.log(this.uploadReady);
-            // console.log(process.env);
-
-        },
-        clearUpload: function clearUpload() {
-            var _this5 = this;
-
-            this.uploadReady = false;
-            this.$nextTick(function () {
-                _this5.uploadReady = true;
-                _this5.post.title = '';
-                _this5.post.body = '';
-                _this5.post.image = '';
-                _this5.post.imageName = '';
-                _this5.post.id = '';
-            });
-            console.log(this.uploadReady);
-        }
-    }
-});
-
-/***/ }),
-/* 98 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "akaContainer mb-5 akaIdeas" }, [
-    _c(
-      "div",
-      { staticClass: "form-group" },
-      [
-        _vm._m(0),
-        _vm._v(" "),
-        _c("googlemap", {
-          attrs: {
-            colorTheme: "akaBlue",
-            location: _vm.location,
-            lng: _vm.lng,
-            lat: _vm.lat
-          }
-        })
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("form", { staticClass: "mb-3 akaMt2rem", attrs: { id: "ideas" } }, [
-      _vm._m(1),
-      _vm._v(" "),
-      _vm._m(2),
-      _vm._v(" "),
-      _c("div", { staticClass: "form-group akaMt2rem" }, [
-        _vm._m(3),
-        _vm._v(" "),
-        _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
-        _vm._v(" "),
-        _vm.uploadReady
-          ? _c("input", {
-              staticClass: "inputfile inputfile-1",
-              attrs: {
-                type: "file",
-                name: "file-1[]",
-                id: "file-upload",
-                accept: ".jpg,.png",
-                size: "32154",
-                hidden: ""
-              },
-              on: { change: _vm.imageChanged }
-            })
-          : _vm._e(),
-        _vm._v(" "),
-        _c(
-          "label",
-          { staticClass: "btn akaBgBlue", attrs: { for: "file-upload" } },
-          [
-            !_vm.post.image
-              ? _c("span", { staticClass: "akaJustifyCenter" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v("\n                            Ladda Upp Bild")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.post.image
-              ? _c("span", { staticClass: "akaUploadCaption" }, [
-                  _c(
-                    "svg",
-                    {
-                      attrs: {
-                        xmlns: "http://www.w3.org/2000/svg",
-                        width: "20",
-                        fill: "white",
-                        height: "17",
-                        viewBox: "0 0 20 17"
-                      }
-                    },
-                    [
-                      _c("path", {
-                        attrs: {
-                          d:
-                            "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
-                        }
-                      })
-                    ]
-                  ),
-                  _vm._v(
-                    "\n                            " +
-                      _vm._s(_vm.post.imageName)
-                  )
-                ])
-              : _vm._e()
-          ]
-        )
-      ]),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(4),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "Förnamn" }
-            }),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl mt-3 akaBorderRadius",
-              attrs: { type: "text", placeholder: "Efternamn" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(5),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "Telefonnummer" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      !this.auth
-        ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-            _vm._m(6),
-            _vm._v(" "),
-            _c("input", {
-              staticClass: "akaFormControl",
-              attrs: { type: "text", placeholder: "exempel@epost.se" }
-            })
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm._m(7),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-block akaBgBlue text-white akaBorderRadius",
-          attrs: { form: "ideas", type: "submit" }
-        },
-        [_vm._v("Skicka")]
-      )
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Plats "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("h5", [_vm._v("Ämne/Kategori*")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "akaFormControl akaBlue",
-        attrs: {
-          type: "text",
-          placeholder: "Idé-titel",
-          id: "postTitle",
-          required: ""
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem" }, [
-      _c("h5", [_vm._v("Idébeskrivning*")]),
-      _vm._v(" "),
-      _c("textarea", {
-        staticClass: "akaFormControl",
-        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Kompletterande bild "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Jag heter "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("Telefonnummer "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("h5", [
-      _vm._v("E-post "),
-      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
-      _c("input", {
-        attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
-      }),
-      _c("h5", { staticClass: "akaMl1rem" }, [
-        _vm._v("Jag vill ha återkoppling på ärendet")
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-36439ab5", module.exports)
-  }
-}
-
-/***/ }),
-/* 99 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 100 */,
-/* 101 */,
-/* 102 */,
-/* 103 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(104)
-/* template */
-var __vue_template__ = __webpack_require__(105)
+var __vue_template__ = __webpack_require__(95)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52464,11 +52040,32 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 104 */
+/* 94 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -52630,12 +52227,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     return console.log(err);
                 });
             }
-            // Reload...
-            this.renderMap = false;
-            var self = this;
-            setTimeout(function () {
-                self.renderMap = true;
-            }, 300);
         },
         editMalfunction: function editMalfunction(malfunction) {
             this.edit = true;
@@ -52658,6 +52249,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this4.malfunction.title = '';
                 _this4.malfunction.summary = '';
                 _this4.malfunction.id = '';
+                // Reload map...
+                _this4.renderMap = false;
+                var self = _this4;
+                setTimeout(function () {
+                    self.renderMap = true;
+                }, 300);
             });
         },
         setLocation: function setLocation(position, place) {
@@ -52672,7 +52269,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 105 */
+/* 95 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -52879,7 +52476,73 @@ var render = function() {
             ])
           ]
         )
-      })
+      }),
+      _vm._v(" "),
+      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+        _c("ul", { staticClass: "pagination justify-content-center" }, [
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.prev_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.prev_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❮❮")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              { staticClass: "page-link text-dark", attrs: { href: "#" } },
+              [
+                _vm._v(
+                  "Sida " +
+                    _vm._s(_vm.pagination.current_page) +
+                    " av " +
+                    _vm._s(_vm.pagination.last_page) +
+                    " "
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.next_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.next_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❯❯")]
+              )
+            ]
+          )
+        ])
+      ])
     ],
     2
   )
@@ -52916,15 +52579,15 @@ if (false) {
 }
 
 /***/ }),
-/* 106 */
+/* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(107)
+var __vue_script__ = __webpack_require__(97)
 /* template */
-var __vue_template__ = __webpack_require__(108)
+var __vue_template__ = __webpack_require__(98)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52963,7 +52626,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 107 */
+/* 97 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53001,13 +52664,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 body: '',
                 summary: '',
                 created_at: '',
-                location: 'Lärdomsgatan, Gothenburg, Sweden',
-                lat: 57.705982,
-                lng: 11.936401,
+                location: '',
+                lat: '',
+                lng: '',
                 dissmissed: false
             },
-            malfunction_id: '',
-            dissmissedMalfunctions: [28, 27]
+            malfunction_id: ''
         };
     },
     created: function created() {
@@ -53024,9 +52686,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 return res.json();
             }).then(function (res) {
                 _this.malfunctions = res.data;
+                _this.filterDissmissed();
             }).catch(function (err) {
                 return console.log(err);
             });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
         },
         getCookie: function getCookie(cname) {
             var name = cname + "=";
@@ -53050,66 +52723,59 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
         },
         dissmiss: function dissmiss(id) {
-            // console.log(id);
 
+            // Check if cookie exists
             var dissmissedCookie = this.getCookie("dissmissedMalfunctions");
-            var array = [id];
 
             if (dissmissedCookie == null || '') {
-                console.log('Cookie does not exist... Created!');
-                var json = JSON.stringify(array);
-                this.setCookie("dissmissedMalfunctions", json);
-            } else {
-
-                var dissmissedMalfunctions = JSON.parse(dissmissedCookie);
-
-                dissmissedMalfunctions.push(id);
-                var _json = JSON.stringify(dissmissedMalfunctions);
-                this.setCookie("dissmissedMalfunctions", _json);
-
-                console.log(dissmissedMalfunctions);
+                // If not create one with an empty array inside it
+                this.setCookie("dissmissedMalfunctions", '[]');
             }
 
-            // Next step is to filter this.malfunctions thru the cookies and overwrite it with the new filtered array
+            // If cookie exist -> Get it
+            dissmissedCookie = this.getCookie("dissmissedMalfunctions");
 
-            // const myCookie = this.getCookie("dissmissedMalfunctions");
+            // Turn into an array of dissmissed malfunctions
+            var dissmissedMalfunctions = JSON.parse(dissmissedCookie);
 
-            // this.setCookie("dissmissedMalfunctions", id)
+            // Push the newly dissmissed id into the array
+            dissmissedMalfunctions.push(id);
 
-            // const myCookie = this.getCookie("dissmissedMalfunctions");
+            // Turn it back into json and update the cookie
+            var json = JSON.stringify(dissmissedMalfunctions);
+            this.setCookie("dissmissedMalfunctions", json);
 
-            // console.log(myCookie)
-            // console.log(this.malfunction);
+            // Remove the dissmissed item from view
+            this.filterDissmissed();
         },
-        log: function log() {
-            // document.cookie = "username=John Doe";
-            // createCookie('name', 'albert');
-            // console.log(this.malfunction);
-            var test = this.malfunctions;
-            var dissmissed = [28, 29];
+        filterDissmissed: function filterDissmissed() {
 
-            var filteredMalfunctions = test.filter(function (malfunction) {
-                return !dissmissed.includes(malfunction.id);
+            var dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+
+            // Check if cookie exists
+            if (dissmissedCookie == null || '') return;
+
+            // If cookie exist -> Get it
+            dissmissedCookie = this.getCookie("dissmissedMalfunctions");
+
+            // Turn into an array of dissmissed malfunctions
+            var dissmissedMalfunctions = JSON.parse(dissmissedCookie);
+
+            // Filter the malfunctions to be displayed
+            // If the malfunction's id exists in the dissmissed array -> filter it out
+            var allMalfunctions = this.malfunctions;
+            var filteredMalfunctions = allMalfunctions.filter(function (malfunction) {
+                return !dissmissedMalfunctions.includes(malfunction.id);
             });
 
-            console.log(test);
-            // console.log(arraj);
-            // console.log(dissmissed);
-            console.log(filteredMalfunctions);
-        }
-    },
-
-    computed: {
-        dissmissedMalfunctionsss: function dissmissedMalfunctionsss() {
-            var arr = ['foo', 'bar', 'baz'];
-            var json_str = JSON.stringify(arr);
-            createCookie('mycookie', json_str);
+            // Update the malfunctions to be displayed
+            this.malfunctions = filteredMalfunctions;
         }
     }
 });
 
 /***/ }),
-/* 108 */
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53132,7 +52798,11 @@ var render = function() {
               ? _c("div", { staticClass: "card-body" }, [
                   _c("img", {
                     staticClass: "akaWhiteCross",
-                    attrs: { src: "images/crossWhite.svg", alt: "dissmiss" },
+                    attrs: {
+                      src: "images/crossWhite.svg",
+                      alt: "dissmiss",
+                      title: "Stäng"
+                    },
                     on: {
                       click: function($event) {
                         _vm.dissmiss(malfunction.id)
@@ -53150,19 +52820,6 @@ var render = function() {
           ]
         )
       })
-    ),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
-        staticClass: "btn btn-danger mb-2",
-        on: {
-          click: function($event) {
-            _vm.log(_vm.malfunction)
-          }
-        }
-      },
-      [_vm._v("Log")]
     )
   ])
 }
@@ -53184,6 +52841,945 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-3b94c50c", module.exports)
+  }
+}
+
+/***/ }),
+/* 99 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(100)
+/* template */
+var __vue_template__ = __webpack_require__(101)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Ideas.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-36439ab5", Component.options)
+  } else {
+    hotAPI.reload("data-v-36439ab5", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 100 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['auth'],
+    data: function data() {
+        return {
+            upload: '',
+            posts: [],
+            post: {
+                id: '',
+                title: '',
+                body: '',
+                created_at: '',
+                image: '',
+                imageName: '',
+                firstName: '',
+                lastName: '',
+                phone: '',
+                email: ''
+            },
+            post_id: '',
+            pagination: {},
+            edit: false,
+            uploadReady: true,
+            // Default location to Yrgo, Lärdomsgatan. Just for now...
+            location: 'Lärdomsgatan, Gothenburg, Sweden',
+            lat: 57.705982,
+            lng: 11.936401,
+            renderMap: true,
+            getBack: false
+        };
+    },
+    created: function created() {
+        this.fetchPosts();
+    },
+
+
+    methods: {
+        fetchPosts: function fetchPosts(page_url) {
+            var _this = this;
+
+            var vm = this;
+            page_url = page_url || '/api/posts ';
+            fetch(page_url).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                _this.posts = res.data;
+                vm.makePagination(res.meta, res.links);
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
+        },
+        deletePost: function deletePost(id) {
+            var _this2 = this;
+
+            if (confirm('Är du säker på att du vill ta bort posten?')) {
+                fetch('api/post/' + id, {
+                    method: 'delete'
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    alert('Post Borttagen');
+                    _this2.fetchPosts();
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+        },
+        addPost: function addPost() {
+            var _this3 = this;
+
+            if (this.edit === false) {
+                // Add
+                fetch('api/post', {
+                    method: 'post',
+                    body: JSON.stringify(this.post),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchPosts();
+                    alert('Post Tillagd');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            } else {
+                // Update
+                fetch('api/post', {
+                    method: 'put',
+                    body: JSON.stringify(this.post),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                }).then(function (res) {
+                    return res.json();
+                }).then(function (data) {
+                    _this3.clearUpload();
+                    _this3.fetchPosts();
+                    alert('Post Uppdaterad');
+                }).catch(function (err) {
+                    return console.log(err);
+                });
+            }
+        },
+        editPost: function editPost(post) {
+            this.edit = true;
+            this.post.id = post.id;
+            this.post.post_id = post.id;
+            this.post.title = post.title;
+            this.post.body = post.body;
+            // document.getElementById('top').scrollIntoView();
+            document.getElementById('postTitle').focus();
+        },
+        imageChanged: function imageChanged(e) {
+            var _this4 = this;
+
+            console.log(e.target.files[0]);
+            this.post.imageName = e.target.files[0].name;
+
+            var fileReader = new FileReader();
+
+            fileReader.readAsDataURL(e.target.files[0]);
+
+            fileReader.onload = function (e) {
+                _this4.post.image = e.target.result;
+            };
+        },
+        log: function log() {
+            console.log(this.post);
+        },
+        clearUpload: function clearUpload() {
+            var _this5 = this;
+
+            this.uploadReady = false;
+            this.$nextTick(function () {
+                _this5.uploadReady = true;
+                _this5.post.title = '';
+                _this5.post.body = '';
+                _this5.post.image = '';
+                _this5.post.imageName = '';
+                _this5.post.id = '';
+                _this5.post.firstName = '';
+                _this5.post.lastName = '';
+                _this5.post.phone = '';
+                _this5.post.email = '';
+
+                _this5.getBack = true;
+                var self = _this5;
+                setTimeout(function () {
+                    self.getBack = false;
+                }, 300);
+
+                _this5.renderMap = false;
+                var self = _this5;
+                setTimeout(function () {
+                    self.renderMap = true;
+                }, 300);
+            });
+        },
+        sendIdea: function sendIdea() {
+            this.clearUpload();
+            alert('Vi har mottagit din idé, tack för ditt bidrag!');
+        }
+    }
+});
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "akaContainer mb-5 akaIdeas" }, [
+    _c(
+      "div",
+      { staticClass: "form-group" },
+      [
+        _vm._m(0),
+        _vm._v(" "),
+        this.renderMap
+          ? _c("googlemap", {
+              attrs: {
+                colorTheme: "akaBlue",
+                location: _vm.location,
+                lng: _vm.lng,
+                lat: _vm.lat
+              }
+            })
+          : _vm._e()
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "form",
+      {
+        staticClass: "mb-3 akaMt2rem",
+        attrs: { id: "ideas" },
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+            return _vm.sendIdea($event)
+          }
+        }
+      },
+      [
+        _vm._m(1),
+        _vm._v(" "),
+        _vm._m(2),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group akaMt2rem" }, [
+          _vm._m(3),
+          _vm._v(" "),
+          _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
+          _vm._v(" "),
+          _vm.uploadReady
+            ? _c("input", {
+                staticClass: "inputfile inputfile-1",
+                attrs: {
+                  type: "file",
+                  name: "file-1[]",
+                  id: "file-upload",
+                  accept: ".jpg,.png",
+                  size: "32154",
+                  hidden: ""
+                },
+                on: { change: _vm.imageChanged }
+              })
+            : _vm._e(),
+          _vm._v(" "),
+          _c(
+            "label",
+            { staticClass: "btn akaBgBlue", attrs: { for: "file-upload" } },
+            [
+              !_vm.post.image
+                ? _c("span", { staticClass: "akaJustifyCenter" }, [
+                    _c(
+                      "svg",
+                      {
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          width: "20",
+                          fill: "white",
+                          height: "17",
+                          viewBox: "0 0 20 17"
+                        }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v("\n                            Ladda Upp Bild")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.post.image
+                ? _c("span", { staticClass: "akaUploadCaption" }, [
+                    _c(
+                      "svg",
+                      {
+                        attrs: {
+                          xmlns: "http://www.w3.org/2000/svg",
+                          width: "20",
+                          fill: "white",
+                          height: "17",
+                          viewBox: "0 0 20 17"
+                        }
+                      },
+                      [
+                        _c("path", {
+                          attrs: {
+                            d:
+                              "M10 0l-5.2 4.9h3.3v5.1h3.8v-5.1h3.3l-5.2-4.9zm9.3 11.5l-3.2-2.1h-2l3.4 2.6h-3.5c-.1 0-.2.1-.2.1l-.8 2.3h-6l-.8-2.2c-.1-.1-.1-.2-.2-.2h-3.6l3.4-2.6h-2l-3.2 2.1c-.4.3-.7 1-.6 1.5l.6 3.1c.1.5.7.9 1.2.9h16.3c.6 0 1.1-.4 1.3-.9l.6-3.1c.1-.5-.2-1.2-.7-1.5z"
+                          }
+                        })
+                      ]
+                    ),
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.post.imageName)
+                    )
+                  ])
+                : _vm._e()
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        !this.auth
+          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.post.firstName,
+                    expression: "post.firstName"
+                  }
+                ],
+                staticClass: "akaFormControl",
+                attrs: { type: "text", placeholder: "Förnamn" },
+                domProps: { value: _vm.post.firstName },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.post, "firstName", $event.target.value)
+                  }
+                }
+              }),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.post.lastName,
+                    expression: "post.lastName"
+                  }
+                ],
+                staticClass: "akaFormControl mt-3 akaBorderRadius",
+                attrs: { type: "text", placeholder: "Efternamn" },
+                domProps: { value: _vm.post.lastName },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.post, "lastName", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        !this.auth
+          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+              _vm._m(5),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.post.phone,
+                    expression: "post.phone"
+                  }
+                ],
+                staticClass: "akaFormControl",
+                attrs: { type: "number", placeholder: "Telefonnummer" },
+                domProps: { value: _vm.post.phone },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.post, "phone", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        !this.auth
+          ? _c("div", { staticClass: "form-group akaMt2rem" }, [
+              _vm._m(6),
+              _vm._v(" "),
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.post.email,
+                    expression: "post.email"
+                  }
+                ],
+                staticClass: "akaFormControl",
+                attrs: { type: "email", placeholder: "exempel@epost.se" },
+                domProps: { value: _vm.post.email },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.post, "email", $event.target.value)
+                  }
+                }
+              })
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        !this.getBack
+          ? _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
+              _c("input", {
+                attrs: { type: "checkbox", name: "vehicle", value: "Bike" }
+              }),
+              _c("h5", { staticClass: "akaMl1rem" }, [
+                _vm._v("Jag vill ha återkoppling på ärendet")
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-block akaBgBlue text-white akaBorderRadius",
+            attrs: { form: "ideas", type: "submit" }
+          },
+          [_vm._v("Skicka")]
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Plats "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("h5", [_vm._v("Ämne/Kategori*")]),
+      _vm._v(" "),
+      _c("input", {
+        staticClass: "akaFormControl akaBlue",
+        attrs: {
+          type: "text",
+          placeholder: "Idé-titel",
+          id: "postTitle",
+          required: ""
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group akaMt2rem" }, [
+      _c("h5", [_vm._v("Idébeskrivning*")]),
+      _vm._v(" "),
+      _c("textarea", {
+        staticClass: "akaFormControl",
+        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Kompletterande bild "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Jag heter "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("Telefonnummer "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("h5", [
+      _vm._v("E-post "),
+      _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-36439ab5", module.exports)
+  }
+}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 103 */,
+/* 104 */,
+/* 105 */,
+/* 106 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(107)
+/* template */
+var __vue_template__ = __webpack_require__(108)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/ViewMalfunctions.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5ee68abf", Component.options)
+  } else {
+    hotAPI.reload("data-v-5ee68abf", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 107 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            malfunctions: [],
+            malfunction: {
+                id: '',
+                title: '',
+                body: '',
+                summary: '',
+                created_at: '',
+                location: 'Lärdomsgatan, Gothenburg, Sweden',
+                lat: 57.705982,
+                lng: 11.936401
+            },
+            malfunction_id: '',
+            pagination: {},
+            edit: false,
+            renderMap: true
+        };
+    },
+    created: function created() {
+        this.fetchMalfunctions();
+    },
+
+
+    methods: {
+        fetchMalfunctions: function fetchMalfunctions(page_url) {
+            var _this = this;
+
+            var vm = this;
+            page_url = page_url || '/api/malfunctions ';
+            fetch(page_url).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                _this.malfunctions = res.data;
+                vm.makePagination(res.meta, res.links);
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
+        }
+    }
+});
+
+/***/ }),
+/* 108 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "akaContainer mt-4 mb-5 akaMalfunction" },
+    [
+      _vm._l(_vm.malfunctions, function(malfunction) {
+        return _c(
+          "div",
+          { key: malfunction.id, staticClass: "card mb-4 akaMalfunctionCard" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("h3", { staticClass: "akaPostTitle" }, [
+                _vm._v(_vm._s(malfunction.title))
+              ]),
+              _vm._v(" "),
+              _c(
+                "h4",
+                { staticClass: "akaPostText akaOrange akaFontWeightM" },
+                [_vm._v(_vm._s(malfunction.summary))]
+              ),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaPostText" }, [
+                _vm._v(_vm._s(malfunction.body))
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.created_at))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.location))
+              ])
+            ])
+          ]
+        )
+      }),
+      _vm._v(" "),
+      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+        _c("ul", { staticClass: "pagination justify-content-center" }, [
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.prev_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.prev_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❮❮")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              { staticClass: "page-link text-dark", attrs: { href: "#" } },
+              [
+                _vm._v(
+                  "Sida " +
+                    _vm._s(_vm.pagination.current_page) +
+                    " av " +
+                    _vm._s(_vm.pagination.last_page) +
+                    " "
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.next_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.next_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❯❯")]
+              )
+            ]
+          )
+        ])
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5ee68abf", module.exports)
   }
 }
 
