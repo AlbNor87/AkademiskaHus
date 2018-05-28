@@ -1,23 +1,23 @@
 <template>
     <div class="akaContainer mb-5 akaIdeas">
 
-        <!-- <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-        <googlemap></googlemap> -->
+        <p class="text-center">Du har hittat till idélådan. Här tar vi med glädje emot dina förslag på hur vi kan förbättra våra områden.</p>
+
         <div class="form-group">
             <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-            <googlemap v-if="this.renderMap" colorTheme="akaBlue" :location="location" :lng="lng" :lat="lat"></googlemap>
+            <googlemap v-if="this.renderMap" colorTheme="akaBlue"></googlemap>
         </div>
 
         <form @submit.prevent="sendIdea" class="mb-3 akaMt2rem" id="ideas">
 
             <div class="form-group">
                 <h5>Ämne/Kategori*</h5>
-                <input type="text" class="akaFormControl akaBlue" placeholder="Idé-titel" id="postTitle" required>
+                <input type="text" class="akaFormControl akaBlue" placeholder="Idé-titel" id="postTitle" v-model="post.title" required>
             </div>
 
             <div class="form-group akaMt2rem">
                 <h5>Idébeskrivning*</h5>
-                <textarea class="akaFormControl" placeholder="Max 500 tecken" maxlength="500" required></textarea>
+                <textarea class="akaFormControl" placeholder="Max 500 tecken" maxlength="500" v-model="post.body" required></textarea>
             </div>
             
 

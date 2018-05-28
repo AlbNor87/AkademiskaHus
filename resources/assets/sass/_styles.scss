@@ -99,8 +99,8 @@ input:-webkit-autofill {
     background-color: $akaGreen;
 }
 
-.akaBorderRadius {
-    border-radius: 7px;
+.btn:not(:disabled):not(.disabled):active, .btn:not(:disabled):not(.disabled).active {
+    background-image: initial;
 }
 
 .akaBgGreen {

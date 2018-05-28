@@ -3,7 +3,7 @@
 
         <div class="form-group">
             <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-            <googlemap v-if="this.renderMap" :location="location" :lng="lng" :lat="lat"></googlemap>
+            <googlemap v-if="this.renderMap"></googlemap>
         </div>
 
         <form @submit.prevent="sendErrorReport" class="mb-3 akaMt2rem">
@@ -86,15 +86,14 @@
                     lastName: '',
                     phone: '',
                     email: '',
+                    location: '',
+                    lat: '',
+                    lng: '',
                 },
                 post_id: '',
                 pagination: {},
                 edit: false,
                 uploadReady: true,
-                // Default location to Yrgo, Lärdomsgatan. Just for now...
-                location: 'Lärdomsgatan, Gothenburg, Sweden',
-                lat: 57.705982,
-                lng: 11.936401,
                 renderMap: true,
                 getBack: false
             }

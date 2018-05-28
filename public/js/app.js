@@ -65,6 +65,115 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -371,115 +480,6 @@ module.exports = {
   extend: extend,
   trim: trim
 };
-
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
 
 
 /***/ }),
@@ -893,7 +893,7 @@ function bindProps(vueInst, googleMapsInst, props) {
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 var normalizeHeaderName = __webpack_require__(33);
 
 var DEFAULT_CONTENT_TYPE = {
@@ -14281,7 +14281,7 @@ process.umask = function() { return 0; };
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 var settle = __webpack_require__(34);
 var buildURL = __webpack_require__(36);
 var parseHeaders = __webpack_require__(37);
@@ -14985,7 +14985,7 @@ exports.default = function (input) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(24);
-module.exports = __webpack_require__(102);
+module.exports = __webpack_require__(105);
 
 
 /***/ }),
@@ -15027,8 +15027,8 @@ Vue.component('googlemap', __webpack_require__(87));
 Vue.component('errorreport', __webpack_require__(90));
 Vue.component('managemalfunctions', __webpack_require__(93));
 Vue.component('malfunctions', __webpack_require__(96));
-Vue.component('viewmalfunctions', __webpack_require__(106));
-Vue.component('ideas', __webpack_require__(99));
+Vue.component('viewmalfunctions', __webpack_require__(99));
+Vue.component('ideas', __webpack_require__(102));
 
 var app = new Vue({
   el: '#app'
@@ -36182,7 +36182,7 @@ module.exports = __webpack_require__(30);
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 var bind = __webpack_require__(12);
 var Axios = __webpack_require__(32);
 var defaults = __webpack_require__(6);
@@ -36269,7 +36269,7 @@ function isSlowBuffer (obj) {
 
 
 var defaults = __webpack_require__(6);
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 var InterceptorManager = __webpack_require__(41);
 var dispatchRequest = __webpack_require__(42);
 
@@ -36354,7 +36354,7 @@ module.exports = Axios;
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -36434,7 +36434,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 function encode(val) {
   return encodeURIComponent(val).
@@ -36507,7 +36507,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -36567,7 +36567,7 @@ module.exports = function parseHeaders(headers) {
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -36685,7 +36685,7 @@ module.exports = btoa;
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 module.exports = (
   utils.isStandardBrowserEnv() ?
@@ -36745,7 +36745,7 @@ module.exports = (
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -36804,7 +36804,7 @@ module.exports = InterceptorManager;
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 var transformData = __webpack_require__(43);
 var isCancel = __webpack_require__(16);
 var defaults = __webpack_require__(6);
@@ -36897,7 +36897,7 @@ module.exports = function dispatchRequest(config) {
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(1);
 
 /**
  * Transform the data for a request or a response
@@ -48915,7 +48915,7 @@ exports.default = (0, _mapElementFactory2.default)({
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(58)
 /* template */
@@ -49108,7 +49108,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(62)
 }
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(65)
 /* template */
@@ -49477,7 +49477,7 @@ function injectStyle (ssrContext) {
   if (disposed) return
   __webpack_require__(69)
 }
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(71)
 /* template */
@@ -49783,7 +49783,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(75)
 /* template */
@@ -49972,7 +49972,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(78)
 /* template */
@@ -50157,7 +50157,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(82)
 /* template */
@@ -50309,7 +50309,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    alert('Post Borttagen');
+                    alert('Post borttagen');
                     _this2.fetchPosts();
                 }).catch(function (err) {
                     return console.log(err);
@@ -50349,7 +50349,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (data) {
                     _this3.clearUpload();
                     _this3.fetchPosts();
-                    alert('Post Uppdaterad');
+                    alert('Post uppdaterad');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -50520,7 +50520,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(85)
 /* template */
@@ -50568,7 +50568,6 @@ module.exports = Component.exports
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -50716,7 +50715,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    alert('Post Borttagen');
+                    alert('Post borttagen');
                     _this2.fetchPosts();
                 }).catch(function (err) {
                     return console.log(err);
@@ -50739,7 +50738,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (data) {
                     _this3.clearUpload();
                     _this3.fetchPosts();
-                    alert('Post Tillagd');
+                    alert('Post tillagd');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -50756,7 +50755,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (data) {
                     _this3.clearUpload();
                     _this3.fetchPosts();
-                    alert('Post Uppdaterad');
+                    alert('Post uppdaterad');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -50786,9 +50785,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         log: function log() {
             console.log(this.post);
-            // console.log(this.uploadReady);
-            // console.log(process.env);
-
         },
         clearUpload: function clearUpload() {
             var _this5 = this;
@@ -51111,7 +51107,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(88)
 /* template */
@@ -51186,17 +51182,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['colorTheme', 'location', 'lng', 'lat'],
+  props: ['colorTheme'],
   name: "GoogleMap",
   data: function data() {
     return {
-      center: { lat: this.lat, lng: this.lng },
+      center: { lat: 57.7058854, lng: 11.937102099999947 },
       markers: [],
       places: [],
       options: { disableDefaultUI: true, zoomControl: true },
-      currentPlace: null
+      currentPlace: null,
+      loading: false
     };
   },
   mounted: function mounted() {
@@ -51216,6 +51216,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           lat: this.currentPlace.geometry.location.lat(),
           lng: this.currentPlace.geometry.location.lng()
         };
+        this.markers = [];
         this.markers.push({ position: marker });
         this.places.push(this.currentPlace);
         this.center = marker;
@@ -51223,15 +51224,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.currentPlace = null;
       }
     },
-
     geolocate: function geolocate() {
       var _this = this;
 
+      this.loading = true;
       navigator.geolocation.getCurrentPosition(function (position) {
         _this.center = {
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        var marker = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        _this.markers.push({ position: marker });
+        _this.center = marker;
+        _this.loading = false;
       });
     },
     fetchLocation: function fetchLocation() {
@@ -51259,11 +51267,16 @@ var render = function() {
     "div",
     { staticClass: "akaRelative" },
     [
+      this.loading
+        ? _c("p", { staticClass: "akaLoading" }, [_vm._v("Laddar...")])
+        : _vm._e(),
+      _vm._v(" "),
       _c(
         "label",
         {
           staticClass: "akaMapInput",
           class: this.colorTheme,
+          attrs: { title: "Hämta min position" },
           on: {
             keyup: function($event) {
               if (
@@ -51278,13 +51291,19 @@ var render = function() {
         },
         [
           _c("button", {
-            staticClass: "btn",
-            on: { click: _vm.fetchLocation }
+            staticClass: "btn akaLocate",
+            on: { click: _vm.geolocate }
           }),
           _vm._v(" "),
           _c("gmap-autocomplete", {
             attrs: { placeholder: "Ange adress eller plats" },
             on: { place_changed: _vm.setPlace }
+          }),
+          _vm._v(" "),
+          _c("button", {
+            staticClass: "btn akaSet",
+            attrs: { title: "Ange denna position" },
+            on: { click: _vm.addMarker }
           })
         ],
         1
@@ -51294,7 +51313,7 @@ var render = function() {
         "gmap-map",
         {
           staticClass: "akaGmap",
-          attrs: { options: _vm.options, center: _vm.center, zoom: 16 }
+          attrs: { options: _vm.options, center: _vm.center, zoom: 14 }
         },
         _vm._l(_vm.markers, function(m, index) {
           return _c("gmap-marker", {
@@ -51327,7 +51346,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(91)
 /* template */
@@ -51462,16 +51481,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 firstName: '',
                 lastName: '',
                 phone: '',
-                email: ''
+                email: '',
+                location: '',
+                lat: '',
+                lng: ''
             },
             post_id: '',
             pagination: {},
             edit: false,
             uploadReady: true,
-            // Default location to Yrgo, Lärdomsgatan. Just for now...
-            location: 'Lärdomsgatan, Gothenburg, Sweden',
-            lat: 57.705982,
-            lng: 11.936401,
             renderMap: true,
             getBack: false
         };
@@ -51644,15 +51662,7 @@ var render = function() {
       _c(
         "div",
         { staticClass: "form-group" },
-        [
-          _vm._m(0),
-          _vm._v(" "),
-          this.renderMap
-            ? _c("googlemap", {
-                attrs: { location: _vm.location, lng: _vm.lng, lat: _vm.lat }
-              })
-            : _vm._e()
-        ],
+        [_vm._m(0), _vm._v(" "), this.renderMap ? _c("googlemap") : _vm._e()],
         1
       ),
       _vm._v(" "),
@@ -51997,7 +52007,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(94)
 /* template */
@@ -52133,9 +52143,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 body: '',
                 summary: '',
                 created_at: '',
-                location: 'Lärdomsgatan, Gothenburg, Sweden',
-                lat: 57.705982,
-                lng: 11.936401
+                location: '',
+                lat: '',
+                lng: ''
             },
             malfunction_id: '',
             pagination: {},
@@ -52182,7 +52192,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (res) {
                     return res.json();
                 }).then(function (data) {
-                    alert('Driftstörning Borttagen');
+                    alert('Driftstörning borttagen');
                     _this2.fetchMalfunctions();
                 }).catch(function (err) {
                     return console.log(err);
@@ -52205,7 +52215,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (data) {
                     _this3.clearUpload();
                     _this3.fetchMalfunctions();
-                    alert('Driftstörning Tillagd');
+                    alert('Driftstörning tillagd');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -52222,7 +52232,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 }).then(function (data) {
                     _this3.clearUpload();
                     _this3.fetchMalfunctions();
-                    alert('Driftstörning Uppdaterad');
+                    alert('Driftstörning uppdaterad');
                 }).catch(function (err) {
                     return console.log(err);
                 });
@@ -52288,12 +52298,7 @@ var render = function() {
           _vm._v(" "),
           this.renderMap
             ? _c("googlemap", {
-                attrs: {
-                  colorTheme: "akaOrange",
-                  location: _vm.malfunction.location,
-                  lng: _vm.malfunction.lng,
-                  lat: _vm.malfunction.lat
-                },
+                attrs: { colorTheme: "akaOrange" },
                 on: { locationSelected: _vm.setLocation }
               })
             : _vm._e()
@@ -52583,7 +52588,7 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(97)
 /* template */
@@ -52830,7 +52835,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("h4", { staticClass: "akaFontWeightL akaNoBottomMargin" }, [
       _vm._v("Läs mer "),
-      _c("a", { attrs: { href: "" } }, [_vm._v("här")]),
+      _c("a", { attrs: { href: "malfunction" } }, [_vm._v("här")]),
       _vm._v(".")
     ])
   }
@@ -52849,11 +52854,291 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-var normalizeComponent = __webpack_require__(1)
+var normalizeComponent = __webpack_require__(0)
 /* script */
 var __vue_script__ = __webpack_require__(100)
 /* template */
 var __vue_template__ = __webpack_require__(101)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/ViewMalfunctions.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5ee68abf", Component.options)
+  } else {
+    hotAPI.reload("data-v-5ee68abf", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 100 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    data: function data() {
+        return {
+            malfunctions: [],
+            malfunction: {
+                id: '',
+                title: '',
+                body: '',
+                summary: '',
+                created_at: '',
+                location: 'Lärdomsgatan, Gothenburg, Sweden',
+                lat: 57.705982,
+                lng: 11.936401
+            },
+            malfunction_id: '',
+            pagination: {},
+            edit: false,
+            renderMap: true
+        };
+    },
+    created: function created() {
+        this.fetchMalfunctions();
+    },
+
+
+    methods: {
+        fetchMalfunctions: function fetchMalfunctions(page_url) {
+            var _this = this;
+
+            var vm = this;
+            page_url = page_url || '/api/malfunctions ';
+            fetch(page_url).then(function (res) {
+                return res.json();
+            }).then(function (res) {
+                _this.malfunctions = res.data;
+                vm.makePagination(res.meta, res.links);
+            }).catch(function (err) {
+                return console.log(err);
+            });
+        },
+        makePagination: function makePagination(meta, links) {
+            var pagination = {
+                current_page: meta.current_page,
+                last_page: meta.last_page,
+                next_page_url: links.next,
+                prev_page_url: links.prev
+            };
+
+            this.pagination = pagination;
+        }
+    }
+});
+
+/***/ }),
+/* 101 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "akaContainer mt-4 mb-5 akaMalfunction" },
+    [
+      _vm._l(_vm.malfunctions, function(malfunction) {
+        return _c(
+          "div",
+          { key: malfunction.id, staticClass: "card mb-4 akaMalfunctionCard" },
+          [
+            _c("div", { staticClass: "card-body" }, [
+              _c("h3", { staticClass: "akaPostTitle" }, [
+                _vm._v(_vm._s(malfunction.title))
+              ]),
+              _vm._v(" "),
+              _c(
+                "h4",
+                { staticClass: "akaPostText akaOrange akaFontWeightM" },
+                [_vm._v(_vm._s(malfunction.summary))]
+              ),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaPostText" }, [
+                _vm._v(_vm._s(malfunction.body))
+              ]),
+              _vm._v(" "),
+              _c("hr"),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.created_at))
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "akaTime" }, [
+                _vm._v(_vm._s(malfunction.location))
+              ])
+            ])
+          ]
+        )
+      }),
+      _vm._v(" "),
+      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
+        _c("ul", { staticClass: "pagination justify-content-center" }, [
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.prev_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.prev_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❮❮")]
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c("li", { staticClass: "page-item disabled" }, [
+            _c(
+              "a",
+              { staticClass: "page-link text-dark", attrs: { href: "#" } },
+              [
+                _vm._v(
+                  "Sida " +
+                    _vm._s(_vm.pagination.current_page) +
+                    " av " +
+                    _vm._s(_vm.pagination.last_page) +
+                    " "
+                )
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "li",
+            {
+              staticClass: "page-item",
+              class: [{ disabled: !_vm.pagination.next_page_url }]
+            },
+            [
+              _c(
+                "a",
+                {
+                  staticClass: "page-link",
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      _vm.fetchMalfunctions(_vm.pagination.next_page_url)
+                    }
+                  }
+                },
+                [_vm._v("❯❯")]
+              )
+            ]
+          )
+        ])
+      ])
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5ee68abf", module.exports)
+  }
+}
+
+/***/ }),
+/* 102 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(0)
+/* script */
+var __vue_script__ = __webpack_require__(103)
+/* template */
+var __vue_template__ = __webpack_require__(104)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -52892,7 +53177,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -53151,7 +53436,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -53159,6 +53444,12 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "akaContainer mb-5 akaIdeas" }, [
+    _c("p", { staticClass: "text-center" }, [
+      _vm._v(
+        "Du har hittat till idélådan. Här tar vi med glädje emot dina förslag på hur vi kan förbättra våra områden."
+      )
+    ]),
+    _vm._v(" "),
     _c(
       "div",
       { staticClass: "form-group" },
@@ -53166,14 +53457,7 @@ var render = function() {
         _vm._m(0),
         _vm._v(" "),
         this.renderMap
-          ? _c("googlemap", {
-              attrs: {
-                colorTheme: "akaBlue",
-                location: _vm.location,
-                lng: _vm.lng,
-                lat: _vm.lat
-              }
-            })
+          ? _c("googlemap", { attrs: { colorTheme: "akaBlue" } })
           : _vm._e()
       ],
       1
@@ -53192,12 +53476,69 @@ var render = function() {
         }
       },
       [
-        _vm._m(1),
-        _vm._v(" "),
-        _vm._m(2),
+        _c("div", { staticClass: "form-group" }, [
+          _c("h5", [_vm._v("Ämne/Kategori*")]),
+          _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.post.title,
+                expression: "post.title"
+              }
+            ],
+            staticClass: "akaFormControl akaBlue",
+            attrs: {
+              type: "text",
+              placeholder: "Idé-titel",
+              id: "postTitle",
+              required: ""
+            },
+            domProps: { value: _vm.post.title },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.post, "title", $event.target.value)
+              }
+            }
+          })
+        ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group akaMt2rem" }, [
-          _vm._m(3),
+          _c("h5", [_vm._v("Idébeskrivning*")]),
+          _vm._v(" "),
+          _c("textarea", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.post.body,
+                expression: "post.body"
+              }
+            ],
+            staticClass: "akaFormControl",
+            attrs: {
+              placeholder: "Max 500 tecken",
+              maxlength: "500",
+              required: ""
+            },
+            domProps: { value: _vm.post.body },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.post, "body", $event.target.value)
+              }
+            }
+          })
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "form-group akaMt2rem" }, [
+          _vm._m(1),
           _vm._v(" "),
           _c("h5", [_vm._v("(jpg, png, max 4 MB)")]),
           _vm._v(" "),
@@ -53280,7 +53621,7 @@ var render = function() {
         _vm._v(" "),
         !this.auth
           ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(4),
+              _vm._m(2),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -53330,7 +53671,7 @@ var render = function() {
         _vm._v(" "),
         !this.auth
           ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(5),
+              _vm._m(3),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -53358,7 +53699,7 @@ var render = function() {
         _vm._v(" "),
         !this.auth
           ? _c("div", { staticClass: "form-group akaMt2rem" }, [
-              _vm._m(6),
+              _vm._m(4),
               _vm._v(" "),
               _c("input", {
                 directives: [
@@ -53421,37 +53762,6 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("h5", [_vm._v("Ämne/Kategori*")]),
-      _vm._v(" "),
-      _c("input", {
-        staticClass: "akaFormControl akaBlue",
-        attrs: {
-          type: "text",
-          placeholder: "Idé-titel",
-          id: "postTitle",
-          required: ""
-        }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group akaMt2rem" }, [
-      _c("h5", [_vm._v("Idébeskrivning*")]),
-      _vm._v(" "),
-      _c("textarea", {
-        staticClass: "akaFormControl",
-        attrs: { placeholder: "Max 500 tecken", maxlength: "500", required: "" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
     return _c("h5", [
       _vm._v("Kompletterande bild "),
       _c("span", { staticClass: "akaTextProp" }, [_vm._v("(valfritt)")])
@@ -53495,293 +53805,10 @@ if (false) {
 }
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(107)
-/* template */
-var __vue_template__ = __webpack_require__(108)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/ViewMalfunctions.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5ee68abf", Component.options)
-  } else {
-    hotAPI.reload("data-v-5ee68abf", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 107 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-    data: function data() {
-        return {
-            malfunctions: [],
-            malfunction: {
-                id: '',
-                title: '',
-                body: '',
-                summary: '',
-                created_at: '',
-                location: 'Lärdomsgatan, Gothenburg, Sweden',
-                lat: 57.705982,
-                lng: 11.936401
-            },
-            malfunction_id: '',
-            pagination: {},
-            edit: false,
-            renderMap: true
-        };
-    },
-    created: function created() {
-        this.fetchMalfunctions();
-    },
-
-
-    methods: {
-        fetchMalfunctions: function fetchMalfunctions(page_url) {
-            var _this = this;
-
-            var vm = this;
-            page_url = page_url || '/api/malfunctions ';
-            fetch(page_url).then(function (res) {
-                return res.json();
-            }).then(function (res) {
-                _this.malfunctions = res.data;
-                vm.makePagination(res.meta, res.links);
-            }).catch(function (err) {
-                return console.log(err);
-            });
-        },
-        makePagination: function makePagination(meta, links) {
-            var pagination = {
-                current_page: meta.current_page,
-                last_page: meta.last_page,
-                next_page_url: links.next,
-                prev_page_url: links.prev
-            };
-
-            this.pagination = pagination;
-        }
-    }
-});
-
-/***/ }),
-/* 108 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "akaContainer mt-4 mb-5 akaMalfunction" },
-    [
-      _vm._l(_vm.malfunctions, function(malfunction) {
-        return _c(
-          "div",
-          { key: malfunction.id, staticClass: "card mb-4 akaMalfunctionCard" },
-          [
-            _c("div", { staticClass: "card-body" }, [
-              _c("h3", { staticClass: "akaPostTitle" }, [
-                _vm._v(_vm._s(malfunction.title))
-              ]),
-              _vm._v(" "),
-              _c(
-                "h4",
-                { staticClass: "akaPostText akaOrange akaFontWeightM" },
-                [_vm._v(_vm._s(malfunction.summary))]
-              ),
-              _vm._v(" "),
-              _c("hr"),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaPostText" }, [
-                _vm._v(_vm._s(malfunction.body))
-              ]),
-              _vm._v(" "),
-              _c("hr"),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaTime" }, [
-                _vm._v(_vm._s(malfunction.created_at))
-              ]),
-              _vm._v(" "),
-              _c("p", { staticClass: "akaTime" }, [
-                _vm._v(_vm._s(malfunction.location))
-              ])
-            ])
-          ]
-        )
-      }),
-      _vm._v(" "),
-      _c("nav", { attrs: { "aria-label": "Page navigation" } }, [
-        _c("ul", { staticClass: "pagination justify-content-center" }, [
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.prev_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchMalfunctions(_vm.pagination.prev_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❮❮")]
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("li", { staticClass: "page-item disabled" }, [
-            _c(
-              "a",
-              { staticClass: "page-link text-dark", attrs: { href: "#" } },
-              [
-                _vm._v(
-                  "Sida " +
-                    _vm._s(_vm.pagination.current_page) +
-                    " av " +
-                    _vm._s(_vm.pagination.last_page) +
-                    " "
-                )
-              ]
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "li",
-            {
-              staticClass: "page-item",
-              class: [{ disabled: !_vm.pagination.next_page_url }]
-            },
-            [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      _vm.fetchMalfunctions(_vm.pagination.next_page_url)
-                    }
-                  }
-                },
-                [_vm._v("❯❯")]
-              )
-            ]
-          )
-        ])
-      ])
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-5ee68abf", module.exports)
-  }
-}
 
 /***/ })
 /******/ ]);

@@ -3,8 +3,7 @@
     <div class="akaContainer mt-4 mb-5">
         
         <h2 class="akaGreen">Lägg till/Ändra post</h2>
-        <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button>
-        <button @click="clearUpload()" class="btn btn-danger mb-2">Clear</button> -->
+        <!-- <button @click="log(post)" class="btn btn-danger mb-2">Log</button> -->
         <form @submit.prevent="addPost" class="mb-5">
 
             <div class="form-group">
@@ -141,7 +140,7 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Post Borttagen');
+                        alert('Post borttagen');
                         this.fetchPosts();
                     })
                     .catch(err => console.log(err));
@@ -161,7 +160,7 @@
                     .then(data => {
                         this.clearUpload();
                         this.fetchPosts();
-                        alert('Post Tillagd');
+                        alert('Post tillagd');
                     })
                     .catch(err => console.log(err));
                 } else {
@@ -177,7 +176,7 @@
                     .then(data => {
                         this.clearUpload();
                         this.fetchPosts();
-                        alert('Post Uppdaterad');
+                        alert('Post uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }
@@ -201,14 +200,9 @@
                 fileReader.onload = (e) => {
                     this.post.image = e.target.result;
                 }
-
             },
             log(){
-                console.log(this.post);
-                // console.log(this.uploadReady);
-                // console.log(process.env);
-                
-                
+                console.log(this.post);  
             },
             clearUpload(){
                 this.uploadReady = false;
@@ -219,10 +213,7 @@
                 this.post.image = '';
                 this.post.imageName = '';
                 this.post.id = '';
-                
-            })
-
-            }
+            })}
         }
     }
     

@@ -57,7 +57,7 @@ class PostController extends Controller
             file_put_contents($path, $decoded);
 
         } else {
-            $fileName = 'akaDefaultImage.jpg';
+            $fileName = 'akaDefaultImage.png';
         }
 
         $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post;

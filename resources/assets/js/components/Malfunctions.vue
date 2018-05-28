@@ -10,7 +10,7 @@
                     <h3>{{ malfunction.title }}</h3>
                     
                     <h4>{{ malfunction.summary }}</h4>
-                    <h4 class="akaFontWeightL akaNoBottomMargin">Läs mer <a href="">här</a>.</h4>
+                    <h4 class="akaFontWeightL akaNoBottomMargin">Läs mer <a href="malfunction">här</a>.</h4>
                     <!-- <p class="akaTiny">{{ malfunction.created_at }}<br>{{ malfunction.location }}</p> -->
                 </div> 
                 

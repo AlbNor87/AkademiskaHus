@@ -97,7 +97,7 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Post Borttagen');
+                        alert('Post borttagen');
                         this.fetchPosts();
                     })
                     .catch(err => console.log(err));
@@ -133,7 +133,7 @@
                     .then(data => {
                         this.clearUpload();
                         this.fetchPosts();
-                        alert('Post Uppdaterad');
+                        alert('Post uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }

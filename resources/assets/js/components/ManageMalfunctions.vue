@@ -3,7 +3,7 @@
 
         <div class="form-group">
             <h5>Plats <span class="akaTextProp">(valfritt)</span></h5>
-            <googlemap v-if="this.renderMap" colorTheme="akaOrange" :location="malfunction.location" :lng="malfunction.lng" :lat="malfunction.lat" @locationSelected="setLocation"></googlemap>
+            <googlemap v-if="this.renderMap" colorTheme="akaOrange" @locationSelected="setLocation"></googlemap>
         </div>
 
         <form @submit.prevent="addMalfunction" class="mb-5 mt-3">
@@ -86,9 +86,9 @@
                     body: '',
                     summary: '',
                     created_at: '',
-                    location: 'Lärdomsgatan, Gothenburg, Sweden',
-                    lat: 57.705982,
-                    lng: 11.936401
+                    location: '',
+                    lat: '',
+                    lng: ''
                 },
                 malfunction_id: '',
                 pagination: {},
@@ -130,7 +130,7 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        alert('Driftstörning Borttagen');
+                        alert('Driftstörning borttagen');
                         this.fetchMalfunctions();
                     })
                     .catch(err => console.log(err));
@@ -150,7 +150,7 @@
                     .then(data => {
                         this.clearUpload();
                         this.fetchMalfunctions();
-                        alert('Driftstörning Tillagd');
+                        alert('Driftstörning tillagd');
                     })
                     .catch(err => console.log(err));
                 } else {
@@ -166,7 +166,7 @@
                     .then(data => {
                         this.clearUpload();
                         this.fetchMalfunctions();
-                        alert('Driftstörning Uppdaterad');
+                        alert('Driftstörning uppdaterad');
                     })
                     .catch(err => console.log(err));
                 }

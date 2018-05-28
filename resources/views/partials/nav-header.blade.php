@@ -8,7 +8,7 @@
 
         @if (Auth::check())
             
-            <p class="akaTime">{{Auth::user()->email}}</p>
+            <p class="akaTime">{{Auth::user()->name}}</p>
 
         @endif
 
