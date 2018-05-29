@@ -9,6 +9,7 @@ self.addEventListener('install', function (event) {
             '/errorReport',
             '/malfunction',
             '/ideas',
+            '/login',
             '/fonts/SceneAH-Light.otf',
             '/fonts/SceneAH-Medium.otf',
             '/fonts/SceneProLight.woff',

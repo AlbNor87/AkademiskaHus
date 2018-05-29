@@ -10637,6 +10637,10 @@ input:-webkit-autofill:focus input:-webkit-autofill {
   margin: 0;
 }
 
+.akaBorderRadius {
+  border-radius: 7px;
+}
+
 .akaPostImage {
   width: 100%;
   height: 200px;
@@ -10707,6 +10711,11 @@ input:-webkit-autofill:focus input:-webkit-autofill {
 
 .akaNavTop {
   border-bottom: 1px solid #9e9e9e;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
 }
 
 .akaNavbarContainer {

@@ -1,5 +1,5 @@
 {
-    "name": "A-Hus",
+    "name": "Akademiska Hus PWA",
     "short_name": "A-Hus",
     "icons": [
         {
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#4fbf45",
-    "background_color": "#4fbf45",
+    "theme_color": "#84c443",
+    "background_color": "#84c443",
     "display": "standalone"
 }

@@ -1,4 +1,5 @@
 require('./bootstrap');
+require('./cookieConsent');
 
 window.Vue = require('vue');
 

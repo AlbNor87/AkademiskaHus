@@ -22,8 +22,8 @@
                 <h5>Kompletterande bild <span class="akaTextProp">(valfritt)</span></h5>
                 <h5>(jpg, png, max 4 MB)</h5>
 
-                <input type="file" name="file-1[]" id="file-upload" accept=".jpg,.png" size="32154" class="inputfile inputfile-1" v-if="uploadReady" @change="imageChanged" hidden>
-				<label for="file-upload" class="btn akaBgPink">
+                <input type="file" name="file-1[]" id="file-upload" accept=".jpg,.png" class="inputfile inputfile-1" v-if="uploadReady" @change="imageChanged" hidden>
+				<label for="file-upload">
 
                         <span v-if="!post.image" class="akaJustifyCenter">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" fill="white" height="17" viewBox="0 0 20 17">
@@ -57,8 +57,8 @@
                 <input type="email" class="akaFormControl" placeholder="exempel@epost.se" v-model="post.email">
             </div>
 
-            <div class="form-group akaMt2rem akaFlexRow" v-if="!this.getBack">
-                <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
+            <div class="form-group akaMt2rem akaFlexRow">
+                <input type="checkbox" v-model="checked"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
             </div>
     
            <button type="submit" class="btn btn-block akaBgPink text-white akaBorderRadius">Skicka</button>
@@ -95,7 +95,7 @@
                 edit: false,
                 uploadReady: true,
                 renderMap: true,
-                getBack: false
+                checked: false
             }
         },
 
@@ -192,14 +192,9 @@
                 fileReader.onload = (e) => {
                     this.post.image = e.target.result;
                 }
-
             },
             log(){
                 console.log(this.post);
-                // console.log(this.uploadReady);
-                // console.log(process.env);
-                
-                
             },
             clearUpload(){
                 this.uploadReady = false;
@@ -214,12 +209,7 @@
                 this.post.lastName = '';
                 this.post.phone = '';
                 this.post.email = '';
-                
-                this.getBack = true;
-                var self = this;
-                setTimeout(function(){
-                self.getBack = false;
-                }, 300); 
+                this.checked = false; 
                 
                 this.renderMap = false;
                 var self = this;

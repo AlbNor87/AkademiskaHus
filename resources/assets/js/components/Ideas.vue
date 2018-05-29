@@ -63,7 +63,7 @@
             </div>
 
             <div class="form-group akaMt2rem akaFlexRow" v-if="!this.getBack">
-                <input type="checkbox" name="vehicle" value="Bike"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
+                <input type="checkbox" v-model="checked"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
             </div>
 
             <button form="ideas" type="submit" class="btn btn-block akaBgBlue text-white akaBorderRadius">Skicka</button>
@@ -101,7 +101,7 @@
                 lat: 57.705982,
                 lng: 11.936401,
                 renderMap: true,
-                getBack: false
+                checked: false
             }
         },
 
@@ -216,12 +216,7 @@
                 this.post.lastName = '';
                 this.post.phone = '';
                 this.post.email = '';
-
-                this.getBack = true;
-                var self = this;
-                setTimeout(function(){
-                self.getBack = false;
-                }, 300);
+                this.checked = false;
 
                 this.renderMap = false;
                 var self = this;

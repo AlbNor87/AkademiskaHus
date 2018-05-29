@@ -1,6 +1,6 @@
 {
-    "name": "Akademiska Hus Progressive Web App",
-    "short_name": "A-Hus PWA",
+    "name": "Akademiska Hus PWA",
+    "short_name": "A-Hus",
     "start_url": ".",
     "display": "standalone",
     "orientation": "portrait",

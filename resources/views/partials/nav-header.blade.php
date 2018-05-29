@@ -1,6 +1,6 @@
 <div class="akaNavPlaceholder"></div>
 
-<nav class="navbar fixed-top akaNavTop">
+<nav class="navbar akaNavTop">
 
     <div class="akaNavbarContainer">
     
