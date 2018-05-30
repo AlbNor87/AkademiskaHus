@@ -42,7 +42,7 @@ class MalfunctionController extends Controller
         $malfunction->lng = $request->input('lng');
         $malfunction->lat = $request->input('lat');
         
-        if($malfunction->save()){
+        if ($malfunction->save()) {
             return new malfunctionResource($malfunction);
         }
     }
@@ -54,13 +54,12 @@ class MalfunctionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {   
+    {
         // Get malfunction
         $malfunction = Malfunction::findOrFail($id);
 
         // Return single malfunction as a resource
         return new MalfunctionResource($malfunction);
-
     }
 
     /**
@@ -74,7 +73,7 @@ class MalfunctionController extends Controller
         // Get malfunction
         $malfunction = Malfunction::findOrFail($id);
 
-        if($malfunction->delete()){
+        if ($malfunction->delete()) {
             return new MalfunctionResource($malfunction);
         }
     }

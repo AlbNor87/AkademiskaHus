@@ -38,13 +38,12 @@ class PostController extends Controller
 
         $image = $request->input('image');
 
-        if($image !== NULL && $image !== '') {
-        
+        if ($image !== null && $image !== '') {
             $exploded = explode(',', $image);
 
             $decoded = base64_decode($exploded[1]);
 
-            if(str_contains($exploded[0], 'jpeg')) {
+            if (str_contains($exploded[0], 'jpeg')) {
                 $extension = 'jpg';
             } else {
                 $extension = 'png';
@@ -55,7 +54,6 @@ class PostController extends Controller
             $path = public_path().'/uploads/'.$fileName;
 
             file_put_contents($path, $decoded);
-
         } else {
             $fileName = 'akaDefaultImage.png';
         }
@@ -68,7 +66,7 @@ class PostController extends Controller
         $post->image = $fileName;
         
 
-        if($post->save()){
+        if ($post->save()) {
             return new PostResource($post);
         }
     }
@@ -81,11 +79,11 @@ class PostController extends Controller
      */
     public function show($id)
     {
-         // Get post
-         $post = Post::findOrFail($id);
+        // Get post
+        $post = Post::findOrFail($id);
 
-         // Return the single post as a resource
-         return new PostResource($post);
+        // Return the single post as a resource
+        return new PostResource($post);
     }
 
     /**
@@ -99,7 +97,7 @@ class PostController extends Controller
         // Get post
         $post = Post::findOrFail($id);
 
-        if($post->delete()){
+        if ($post->delete()) {
             return new PostResource($post);
         }
     }

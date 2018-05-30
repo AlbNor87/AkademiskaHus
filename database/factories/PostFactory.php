@@ -6,6 +6,6 @@ use App\Post;
 $factory->define(App\Post::class, function (Faker $faker) {
     return [
         'title' => $faker->text(50),
-        'body' => $faker->text(200) 
+        'body' => $faker->text(200)
     ];
 });

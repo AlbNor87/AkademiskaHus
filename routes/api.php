@@ -29,7 +29,7 @@ Route::post('post', 'PostController@store');
 // Update post
 Route::put('post', 'PostController@store');
 
-// Delete 
+// Delete
 Route::delete('post/{id}', 'PostController@destroy');
 
 
