@@ -15,7 +15,6 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    
     public function login(Request $request)
     {
         $credentials = $request->only(['email', 'password']);

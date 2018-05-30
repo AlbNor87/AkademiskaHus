@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Malfunction;
 use App\Http\Resources\Malfunction as MalfunctionResource;
+use App\Malfunction;
+use Illuminate\Http\Request;
 
 class MalfunctionController extends Controller
 {
@@ -26,14 +25,15 @@ class MalfunctionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         \Log::info($request->all());
-        $malfunction = $request->isMethod('put') ? malfunction::findOrFail($request->malfunction_id) : new malfunction;
-        
+        $malfunction = $request->isMethod('put') ? malfunction::findOrFail($request->malfunction_id) : new malfunction();
+
         $malfunction->id = $request->input('malfunction_id');
         $malfunction->title = $request->input('title');
         $malfunction->body = $request->input('body');
@@ -41,7 +41,7 @@ class MalfunctionController extends Controller
         $malfunction->location = $request->input('location');
         $malfunction->lng = $request->input('lng');
         $malfunction->lat = $request->input('lat');
-        
+
         if ($malfunction->save()) {
             return new malfunctionResource($malfunction);
         }
@@ -50,7 +50,8 @@ class MalfunctionController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -65,7 +66,8 @@ class MalfunctionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
