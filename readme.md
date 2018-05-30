@@ -12,6 +12,9 @@ This project was built using Laravel and Vue.js together with Bootstrap 4.
 - Fully responsive design - works on all devices
 - All png:s optimised with ImageAlpha and ImageOptim
 - All svg:s optimised with SVGOMG
+- All php files fixed (php-cs-fixer) with the @PSR2 rule
+- Passed StyleCI Analysis
+[![StyleCI](https://github.styleci.io/repos/133127895/shield?branch=master)](https://github.styleci.io/repos/133127895)
 - Tested in Chrome and Firefox
 
 ## Installation:
