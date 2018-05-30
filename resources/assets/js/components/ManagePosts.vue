@@ -190,7 +190,6 @@
                 document.getElementById('postTitle').focus();
             },
             imageChanged(e){
-                console.log(e.target.files[0]);
                 this.post.imageName = e.target.files[0].name;
                 
                 const fileReader = new FileReader();

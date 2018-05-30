@@ -50814,7 +50814,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         imageChanged: function imageChanged(e) {
             var _this4 = this;
 
-            console.log(e.target.files[0]);
             this.post.imageName = e.target.files[0].name;
 
             var fileReader = new FileReader();
@@ -51279,6 +51278,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           lat: position.coords.latitude,
           lng: position.coords.longitude
         };
+        _this.markers = [];
         _this.markers.push({ position: marker });
         _this.center = marker;
         _this.loading = false;
@@ -51632,7 +51632,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         imageChanged: function imageChanged(e) {
             var _this4 = this;
 
-            console.log(e.target.files[0]);
             this.post.imageName = e.target.files[0].name;
 
             var fileReader = new FileReader();
@@ -51669,7 +51668,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     self.renderMap = true;
                 }, 300);
             });
-            console.log(this.uploadReady);
         },
         sendErrorReport: function sendErrorReport() {
             this.clearUpload();
@@ -53446,7 +53444,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         imageChanged: function imageChanged(e) {
             var _this4 = this;
 
-            console.log(e.target.files[0]);
             this.post.imageName = e.target.files[0].name;
 
             var fileReader = new FileReader();
@@ -53781,50 +53778,48 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        !this.getBack
-          ? _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.checked,
-                    expression: "checked"
+        _c("div", { staticClass: "form-group akaMt2rem akaFlexRow" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.checked,
+                expression: "checked"
+              }
+            ],
+            attrs: { type: "checkbox" },
+            domProps: {
+              checked: Array.isArray(_vm.checked)
+                ? _vm._i(_vm.checked, null) > -1
+                : _vm.checked
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.checked,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.checked = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.checked = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
                   }
-                ],
-                attrs: { type: "checkbox" },
-                domProps: {
-                  checked: Array.isArray(_vm.checked)
-                    ? _vm._i(_vm.checked, null) > -1
-                    : _vm.checked
-                },
-                on: {
-                  change: function($event) {
-                    var $$a = _vm.checked,
-                      $$el = $event.target,
-                      $$c = $$el.checked ? true : false
-                    if (Array.isArray($$a)) {
-                      var $$v = null,
-                        $$i = _vm._i($$a, $$v)
-                      if ($$el.checked) {
-                        $$i < 0 && (_vm.checked = $$a.concat([$$v]))
-                      } else {
-                        $$i > -1 &&
-                          (_vm.checked = $$a
-                            .slice(0, $$i)
-                            .concat($$a.slice($$i + 1)))
-                      }
-                    } else {
-                      _vm.checked = $$c
-                    }
-                  }
+                } else {
+                  _vm.checked = $$c
                 }
-              }),
-              _c("h5", { staticClass: "akaMl1rem" }, [
-                _vm._v("Jag vill ha återkoppling på ärendet")
-              ])
-            ])
-          : _vm._e(),
+              }
+            }
+          }),
+          _c("h5", { staticClass: "akaMl1rem" }, [
+            _vm._v("Jag vill ha återkoppling på ärendet")
+          ])
+        ]),
         _vm._v(" "),
         _c(
           "button",

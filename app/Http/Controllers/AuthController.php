@@ -24,7 +24,7 @@ class AuthController extends Controller
             return redirect('/');
         }
 
-        return back()->withErrors('Whoops. Looks like you missed something there. Please try again.');
+        return back()->withErrors('Oj. Det var något som inte blev rätt här. Försök igen!');
     }
 
     /**

@@ -10715,7 +10715,7 @@ input:-webkit-autofill:focus input:-webkit-autofill {
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 3000;
 }
 
 .akaNavbarContainer {

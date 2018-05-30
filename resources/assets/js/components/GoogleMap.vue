@@ -79,6 +79,7 @@ export default {
             lat: position.coords.latitude,
             lng: position.coords.longitude
         };
+        this.markers = [];
         this.markers.push({ position: marker });
         this.center = marker;
         this.loading = false;

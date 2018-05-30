@@ -62,7 +62,7 @@
                 <input type="email" class="akaFormControl" placeholder="exempel@epost.se" v-model="post.email">
             </div>
 
-            <div class="form-group akaMt2rem akaFlexRow" v-if="!this.getBack">
+            <div class="form-group akaMt2rem akaFlexRow">
                 <input type="checkbox" v-model="checked"><h5 class="akaMl1rem">Jag vill ha återkoppling på ärendet</h5>
             </div>
 
@@ -189,7 +189,6 @@
                 document.getElementById('postTitle').focus();
             },
             imageChanged(e){
-                console.log(e.target.files[0]);
                 this.post.imageName = e.target.files[0].name;
                 
                 const fileReader = new FileReader();

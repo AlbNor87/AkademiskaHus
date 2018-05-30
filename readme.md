@@ -8,6 +8,25 @@ Design a website or application for Akademiska Hus.
 ## About the project
 This project was built using Laravel and Vue.js together with Bootstrap 4.
 
+- Progressive web app
+- Fully responsive design - works on all devices
+- All png:s optimised with ImageAlpha and ImageOptim
+- All svg:s optimised with SVGOMG
+- Tested in Chrome and Firefox
+
+## Installation:
+- Download or clone this repository
+- Copy the `.env.example` to  `.env` and add your database credentials
+- Run npm install
+- Run composer install
+- `php artisan key:generate`
+- `php artisan serve`
+- `php artisan migrate`
+- Create a new user in your database with [`php artisan tinker`](https://laravel-news.com/laravel-tinker)
+- ```php
+    App\User::create(['name' => ‘YourName’, 'email' => ‘your@email.com’, 'password' => bcrypt(‘YourPassword’)]);
+    ```
+
 ## Creators:
 - _Linus van der Putten (Digital Designer)_
 - _William Buller (Digital Designer)_
