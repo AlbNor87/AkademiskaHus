@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Post;
 use App\Http\Resources\Post as PostResource;
+use App\Post;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -26,7 +25,8 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -58,13 +58,12 @@ class PostController extends Controller
             $fileName = 'akaDefaultImage.png';
         }
 
-        $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post;
-        
+        $post = $request->isMethod('put') ? Post::findOrFail($request->post_id) : new Post();
+
         $post->id = $request->input('post_id');
         $post->title = $request->input('title');
         $post->body = $request->input('body');
         $post->image = $fileName;
-        
 
         if ($post->save()) {
             return new PostResource($post);
@@ -74,7 +73,8 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -89,7 +89,8 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

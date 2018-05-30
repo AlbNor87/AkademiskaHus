@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\User;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
 
@@ -34,7 +33,7 @@ class PagesController extends Controller
     {
         return view('errorReport');
     }
-    
+
     public function malfunction(): View
     {
         return view('malfunction');

@@ -32,7 +32,6 @@ Route::put('post', 'PostController@store');
 // Delete
 Route::delete('post/{id}', 'PostController@destroy');
 
-
 // List malfunctions
 Route::get('malfunctions', 'MalfunctionController@index');
 
