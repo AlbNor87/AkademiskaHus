@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(PostsTableSeeder::class);
         // $this->call(UsersTableSeeder::class);
         $this->call(MalfunctionsTableSeeder::class);
-    
+
         // factory(\App\User::class, 10)->create();
     }
 }
