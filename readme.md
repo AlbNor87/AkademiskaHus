@@ -1,4 +1,4 @@
-# WEB DEVELEOPMENT ASSIGNMENT - Akademiska Hus
+# AKADEMISKA HUS - Web Development Assignment
 
 <img src="https://media.giphy.com/media/5xtDarqCp0eomZaFJW8/giphy.gif" alt="AKADEMISKA HUS" width="100%">
 
@@ -17,8 +17,8 @@ This project was built using Laravel and Vue.js together with Bootstrap 4.
 ## Installation:
 - Download or clone this repository
 - Copy the `.env.example` to  `.env` and add your database credentials
-- Run npm install
-- Run composer install
+- Run `npm install`
+- Run `composer install`
 - `php artisan key:generate`
 - `php artisan serve`
 - `php artisan migrate`
@@ -26,6 +26,7 @@ This project was built using Laravel and Vue.js together with Bootstrap 4.
 - ```php
     App\User::create(['name' => ‘YourName’, 'email' => ‘your@email.com’, 'password' => bcrypt(‘YourPassword’)]);
     ```
+- You are ready to go!
 
 ## Creators:
 - _Linus van der Putten (Digital Designer)_
